@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>个人信息</title>
-    <script>
-        function click1(){
-
-        }
-    </script>
 </head>
 <body>
 <a  href="/logout"><button>退出登录</button></a>
-<form action="/delete" method="post">
+<form>
 <div align="center">
     <table style="border: 1px solid;">
         <tr>
@@ -23,7 +18,7 @@
         </tr>
         <tr th:each="user:${userList}">
             <td th:text="${user.id}"></td>
-            <td th:text="${user.name}" name="${user.name}"></td>
+            <td th:text="${user.name}"></td>
             <td th:text="${user.age}"></td>
             <td th:text="${user.sex}"></td>
             <td th:text="${user.phone}"></td>
@@ -31,6 +26,6 @@
     </table>
 </div>
 </form>
-<a  href="/delete" onClick="return confirm('确定删除?');"><button>注销账号</button></a>
+<a  href="/delete" onClick="return confirm('确定注销?');"><button>注销账号</button></a>
 </body>
 </html>
