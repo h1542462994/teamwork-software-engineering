@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>管理员邀请或者移除学员</title>
+</head>
+<body>
+<form action="/inviteuser" method="post">
+    课程ID：<input type="text"  name="courseID"><br/>
+    学生ID：<input type="text"  name="userID"><br/>
+    <button>邀请</button><br/>
+</form>
+<form action="/removeuser" method="post">
+    课程ID：<input type="text"  name="courseID"><br/>
+    学生ID：<input type="text"  name="userID"><br/>
+    <button>移除</button><br/>
+</body>
+</html>

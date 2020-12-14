@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>个人信息</title>
+</head>
+<body>
+<a  href="/logout"><button>退出登录</button></a>
+<form>
+<div align="center">
+    <table style="border: 1px solid;">
+        <tr>
+            <th>编号</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>联系电话</th>
+        </tr>
+        <tr th:each="user:${userList}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.age}"></td>
+            <td th:text="${user.sex}"></td>
+            <td th:text="${user.phone}"></td>
+        </tr>
+    </table>
+</div>
+</form>
+<a  href="/departmentbelongto"><button>查看自己所属哪个部门</button></a><!-- showuserdepartment.html
+ 在在后面写个判断，看是那种身份，推出那种功能  -->
+
+<a  href="joinorquitdepartment"><button>退出或加入部门</button></a><!-- addordeletedepartment.html -->
+<a  href="createadepartment"><button>创建一个部门</button></a><!-- createadepartment.html -->
+<a  href="inviteorremoveuser"><button>邀请或移除部门内的学员</button></a><!-- inviteorremoveuser.html -->
+<a  href="/enablesubadministritor"><button>分配部门内的次管理员</button></a><!-- /enablesubadministritor.html
+但是这个还没写，你说气人不气人
+ -->
+<!-- 以上的功能是朱佰亿需要添加的功能，已经写好但是没有调试过 -->
+<a  href="/delete" onClick="return confirm('确定注销?');"><button>注销账号</button></a>
+</body>
+</html>

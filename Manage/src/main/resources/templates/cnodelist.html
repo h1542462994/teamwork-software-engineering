@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>课程结点信息</title>
+</head>
+<body>
+    <div align="center">
+        <td th:text="${coursesname}"/>
+        <table style="border: 1px solid;">
+            <tr>
+                <th>课程编号</th>
+                <th>章节编号</th>
+                <th>章节名</th>
+                <th>类型</th>
+                <th>地址</th>
+            </tr>
+            <tr th:each="cnode:${cnodeList}">
+                <form action="/cnodeplay" method="post">
+                <td ><input type="text" th:value="${cnode.coursesid}" name="coursesid" size="5" readonly style="border:none"/></td>
+                <td ><input type="submit" th:value="${cnode.nodeid}" name="nodeid"/></td>
+                <td th:text="${cnode.nname}"></td>
+                <td th:text="${cnode.type}"></td>
+                <td><input type="text" th:value="${cnode.path}" name="path" size="5" readonly style="border:none"/></td>
+                </form>
+            </tr>
+        </table>
+        <table style="border: 1px solid;">
+            <tr>
+                <th>讨论区</th>
+            </tr>
+            <tr>
+                <td text=""></td>
+            </tr>
+            <tr>
+                <td><input type="text"> <input type="submit" value="发送"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

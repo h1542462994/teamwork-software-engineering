@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CoursesDao">
+    <!--根据cid查询一个课程的信息-->
+    <select id="selectCourseById" parameterType="Integer" resultType="com.po.Courses" >
+        select * from courses where cid=#{cid}
+    </select>
+    <!--查询所有课程的信息-->
+    <select id="selectAllCourses" resultType="com.po.Courses">
+        select * from courses
+    </select>
+    <!--为特定用户添加一门课程，#{cid}为com.po.Course的属性值-->
+    <insert id="addCourse" parameterType="com.po.Courses">
+        Insert into courses(cid,cname,info,stime,etime,time) values(#{cid},#{cname},#{info},#{stime},#{etime},#{time})
+    </insert>
+    <!--修改一门课程-->
+    <update id="updateCourse" parameterType="com.po.Courses">
+        update courses set cname=#{cname},info=#{info},stime=#{stime},etime=#{etime} where cid=#{cid}
+    </update>
+    <!--删除一个课程-->
+    <delete id="deleteCourse" parameterType="Integer">
+        delete from courses where cid=#{cid}
+    </delete>
+    <resultMap id="allCoursesAndPersons" type="com.po.Courses">
+        <id property="cid" column="cid"></id>
+        <result property="cname" column="cname"></result>
+        <result property="info" column="info"></result>
+        <result property="time" column="time"></result>
+        <result property="stime" column="stime"></result>
+        <result property="etime" column="etime"></result>
+        <!--多对多级联-->
+        <collection property="persons" ofType="com.po.Person">
+            <id property="pid" column="pid"></id>
+            <result property="pname" column="pname"></result>
+            <result property="dep" column="dep"></result>
+            <result property="ltime" column="ltime"></result>
+
+        </collection>
+    </resultMap>
+    <select id="selectallCoursesAndPersons" resultMap="allCoursesAndPersons">
+        select distinct c.*,pid,p.dep,p.pname
+        from courses c,courses_detail cd,person p
+        where cd.courses_id=c.cid
+        and cd.person_id=p.pid
+    </select>
+</mapper>

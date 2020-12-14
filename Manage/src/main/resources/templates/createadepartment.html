@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>管理员创建部门</title>
+</head>
+<body>
+<form action="/createdepartment" method="post">
+    课程名：<input type="text"  name="coursename"><br/>
+    <!--课程编号：<input type="text"  name="name">--><br/><!-- 我想让这个自增还得在departmentusercategory数据库里加上记录 -->
+    上级管理部门：<input type="text"  name="upperdepartment"><br/>
+    下级管理部门：<input type="text"  name="lowerdepartment"><br/>
+    主管理员ID：<input type="text"  name="dchargeperonid"><br/>
+    <button>搜索</button><br/>
+</form>
+</body>
+</html>
