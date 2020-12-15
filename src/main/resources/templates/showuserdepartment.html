@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>显示加入部门界面</title>
+</head>
+<body>
+<form>
+<div align="center">
+    <table style="border: 1px solid;">
+        <tr>
+            <th>学员编号（系统唯一）</th>
+            <th>加入的部门</th>
+            <th>身份</th>
+        </tr>
+        <tr th:each="user:${DUCList}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.age}"></td>
+            <td th:text="${user.sex}"></td>
+            <td th:text="${user.phone}"></td>
+        </tr>
+    </table>
+</div>
+</form>
+<a  href="/logout"><button>返回</button></a><!-- 返回上一级，还没写好 -->
+<a  href="/logout"><button>退出登录</button></a>
+</body>
+</html>

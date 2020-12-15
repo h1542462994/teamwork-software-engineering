@@ -1,0 +1,9 @@
+1、cnode跟cnodekey没搞懂
+2、我创建了department部门和departmentusercategory部门跟用户的关系表，本来不应该是朱佰亿我做的，所以还是希望改正
+3、dao曾我没搞好，因为我不知道数据库跟底层逻辑
+3、spring boot我还不会，不敢搞
+4、jsp界面和html界面，由于我不知道配置文件是什么其怎么改，所以我不太确定jsp会不会有作用，但是我确实希望jsp，因为得输出循环，在网页上
+5、有些逻辑我还不会，所以还是没搞懂，是不是这是springmvc的知识？
+6、有些包我没有，而且有些Java文件的配置地址少了main.java，我是eclipse流派的，不知道这是不是idea的特性
+7、我在学习利用git程序上传本地文件到GitHub.com上面，有些出错i请见谅
+8、//目前所知的是，在departusercategory表中加入数据，在department表中加入数据，cnode和cnodekey应该也是要加的，不对，资料存储时用这两个那么除非再加入dnode和dnodekey，就考虑一下在department表内部搞得那几个成员函数。
