@@ -2,6 +2,7 @@ package org.learning.server.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Org extends OrgType {
     public Org() {}
@@ -27,5 +28,11 @@ public class Org extends OrgType {
 
     public void setDepartments(List<Department> departments) {
         this.departments = departments;
+    }
+
+    public String getSummary() {
+        return getDepartments().stream()
+                .map(Department::getName)
+                .collect(Collectors.joining(","));
     }
 }

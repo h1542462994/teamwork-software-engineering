@@ -38,6 +38,9 @@ public class OrgService implements org.learning.server.service.OrgService {
                 .stream().filter((orgNode)->!current.contains(orgNode.getId())).collect(Collectors.toList());
     }
 
+    /**
+     * to save or update departments
+     */
     private void saveOrUpdateDepartments(Org instance, boolean needCreate){
         if (needCreate) {
             int index = 0;
@@ -55,6 +58,7 @@ public class OrgService implements org.learning.server.service.OrgService {
             for (Department department: instance.getDepartments()) {
                 OrgNode orgNode = new OrgNode();
                 orgNode.setId(department.getId());
+                orgNode.setName(department.getName());
                 orgNode.setDescription(department.getDescription());
                 orgNode.setParentNode(instance.getId());
                 orgNodeRepository.save(orgNode);
@@ -94,8 +98,42 @@ public class OrgService implements org.learning.server.service.OrgService {
         saveOrUpdateDepartments(instance, needCreate);
     }
 
+    /**
+     * get the org by id
+     */
+    @Override
+    public Optional<Org> getOrg(Integer id){
+        Optional<OrgNode> orgNodeOptional = orgNodeRepository.findById(id);
+        if (orgNodeOptional.isPresent() && orgNodeOptional.get().getParentNode() == null) {
+            OrgNode orgNode = orgNodeOptional.get();
+            Org org = new Org(orgNode.getId(), orgNode.getName(), orgNode.getDescription());
+            //org.setTag(id);
+            int index = 0;
+            for (OrgNode node: orgNodeRepository.findAllByParentNode(id)) {
+                Department department = new Department(node.getId(), node.getName(), node.getDescription());
+                department.setTag(index++);
+                org.addDepartment(department);
+            }
+            return Optional.of(org);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * get the org list
+     */
     @Override
     public List<Org> getOrgs() {
-        return null;
+        Iterable<OrgTag> orgTags = orgTagRepository.findAll();
+        List<Org> orgs = new LinkedList<>();
+        for (OrgTag tag: orgTags) {
+            Optional<Org> orgOptional = getOrg(tag.getOrgNodeId());
+            if (orgOptional.isPresent()) {
+                orgOptional.get().setTag(tag.getId());
+                orgs.add(orgOptional.get());
+            }
+        }
+        return orgs;
     }
 }

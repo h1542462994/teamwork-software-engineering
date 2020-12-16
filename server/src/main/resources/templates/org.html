@@ -5,5 +5,32 @@
 </head>
 <body>
 <nav th:replace="component::nav(2)"></nav>
+<div>
+    <div class="alert alert-warning" th:if="${session.tip}" th:text="${session.tip}"></div>
+    <div th:if="${#session.removeAttribute('tip')}"></div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="row">#</th>
+                <th scope="col">名称</th>
+                <th scope="col">描述</th>
+                <th scope="col">部门数</th>
+                <th scope="col">部门简介</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="s:${orgs}">
+                <th scope="row" th:text="${s.tag}"></th>
+                <td>
+                    <a th:href="@{/org/{id}(id=${s.id})}" th:text="${s.name}"></a>
+                </td>
+                <td th:text="${s.description}"></td>
+                <td th:text="${s.departments.size()}"></td>
+                <td th:text="${s.summary}"></td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>
 </body>
 </html>

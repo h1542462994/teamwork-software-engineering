@@ -14,10 +14,6 @@ public class MainController {
         return "courses";
     }
 
-    @GetMapping("/org")
-    public String orgGet(Model model) {
-        return "org";
-    }
 
     @GetMapping("/me")
     public String meGet(Model model) {
