@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册成功</title>
+</head>
+<body>
+    <div>
+        <h1 class="center-block">注册成功</h1>
+        <label class="control-label">用户名：<span th:text="${user.uid}"></span></label>
+        <label class="control-label">昵称：<span th:text="${user.name}"></span></label>
+        <label class="control-label">年龄：<span th:text="${user.age}"></span></label>
+        <label class="control-label">性别：<span th:if="${user.sex}">女</span><span th:if="${!user.sex}">男</span></label>
+        <label class="control-label">邮箱：<span th:text="${user.email}"></span></label>
+    </div>
+</body>
+</html>
