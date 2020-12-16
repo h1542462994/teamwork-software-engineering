@@ -10,17 +10,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class UserRegisterForm {
-    @NotNull
-    @Pattern(regexp = Patterns.digitNumberUnderLine, message = "Uid仅包含数字、大小写字母和下划线")
-    @Size(min = 2, max = 20)
-    private String uid;
+public class UserRegisterForm extends UserLoginForm {
     @NotNull
     @Size(min = 2, max = 20)
     private String name;
-    @NotNull
-    @Size(min = 6, max = 128)
-    private String password;
     @NotNull
     @Size(min = 6, max = 128)
     private String rePassword;
@@ -32,28 +25,12 @@ public class UserRegisterForm {
     @Email
     private String email;
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getRePassword() {

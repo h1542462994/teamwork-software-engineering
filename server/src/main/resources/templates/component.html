@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:include="~{header::includes (组件)}">
+    <title></title>
+</head>
+<body>
+<nav th:fragment="nav(activeIndex)" class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" th:href="@{/}">企业在线学习平台</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li th:class="${activeIndex == 0 ? 'nav-item active' : 'nav-item'}">
+                <a class="nav-link" th:href="@{/}">主页</a>
+            </li>
+            <li th:class="${activeIndex == 1 ? 'nav-item active' : 'nav-item'}">
+                <a class="nav-link" th:href="@{/courses}">课程</a>
+            </li>
+            <li th:class="${activeIndex == 2 ? 'nav-item active' : 'nav-item'}">
+                <a class="nav-link" th:href="@{/org}">组织</a>
+            </li>
+            <li th:class="${activeIndex == 3 ? 'nav-item active' : 'nav-item'}">
+                <a class="nav-link" th:href="@{/me}">个人信息</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <label>
+                <input class="form-control mr-sm-2" type="search" placeholder="搜索课程">
+            </label>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+        </form>
+    </div>
+</nav>
+</body>
+</html>
