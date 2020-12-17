@@ -4,15 +4,14 @@
     <title>组织</title>
 </head>
 <body>
-<nav th:replace="component::nav(2)"></nav>
+<nav th:replace="~{component::nav(2)}"></nav>
 <div>
-    <div class="alert alert-warning" th:if="${session.tip}" th:text="${session.tip}"></div>
-    <div th:if="${#session.removeAttribute('tip')}"></div>
+    <div th:include="~{component::warningBox}"></div>
     <table class="table">
         <thead>
             <tr>
                 <th scope="row">#</th>
-                <th scope="col">名称</th>
+                <th scope="col">组织名称</th>
                 <th scope="col">描述</th>
                 <th scope="col">部门数</th>
                 <th scope="col">部门简介</th>

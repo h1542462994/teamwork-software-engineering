@@ -1,9 +1,6 @@
 package org.learning.server.model;
 
-import java.util.LinkedList;
-import java.util.List;
-
-public class Department extends OrgType {
+public class Department extends Group {
     public Department() {
 
     }

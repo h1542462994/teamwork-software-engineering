@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Org extends OrgType {
+public class Org extends Group {
     public Org() {}
     public Org(String name, String description) {
         this.setName(name);

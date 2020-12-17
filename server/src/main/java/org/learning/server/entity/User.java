@@ -3,9 +3,13 @@ package org.learning.server.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
+/**
+ * a data of user
+ */
 @Entity
-public class User {
+public class User implements Serializable {
     @Id
     private String uid;
     private String name;

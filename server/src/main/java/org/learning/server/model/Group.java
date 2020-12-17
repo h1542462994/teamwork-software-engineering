@@ -1,6 +1,6 @@
 package org.learning.server.model;
 
-public abstract class OrgType {
+public abstract class Group {
     private Integer id;
     private Integer tag;
     private String name;

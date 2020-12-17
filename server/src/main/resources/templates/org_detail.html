@@ -5,5 +5,24 @@
 </head>
 <body>
 <nav th:replace="component::nav(2)"></nav>
+<div>
+    <div th:include="~{component::warningBox}"></div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="row">#</th>
+                <th scope="row">部门名称</th>
+                <th scope="row">部门描述</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="s:${org.departments}">
+                <th scope="row" th:text="${s.tag}"></th>
+                <td th:text="${s.name}"></td>
+                <td th:text="${s.description}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

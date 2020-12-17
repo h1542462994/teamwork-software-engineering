@@ -33,7 +33,10 @@
         </form>
     </div>
 </nav>
-
+<div th:fragment="warningBox">
+    <div class="alert alert-warning" th:if="${session.tip}" th:text="${session.tip}"></div>
+    <div th:if="${#session.removeAttribute('tip')}"></div>
+</div>
 
 </body>
 </html>

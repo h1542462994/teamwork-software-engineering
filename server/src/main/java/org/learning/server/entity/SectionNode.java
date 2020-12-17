@@ -1,6 +1,5 @@
 package org.learning.server.entity;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,17 +7,17 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
- * A node of Org type, like org, department[, team]
- *
+ * a section of a course
  */
 @Entity
-public class OrgNode implements Serializable {
+public class SectionNode implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    private Integer index;
     private String description;
-    private Integer parentNode;
+    private Integer courseNodeId;
 
     public Integer getId() {
         return id;
@@ -28,13 +27,20 @@ public class OrgNode implements Serializable {
         this.id = id;
     }
 
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     public String getDescription() {
@@ -45,11 +51,13 @@ public class OrgNode implements Serializable {
         this.description = description;
     }
 
-    public Integer getParentNode() {
-        return parentNode;
+    public Integer getCourseNodeId() {
+        return courseNodeId;
     }
 
-    public void setParentNode(Integer parentNode) {
-        this.parentNode = parentNode;
+    public void setCourseNodeId(Integer courseNodeId) {
+        this.courseNodeId = courseNodeId;
     }
+
+
 }

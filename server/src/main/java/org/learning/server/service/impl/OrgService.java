@@ -4,7 +4,7 @@ import org.learning.server.entity.OrgNode;
 import org.learning.server.entity.OrgTag;
 import org.learning.server.model.Department;
 import org.learning.server.model.Org;
-import org.learning.server.model.OrgType;
+import org.learning.server.model.Group;
 import org.learning.server.repository.OrgNodeRepository;
 import org.learning.server.repository.OrgTagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class OrgService implements org.learning.server.service.OrgService {
     private List<OrgNode> getNeedToDeleteDepartments(Org instance) {
         List<OrgNode> savedInstances = orgNodeRepository.findAllByParentNode(instance.getId());
         Set<Integer> current = instance.getDepartments().stream()
-                .map(OrgType::getId)
+                .map(Group::getId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         return savedInstances
@@ -41,31 +41,20 @@ public class OrgService implements org.learning.server.service.OrgService {
     /**
      * to save or update departments
      */
-    private void saveOrUpdateDepartments(Org instance, boolean needCreate){
-        if (needCreate) {
-            int index = 0;
-            for (Department department : instance.getDepartments()) {
-                OrgNode orgNode = new OrgNode();
-                orgNode.setName(department.getName());
-                orgNode.setDescription(department.getDescription());
-                orgNode.setParentNode(instance.getId());
-                orgNodeRepository.save(orgNode);
-                department.setId(orgNode.getId());
-                department.setTag(index++);
-            }
-        } else {
-            List<OrgNode> needToDeleteDepartments = getNeedToDeleteDepartments(instance);
-            for (Department department: instance.getDepartments()) {
-                OrgNode orgNode = new OrgNode();
-                orgNode.setId(department.getId());
-                orgNode.setName(department.getName());
-                orgNode.setDescription(department.getDescription());
-                orgNode.setParentNode(instance.getId());
-                orgNodeRepository.save(orgNode);
-                department.setId(orgNode.getId());
-            }
-            orgNodeRepository.deleteAll(needToDeleteDepartments);
+    private void saveOrUpdateDepartments(Org instance){
+        int index = 0;
+        List<OrgNode> needToDeleteDepartments = getNeedToDeleteDepartments(instance);
+        for (Department department: instance.getDepartments()) {
+            OrgNode orgNode = new OrgNode();
+            orgNode.setId(department.getId());
+            orgNode.setName(department.getName());
+            orgNode.setDescription(department.getDescription());
+            orgNode.setParentNode(instance.getId());
+            orgNodeRepository.save(orgNode);
+            department.setId(orgNode.getId());
+            department.setTag(index++);
         }
+        orgNodeRepository.deleteAll(needToDeleteDepartments);
     }
 
     /**
@@ -73,11 +62,6 @@ public class OrgService implements org.learning.server.service.OrgService {
      */
     @Override
     public void saveOrUpdate(Org instance) {
-        boolean needCreate = false;
-        if (instance.getId() == null){
-            needCreate = true;
-        }
-
         OrgNode orgNode = new OrgNode();
         orgNode.setId(instance.getId());
         orgNode.setName(instance.getName());
@@ -85,7 +69,7 @@ public class OrgService implements org.learning.server.service.OrgService {
         orgNodeRepository.save(orgNode);
         instance.setId(orgNode.getId());
 
-        Optional<OrgTag> orgTag = orgTagRepository.findByOrOrgNodeId(orgNode.getId());
+        Optional<OrgTag> orgTag = orgTagRepository.findByOrgNodeId(orgNode.getId());
         if (orgTag.isPresent()) {
             instance.setTag(orgTag.get().getId());
         } else {
@@ -95,7 +79,7 @@ public class OrgService implements org.learning.server.service.OrgService {
             instance.setTag(orgTag2.getId());
         }
 
-        saveOrUpdateDepartments(instance, needCreate);
+        saveOrUpdateDepartments(instance);
     }
 
     /**
