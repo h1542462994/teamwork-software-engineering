@@ -27,8 +27,13 @@ public class UserController {
     public String login(){
         return "login";
     }
+
     @RequestMapping("/loginsuccess")
-    public String loginsuccess(){
+    public String loginsuccess(Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        User user =(User)session.getAttribute("user");
+        List<User> userList = userService.login(user.getName(), user.getPassword());
+        model.addAttribute("userList", userList);
         return "loginsuccess";
     }
     @RequestMapping("/loginfail")
