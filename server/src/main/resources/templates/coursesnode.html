@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:include="~{header::includes (课程)}">
+    <title>课程</title>
+</head>
+<body>
+<nav th:replace="component::nav(1)"></nav>
+<div>
+    <div th:include="~{component::warningBox}"></div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">章节数</th>
+            <th scope="col">章节名称</th>
+            <th scope="col">学习内容</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c:${cnodeList}">
+            <td th:text="${c.nodeid}"></td>
+            <td th:text="${c.name}"></td>
+            <td th:if="${c.type}=='audio'">
+                <!-- src是相对路径，根目录是static文件夹 -->
+                <embed height="50" width="100" th:src="${c.path}">
+            </td>
+            <td th:if="${c.type}=='video'">
+                <!-- src是相对路径，根目录是static文件夹 -->
+                <video width="300" height="200"  controls th:src="${c.path}" type="video/mp4">
+                    您的浏览器不支持 HTML5 video 标签。
+                </video>
+            </td>
+            <td th:if="${c.type}=='ppt'">
+                <!-- src是绝对路径 -->
+                <iframe th:src='https://view.officeapps.live.com/op/view.aspx?src=${c.path}' width="200" height="200" frameborder='1'>
+                </iframe>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

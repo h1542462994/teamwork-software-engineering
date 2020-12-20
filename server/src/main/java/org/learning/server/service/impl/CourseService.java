@@ -1,25 +1,18 @@
 package org.learning.server.service.impl;
 
+import org.learning.server.entity.Course;
 import org.learning.server.entity.CourseNode;
-import org.learning.server.entity.MediaNode;
-import org.learning.server.entity.SectionNode;
-import org.learning.server.model.Course;
-import org.learning.server.model.Media;
-import org.learning.server.model.Section;
 import org.learning.server.repository.CourseNodeRepository;
-import org.learning.server.repository.MediaNodeRepository;
-import org.learning.server.repository.SectionNodeRepository;
+import org.learning.server.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class CourseService implements org.learning.server.service.CourseService {
+    /*
     private CourseNodeRepository courseNodeRepository;
     private SectionNodeRepository sectionNodeRepository;
     private MediaNodeRepository mediaNodeRepository;
@@ -65,7 +58,7 @@ public class CourseService implements org.learning.server.service.CourseService 
         mediaNodeRepository.deleteAll(needToDeleteMedias);
     }
 
-    private List<SectionNode> getNeedToDeleteSections(Course instance){
+    private List<SectionNode> getNeedToDeleteSections(org.learning.server.model.Course instance){
         List<SectionNode> savedInstances = sectionNodeRepository.findAllByCourseNodeId(instance.getId());
         Set<Integer> current = instance.getSections().stream()
                 .map(Section::getId)
@@ -75,7 +68,7 @@ public class CourseService implements org.learning.server.service.CourseService 
                 .stream().filter((sectionNode -> !current.contains(sectionNode.getId()))).collect(Collectors.toList());
     }
 
-    private void saveOrUpdateSections(Course instance) {
+    private void saveOrUpdateSections(org.learning.server.model.Course instance) {
         int index = 0;
         List<SectionNode> needToDeleteSections = getNeedToDeleteSections(instance);
         for (Section section: instance.getSections()) {
@@ -92,21 +85,31 @@ public class CourseService implements org.learning.server.service.CourseService 
 
     @Override
     public void saveOrUpdate(Course instance){
-        CourseNode courseNode = new CourseNode();
-        courseNode.setId(instance.getId());
-        courseNode.setName(instance.getName());
-        courseNode.setInfo(instance.getInfo());
-        courseNode.setStartTime(instance.getStartTime());
-        courseNode.setEndTime(instance.getEndTime());
-        courseNodeRepository.save(courseNode);
-        instance.setId(courseNode.getId());
+        Course course = new Course();
+        course.setId(instance.getId());
+        course.setName(instance.getName());
+        course.setInfo(instance.getInfo());
+        course.setStartTime(instance.getStartTime());
+        course.setEndTime(instance.getEndTime());
+        courseNodeRepository.save(course);
+        instance.setId(course.getId());
 
         saveOrUpdateSections(instance);
+    }
+*/
+    @Autowired
+    private CourseRepository course;
+    @Autowired
+    private CourseNodeRepository coursenode;
+
+    @Override
+    public void saveOrUpdate(Course instance) {
     }
 
     @Override
     public List<Course> getCourses() {
-        return null;
+
+        return course.findAll();
     }
 
     @Override
@@ -117,5 +120,17 @@ public class CourseService implements org.learning.server.service.CourseService 
     @Override
     public boolean delete(Course instance){
         return true;
+    }
+
+    @Override
+    public List<Course> findCoursesByName(String name) {
+
+        return course.findAllByName(name);
+    }
+
+    @Override
+    public List<CourseNode> findCnodeById(Integer id) {
+
+        return coursenode.findAllByCourseid(id);
     }
 }

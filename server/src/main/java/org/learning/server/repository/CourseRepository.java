@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.util.List;
 
-public interface CourseNodeRepository extends CrudRepository<CourseNode,Integer> {
-    List<CourseNode> findAllByCourseid(Integer id);
+public interface CourseRepository extends CrudRepository<Course, Integer> {
+    List<Course> findAll();
+    List<Course> findAllByName(String name);
 }

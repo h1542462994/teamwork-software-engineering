@@ -1,20 +1,19 @@
-package com.example.bean;
+package org.learning.server.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
-
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "courses")
-public class Courses  implements Serializable {
+@Table(name = "course")
+public class Course implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String info;
-    private String starttime;
-    private String endtime;
+    private String startTime;
+    private String endTime;
 
     public Integer getId() {
         return id;
@@ -40,20 +39,19 @@ public class Courses  implements Serializable {
         this.info = info;
     }
 
-    public String getStarttime() {
-        return starttime;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setStarttime(String starttime) {
-        this.starttime = starttime;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public String getEndtime() {
-        return endtime;
+    public String getEndTime() {
+        return endTime;
     }
 
-    public void setEndtime(String endtime) {
-        this.endtime = endtime;
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }
-

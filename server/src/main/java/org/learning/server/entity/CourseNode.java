@@ -1,28 +1,30 @@
 package org.learning.server.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 @Entity
-public class CourseNode implements Serializable {
+@Table(name="coursenode")
+@IdClass(CnodeKey.class)
+public class CourseNode {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String name;
-    private String info;
-    private Timestamp startTime;
-    private Timestamp endTime;
+    @Column(name = "courseid")
+    private Integer courseid;
 
-    public Integer getId() {
-        return id;
+
+    @Id
+    @Column(name = "nodeid")
+    private Integer nodeid;
+    private String name;
+    private String path;
+    private String type;
+
+    public Integer getCourseid() {
+        return courseid;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCourseid(Integer courseid) {
+        this.courseid = courseid;
     }
 
     public String getName() {
@@ -33,27 +35,27 @@ public class CourseNode implements Serializable {
         this.name = name;
     }
 
-    public String getInfo() {
-        return info;
+    public String getPath() {
+        return path;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public Timestamp getStartTime() {
-        return startTime;
+    public Integer getNodeid() {
+        return nodeid;
     }
 
-    public void setStartTime(Timestamp startTime) {
-        this.startTime = startTime;
+    public void setNodeid(Integer nodeid) {
+        this.nodeid = nodeid;
     }
 
-    public Timestamp getEndTime() {
-        return endTime;
+    public String getType() {
+        return type;
     }
 
-    public void setEndTime(Timestamp endTime) {
-        this.endTime = endTime;
+    public void setType(String type) {
+        this.type = type;
     }
 }
