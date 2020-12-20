@@ -5,30 +5,5 @@
 </head>
 <body>
 <nav th:replace="component::nav(1)"></nav>
-<div>
-    <div th:include="~{component::warningBox}"></div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="row">#</th>
-            <th scope="col">课程名称</th>
-            <th scope="col">课程简介</th>
-            <th scope="col">开始时间</th>
-            <th scope="col">结束时间</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="c:${courseList}">
-            <th scope="row" th:text="${c.id}"></th>
-            <td>
-            <a th:href="@{/courses/{id}(id=${c.id})}" th:text="${c.name}" name="name"></a>
-            </td>
-            <td th:text="${c.info}"></td>
-            <td th:text="${c.startTime}"></td>
-            <td th:text="${c.endTime}"></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
 </body>
 </html>

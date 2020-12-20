@@ -1,30 +1,28 @@
 package org.learning.server.entity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name="coursenode")
-@IdClass(CnodeKey.class)
-public class CourseNode {
+public class CourseNode implements Serializable {
     @Id
-    @Column(name = "courseid")
-    private Integer courseid;
-
-
-    @Id
-    @Column(name = "nodeid")
-    private Integer nodeid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String name;
-    private String path;
-    private String type;
+    private String info;
+    private Timestamp startTime;
+    private Timestamp endTime;
 
-    public Integer getCourseid() {
-        return courseid;
+    public Integer getId() {
+        return id;
     }
 
-    public void setCourseid(Integer courseid) {
-        this.courseid = courseid;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -35,27 +33,27 @@ public class CourseNode {
         this.name = name;
     }
 
-    public String getPath() {
-        return path;
+    public String getInfo() {
+        return info;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
-    public Integer getNodeid() {
-        return nodeid;
+    public Timestamp getStartTime() {
+        return startTime;
     }
 
-    public void setNodeid(Integer nodeid) {
-        this.nodeid = nodeid;
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
     }
 
-    public String getType() {
-        return type;
+    public Timestamp getEndTime() {
+        return endTime;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
     }
 }

@@ -5,27 +5,5 @@
 </head>
 <body>
 <nav th:replace="component::nav(3)"></nav>
-<div>
-    <div th:include="~{component::warningBox}"></div>
-    <table width="300">
-        <tr>
-            <td>用户名</td><td><th scope="row"th:text="${user.uid}"></th></td>
-        </tr>
-        <tr>
-            <td>昵称</td><td><th scope="row"th:text="${user.name}"></th></td>
-        </tr>
-            <td>年龄</td><td><th scope="row"th:text="${user.age}"></th></td>
-        <tr th:if="${not user.sex}">
-            <td>性别</td><td><th th:text="女"></th></td>
-        </tr>
-        <tr th:if="${user.sex}">
-            <td>性别</td><td><th th:text="男"></th></td>
-        </tr>
-        <tr>
-            <td>邮箱</td><td><th scope="row"th:text="${user.email}"></th></td>
-        </tr>
-    </table>
-</div>
-<a  href="/user/logout"><button  class="btn btn-primary" >退出登录</button></a>
 </body>
 </html>

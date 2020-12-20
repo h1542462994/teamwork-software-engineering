@@ -1,8 +1,6 @@
 package org.learning.server.service;
 
-
-import org.learning.server.entity.Course;
-import org.learning.server.entity.CourseNode;
+import org.learning.server.model.Course;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +13,4 @@ public interface CourseService {
     Optional<Course> getCourse(Integer id);
 
     boolean delete(Course instance);
-
-    List<Course> findCoursesByName(String name);
-    List<CourseNode> findCnodeById(Integer id);
 }

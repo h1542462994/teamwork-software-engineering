@@ -1,19 +1,19 @@
-package org.learning.server.entity;
+package com.example.bean;
+
 
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 import java.io.Serializable;
 
 public class CnodeKey implements Serializable {
-    private Integer courseid;
+    private Integer coursesid;
     private Integer nodeid;
 
-    public Integer getCourseid() {
-        return courseid;
+    public Integer getCoursesid() {
+        return coursesid;
     }
 
-    public void setCourseid(Integer courseid) {
-        this.courseid = courseid;
+    public void setCoursesid(Integer coursesid) {
+        this.coursesid = coursesid;
     }
 
     public Integer getNodeid() {
