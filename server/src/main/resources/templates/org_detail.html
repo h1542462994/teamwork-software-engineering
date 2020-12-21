@@ -13,6 +13,9 @@
                 <th scope="row">#</th>
                 <th scope="row">部门名称</th>
                 <th scope="row">部门描述</th>
+                <th>
+                    <a th:href="@{/org/create" th:text="新建部门"></a>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -20,8 +23,10 @@
                 <th scope="row" th:text="${s.tag}"></th>
                 <td th:text="${s.name}"></td>
                 <td th:text="${s.description}"></td>
+                <td th:text="${s.description}"></td>
             </tr>
         </tbody>
+        <
     </table>
 </div>
 </body>

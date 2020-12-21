@@ -120,4 +120,33 @@ public class OrgService implements org.learning.server.service.OrgService {
         }
         return orgs;
     }
+    /**
+     * delete the org by id
+     */
+
+    @Override
+    public boolean deleteOrgs(String  instance) {
+        return orgNodeRepository.deleteByIdNotPersional(instance)>0;//删除部门，但是我感觉其实或许没什么用
+    }
+
+    @Override
+    public boolean deleteOrgsRelation(String OrgId,String uid) {
+        return orgNodeRepository.deleteById(OrgId,uid) > 0;
+    }
+
+    @Override
+    public boolean createOrgsRelationByName(String name) {
+        return false;
+    }
+
+
+    @Override
+    public List<OrgNode> findOrgsById(Integer id) {
+        return null;
+    }
+
+    @Override
+    public List<Org> findOrgsByName(String name) {
+        return null;
+    }
 }

@@ -15,6 +15,7 @@
                 <th scope="col">描述</th>
                 <th scope="col">部门数</th>
                 <th scope="col">部门简介</th>
+                <th scope="col">进行操作</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,9 @@
                 <td th:text="${s.description}"></td>
                 <td th:text="${s.departments.size()}"></td>
                 <td th:text="${s.summary}"></td>
+                <td>
+                    <a th:href="@{/org/{delete} (delete=${s.id})}" th:text="点击退出"></a>
+                </td>
             </tr>
         </tbody>
 
