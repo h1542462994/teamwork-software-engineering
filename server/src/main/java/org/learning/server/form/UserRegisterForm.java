@@ -2,9 +2,12 @@ package org.learning.server.form;
 
 import org.hibernate.validator.constraints.Range;
 import org.learning.server.entity.User;
+import org.learning.server.form.pattern.Patterns;
+
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class UserRegisterForm extends UserLoginForm {
