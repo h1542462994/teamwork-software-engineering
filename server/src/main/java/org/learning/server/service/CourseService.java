@@ -17,6 +17,5 @@ public interface CourseService {
     boolean delete(Course instance);
 
     List<Course> findCoursesByName(String name);
-
     List<CourseNode> findCnodeById(Integer id);
 }
