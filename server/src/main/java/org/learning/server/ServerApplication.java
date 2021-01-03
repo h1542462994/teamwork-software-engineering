@@ -7,6 +7,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+// 回退版本
 @SpringBootApplication
 public class ServerApplication implements ApplicationRunner {
 
