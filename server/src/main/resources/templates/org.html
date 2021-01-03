@@ -1,35 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:include="~{header::includes (组织)}">
-    <title>组织</title>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <meta charset="UTF-8">
+    <title>#title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/asyncNet.js"></script>
+    <script src="/js/component.js"></script>
 </head>
 <body>
-<nav th:replace="~{component::nav(2)}"></nav>
-<div>
-    <div th:include="~{component::warningBox}"></div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="row">#</th>
-                <th scope="col">组织名称</th>
-                <th scope="col">描述</th>
-                <th scope="col">部门数</th>
-                <th scope="col">部门简介</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="s:${orgs}">
-                <th scope="row" th:text="${s.tag}"></th>
-                <td>
-                    <a th:href="@{/org/{id}(id=${s.id})}" th:text="${s.name}"></a>
-                </td>
-                <td th:text="${s.description}"></td>
-                <td th:text="${s.departments.size()}"></td>
-                <td th:text="${s.summary}"></td>
-            </tr>
-        </tbody>
-
-    </table>
+<div id="app">
+    <app-compact :c="c"></app-compact>
 </div>
+
+<script>
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            c: {
+                // inject common object
+                common: common,
+                // inject net object
+                net: net,
+                title: '企业在线学习平台 - 组织',
+                menu: common.menu_index
+            },
+        },
+        methods: {
+            init() {
+                document.title = app.c.title;
+                // to add the initialization code
+            }
+        }
+    })
+
+    window.onload = () => {
+        app.init();
+    }
+</script>
+
 </body>
 </html>

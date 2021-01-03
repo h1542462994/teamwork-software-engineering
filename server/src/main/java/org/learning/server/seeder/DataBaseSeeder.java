@@ -30,7 +30,7 @@ public class DataBaseSeeder {
 
     public void insertData() {
         insertUsers();
-        insertOrg();
+        //insertOrg();
     }
 
     private void insertUsers() {
