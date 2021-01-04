@@ -15,7 +15,9 @@
 </head>
 <body>
     <div id="app">
-        <app-compact :c="c"></app-compact>
+        <app-compact :c="c">
+            <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        </app-compact>
     </div>
 
 <script>
@@ -31,10 +33,16 @@
                 title: '模板界面',
                 menu: common.menu_index
             },
+            state: common.defaultUserState()
         },
         methods: {
-            init() {
+            stateChanged(state) {
+                this.state = state
+            },
+            async init() {
                 document.title = app.c.title;
+                net.addWatcher(app.stateChanged)
+                app.state = await net.userState()
                 // to add the initialization code
             }
         }

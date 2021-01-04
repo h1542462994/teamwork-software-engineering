@@ -15,7 +15,9 @@
 </head>
 <body>
 <div id="app">
-    <app-compact :c="c"></app-compact>
+    <app-compact :c="c">
+        <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+    </app-compact>
 </div>
 
 <script>
@@ -28,13 +30,19 @@
                 common: common,
                 // inject net object
                 net: net,
-                title: '企业在线学习平台 - 个人信息',
+                title: '企业在线学习平台',
                 menu: common.menu_index
             },
+            state: common.defaultUserState()
         },
         methods: {
-            init() {
+            stateChanged(state) {
+                this.state = state
+            },
+            async init() {
                 document.title = app.c.title;
+                net.addWatcher(app.stateChanged)
+                app.state = await net.userState()
                 // to add the initialization code
             }
         }

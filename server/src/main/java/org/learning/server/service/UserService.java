@@ -4,9 +4,11 @@ import org.learning.server.entity.User;
 import org.learning.server.form.UserLoginForm;
 import org.learning.server.form.UserRegisterForm;
 import org.learning.server.model.ActionResult;
+import org.learning.server.model.common.Response;
+import org.learning.server.model.common.Responses;
 
 public interface UserService {
     ActionResult<User> register(UserRegisterForm user);
-    ActionResult<User> login(UserLoginForm user);
+    Response<User> login(UserLoginForm user);
     boolean delete(String uid);
 }

@@ -1,5 +1,6 @@
 package org.learning.server.model;
 
+@Deprecated
 public class ActionResult<T> {
     String result;
     boolean failed = false;

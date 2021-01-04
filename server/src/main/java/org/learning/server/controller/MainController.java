@@ -35,4 +35,11 @@ public class MainController {
     public String template(){
         return "template";
     }
+
+    /**
+     * TODO @page:login.html
+     * @return page:login.html
+     */
+    @GetMapping("/user/login")
+    public String login() { return "login"; }
 }
