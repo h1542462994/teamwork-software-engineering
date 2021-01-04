@@ -24,6 +24,6 @@ public class ServerApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        // dataBaseSeeder.insertData();
+        //dataBaseSeeder.insertData();
     }
 }

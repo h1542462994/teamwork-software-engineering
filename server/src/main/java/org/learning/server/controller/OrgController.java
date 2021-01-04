@@ -37,9 +37,12 @@ public class OrgController {
         }
     }
 
+    /**
+     * TODO @page org.html
+     * @return page:org.html
+     */
     @GetMapping("")
-    public String orgGet(String error, Model model){
-        model.addAttribute("orgs", orgService.getOrgs());
-        return "/org";
+    public String org(){
+        return "org";
     }
 }

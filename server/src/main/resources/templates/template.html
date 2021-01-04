@@ -14,12 +14,11 @@
     <script src="/js/component.js"></script>
 </head>
 <body>
-<div id="app">
-    <app-compact :c="c">
-        <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
-
-    </app-compact>
-</div>
+    <div id="app">
+        <app-compact :c="c">
+            <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        </app-compact>
+    </div>
 
 <script>
 
@@ -31,7 +30,7 @@
                 common: common,
                 // inject net object
                 net: net,
-                title: '企业在线学习平台',
+                title: '模板界面',
                 menu: common.menu_index
             },
             state: common.defaultUserState()

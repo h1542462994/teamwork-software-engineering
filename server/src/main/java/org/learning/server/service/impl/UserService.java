@@ -4,6 +4,8 @@ import org.learning.server.entity.User;
 import org.learning.server.form.UserLoginForm;
 import org.learning.server.form.UserRegisterForm;
 import org.learning.server.model.ActionResult;
+import org.learning.server.model.common.Response;
+import org.learning.server.model.common.Responses;
 import org.learning.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,19 +43,18 @@ public class UserService implements org.learning.server.service.UserService {
     }
 
     @Override
-    public ActionResult<User> login(UserLoginForm user) {
-        ActionResult<User> actionResult = new ActionResult<>();
+    public Response<User> login(UserLoginForm user) {
 
         Optional<User> dbUser = userRepository.findByUid(user.getUid());
         if (dbUser.isEmpty()) {
-            return actionResult.error("该账户不存在");
+            return Responses.fail("该账号不存在");
         }
 
         if (!dbUser.get().getPassword().equals(user.getPassword())){
-            return actionResult.error("密码错误");
+            return Responses.fail("密码错误");
         }
 
-        return actionResult.value(dbUser.get()).success();
+        return Responses.ok(dbUser.get());
     }
 
     @Override

@@ -1,34 +1,83 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:include="~{header::includes (登录)}">
-    <title></title>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <meta charset="UTF-8">
+    <title>#title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/asyncNet.js"></script>
+    <script src="/js/component.js"></script>
 </head>
 <body>
-    <div>
-        <h1 class="text-center">欢迎来到登录界面</h1>
-        <form class="form-horizontal center-block" style="width: 600px;" th:action="@{/user/login}" th:object="${user}" method="post">
-            <div class="form-group">
-                <label for="uid" class="col-sm-2 control-label">用户名</label>
-                <div class="col-sm-10">
-                    <input type="text" th:field="*{uid}" class="form-control" id="uid" placeholder="请输入用户名">
-                </div>
-                <label style="color:red" th:if="${#fields.hasErrors('uid')}" th:errors="*{uid}">Uid Error</label>
-            </div>
-            <div class="form-group">
-                <label for="password" class="col-sm-2 control-label">密码</label>
-                <div class="col-sm-10">
-                    <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="请输入密码">
-                </div>
-                <label style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</label>
-            </div>
-            <label style="color:red" th:if="${result?.failed}" th:text="${result.result}"></label>
-            <div class="form-group">
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary" id="btn">提交</button>
-                    <input type="reset" class="btn btn-warning" value="重新填写"/>
-                </div>
-            </div>
-        </form>
+<div id="app" class="align-content-center">
+    <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+    <h1 class="text-center">欢迎来到登录界面</h1>
+    <div class="form align-self-center col-6">
+        <div class="form-group form-inline">
+            <label for="uid" class="col-4 control-label">用户名</label>
+            <input type="text" class="col form-control" id="uid" placeholder="请输入用户名" v-model="model.uid">
+        </div>
+        <div class="form-group form-inline">
+            <label for="password" class="col-4 control-label">密码</label>
+            <input type="password"  class="col form-control" id="password" placeholder="请输入密码" v-model="model.password">
+        </div>
+        <div class="form-group form-inline justify-content-center">
+            <button type="submit" class="col-5 btn btn-primary btn-block" id="login_btn" v-on:click="login">登录</button>
+        </div>
     </div>
+</div>
+
+<script>
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            c: {
+                // inject common object
+                common: common,
+                // inject net object
+                net: net,
+                title: '企业在线学习平台-登录',
+                menu: common.menu_index
+            },
+            model: {
+                uid: '',
+                password: ''
+            },
+            state: common.defaultUserState()
+        },
+        methods: {
+            stateChanged(state) {
+                this.state = state
+            },
+            async login() {
+                let login_btn = $('#login_btn')
+                let res = await net.userLogin(app.model.uid, app.model.password);
+                login_btn.disabled = true;
+                if (res !== net.net_fail && res.code === 200) {
+                    console.log(res)
+                    window.location.assign('/')
+                }
+                login_btn.disabled = false;
+            },
+            init() {
+                document.title = app.c.title;
+                net.addWatcher(app.stateChanged)
+                // to add the initialization code
+                net.loaded()
+            }
+        }
+    })
+
+    window.onload = () => {
+        app.init();
+    }
+</script>
+
 </body>
 </html>
