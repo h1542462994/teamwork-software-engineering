@@ -1,6 +1,6 @@
-import response from "./response";
-import user from "./user";
+import {response} from "./response";
+import {user} from "./user";
 
-export class response_user extends response<user>{
+export declare class response_user extends response<user>{
     data: user
 }

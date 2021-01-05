@@ -27,6 +27,25 @@ class Common {
     resOk(res) {
         return res !== net.net_fail && res.code === 200
     }
+
+    /**
+     * 解析uri
+     * @param {Location} location
+     * @return uri_component
+     */
+    uri(location){
+        let paths = location.pathname.split('/')
+        let queries = []
+        if (location.search.length > 0){
+            location.search.substr(1).split('&')
+                .map((v) => v.split('='))
+                .forEach((v) => queries[v[0]] = v[1])
+        }
+        return {
+            paths: paths,
+            queries: queries
+        }
+    }
 }
 
 let common = new Common();

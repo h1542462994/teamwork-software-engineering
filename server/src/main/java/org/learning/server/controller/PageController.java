@@ -2,6 +2,7 @@ package org.learning.server.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -42,4 +43,11 @@ public class PageController {
      */
     @GetMapping("/org")
     public String org() { return "org"; }
+
+    /**
+     * TODO @page:org_detail.html
+     * @return page:org_detail.html
+     */
+    @GetMapping("/org/{id}")
+    public String orgDetail(@PathVariable int id) { return "org_detail"; }
 }

@@ -1,4 +1,4 @@
-export default class response<T> {
+export declare class response<T> {
     code: number
     summary: string
     message: string

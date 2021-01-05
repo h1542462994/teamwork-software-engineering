@@ -1,6 +1,6 @@
-import user from './user'
+import {user} from './user'
 
-export default class state {
+export declare class state {
     tip: string
     user: user
 }

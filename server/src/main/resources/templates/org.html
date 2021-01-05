@@ -19,6 +19,11 @@
 <div id="app">
     <app-compact :c="c">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <div class="breadcrumb-holder container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item active">组织</li>
+            </ul>
+        </div>
         <section class="organizations">
             <div v-for="organization in organizations" class="container-fluid organization">
                 <div class="project">
@@ -26,7 +31,7 @@
                         <div class="col d-flex align-items-center justify-content-between">
                             <div class="organization-title d-flex align-items-center">
                                 <div class="text">
-                                    <h4>{{ organization.name }}</h4>
+                                    <h4><a :href="'/org/' + organization.id ">{{ organization.name }}</a></h4>
                                     <div>
                                         <span class="badge badge-primary badge-rounded bg-primary badge-me">{{ organization.description }}</span>
                                         <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.departments">{{ department.name }}</span>
@@ -52,7 +57,7 @@
                 common: common,
                 // inject net object
                 net: net,
-                title: '企业在线学习平台',
+                title: '企业在线学习平台 - 组织',
                 menu: common.menu_org
             },
             state: common.defaultUserState(),

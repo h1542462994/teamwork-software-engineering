@@ -1,4 +1,4 @@
-export default class user {
+export declare class user {
     uid: string
     age: number
     name: string

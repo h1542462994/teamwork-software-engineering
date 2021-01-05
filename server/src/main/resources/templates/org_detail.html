@@ -1,28 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:include="~{header::includes (${org.getName()})}">
-    <title>Title</title>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/style.default.css">
+    <link rel="stylesheet" href="/css/custom.css">
+    <meta charset="UTF-8">
+    <title>#title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/asyncNet.js"></script>
+    <script src="/js/component.js"></script>
 </head>
 <body>
-<nav th:replace="component::nav(2)"></nav>
-<div>
-    <div th:include="~{component::warningBox}"></div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="row">#</th>
-                <th scope="row">部门名称</th>
-                <th scope="row">部门描述</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="s:${org.departments}">
-                <th scope="row" th:text="${s.tag}"></th>
-                <td th:text="${s.name}"></td>
-                <td th:text="${s.description}"></td>
-            </tr>
-        </tbody>
-    </table>
+<div id="app">
+    <app-compact :c="c">
+        <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+    </app-compact>
 </div>
+
+<script>
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            c: {
+                // inject common object
+                common: common,
+                // inject net object
+                net: net,
+                title: '模板界面',
+                menu: common.menu_org
+            },
+            state: common.defaultUserState()
+        },
+        methods: {
+            stateChanged(state) {
+                this.state = state
+            },
+            async init() {
+                document.title = app.c.title;
+                net.addWatcher(app.stateChanged)
+                app.state = await net.userState()
+                // to add the initialization code
+                console.log(common.uri(window.location))
+
+            }
+        }
+    })
+
+    window.onload = () => {
+        app.init();
+    }
+</script>
+
 </body>
 </html>
