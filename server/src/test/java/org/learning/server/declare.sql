@@ -38,7 +38,7 @@ create table course_tag (
     name varchar(255) null
 );
 
-create table course_course_tag (
+create table course_course_tags (
     courses_id int not null references course(id),
     course_tags_id int not null references course_tag(id),
     primary key (courses_id, course_tags_id)
