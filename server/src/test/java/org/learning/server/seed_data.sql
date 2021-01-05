@@ -24,3 +24,11 @@ insert into department values (5, '软件工程1805部门', '软件工程1805', 
 insert into department values (6, '通信工程1801部门', '通信工程1801', 2);
 insert into department values (7, '通信工程1802部门', '通信工程1802', 2);
 insert into department values (8, '通信工程1803部门', '通信工程1803', 2);
+
+set foreign_key_checks = 0;
+truncate table course;
+truncate table course_tag;
+truncate table course_course_tags;
+set foreign_key_checks = 1;
+
+insert into course values (1, '计算机专业课程1', '软件工程');
