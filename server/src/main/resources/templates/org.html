@@ -3,6 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/style.default.css">
+    <link rel="stylesheet" href="/css/custom.css">
     <meta charset="UTF-8">
     <title>#title</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -17,6 +19,26 @@
 <div id="app">
     <app-compact :c="c">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <section class="organizations">
+            <div v-for="organization in organizations" class="container-fluid organization">
+                <div class="project">
+                    <div class="row bg-canyon has-shadow">
+                        <div class="col d-flex align-items-center justify-content-between">
+                            <div class="organization-title d-flex align-items-center">
+                                <div class="text">
+                                    <h4>{{ organization.name }}</h4>
+                                    <div>
+                                        <span class="badge badge-primary badge-rounded bg-primary badge-me">{{ organization.description }}</span>
+                                        <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.departments">{{ department.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </app-compact>
 </div>
 
@@ -33,7 +55,13 @@
                 title: '企业在线学习平台',
                 menu: common.menu_org
             },
-            state: common.defaultUserState()
+            state: common.defaultUserState(),
+            /**
+             * @type Array<organization>
+             */
+            organizations : {
+
+            }
         },
         methods: {
             stateChanged(state) {
@@ -47,7 +75,7 @@
                 if (common.isLogin(app.state)) {
                     let resOrgs = await net.orgAll();
                     if (common.resOk(resOrgs)){
-                        
+                        app.organizations = resOrgs.data
                     }
                 }
             }

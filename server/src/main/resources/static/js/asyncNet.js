@@ -90,7 +90,7 @@ class AsyncNet {
 
     /**
      * 通过api/org/all 获取所有organization的信息
-     * @returns {Promise<response_organization>}
+     * @returns {Promise<response_organizations>}
      */
     async orgAll() {
         return this.post(this.uri_org_all)
