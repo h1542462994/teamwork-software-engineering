@@ -1,22 +1,15 @@
 package org.learning.server.controller;
 
-import org.learning.server.entity.Course;
-import org.learning.server.entity.User;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * dispatcher the root views
  */
 @Controller
 @RequestMapping("/")
-public class MainController {
+public class PageController {
 
     /**
      * TODO @page:me.html
@@ -40,6 +33,13 @@ public class MainController {
      * TODO @page:login.html
      * @return page:login.html
      */
-    @GetMapping("/user/login")
+    @GetMapping("/login")
     public String login() { return "login"; }
+
+    /**
+     * TODO @page:org.html
+     * @return page:org.html
+     */
+    @GetMapping("/org")
+    public String org() { return "org"; }
 }

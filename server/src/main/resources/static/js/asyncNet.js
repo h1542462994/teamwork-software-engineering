@@ -15,6 +15,7 @@ class AsyncNet {
     net_fail = "net_fail"
     uri_user_login = "/api/user/login"
     uri_user_state = "/api/user/state"
+    uri_org_all = "/api/org/all"
     //endregion
     //region public domain
     // add restAPI support
@@ -27,6 +28,23 @@ class AsyncNet {
     }
     loaded() {
         this._update('')
+    }
+
+    /**
+     * 通过网络请求获取当前用户的状态
+     * @returns {Promise<{tip: string, user: null}>}
+     */
+    async userState() {
+        let res = await this.post(this.uri_user_state, '', false);
+        if (res === this.net_fail) {
+            this._state.tip = '获取用户信息失败'
+        } else if(res.code !== 200)  {
+            this._state.tip = res.message
+        } else {
+            this._state.tip = ''
+            this._state.user = res.data
+        }
+        return this._state
     }
     /**
      * 进行一个post请求
@@ -61,7 +79,7 @@ class AsyncNet {
     }
 
     /**
-     * 通过api/user/login进行登录
+     * 通过api/user/login 进行登录
      * @param uid
      * @param password
      * @returns {Promise<string|*>}
@@ -70,19 +88,13 @@ class AsyncNet {
         return this.post(this.uri_user_login, `uid=${uid}&password=${password}`)
     }
 
-    async userState() {
-        let res = await this.post(this.uri_user_state, '', false);
-        if (res === this.net_fail) {
-            this._state.tip = '获取用户信息失败'
-        } else if(res.code !== 200)  {
-            this._state.tip = res.message
-        } else {
-            this._state.tip = ''
-            this._state.user = res.data
-        }
-        return this._state
+    /**
+     * 通过api/org/all 获取所有organization的信息
+     * @returns {Promise<string|*>}
+     */
+    async orgAll() {
+        return this.post(this.uri_org_all)
     }
-
 
     //endregion
 }

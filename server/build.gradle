@@ -27,6 +27,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // 添加kotlin的支持
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    // 添加kotlin反射的支持
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
 }
 
 test {

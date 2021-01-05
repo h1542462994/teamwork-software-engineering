@@ -31,7 +31,7 @@
                 // inject net object
                 net: net,
                 title: '企业在线学习平台',
-                menu: common.menu_index
+                menu: common.menu_org
             },
             state: common.defaultUserState()
         },
@@ -44,6 +44,12 @@
                 net.addWatcher(app.stateChanged)
                 app.state = await net.userState()
                 // to add the initialization code
+                if (common.isLogin(app.state)) {
+                    let resOrgs = await net.orgAll();
+                    if (common.resOk(resOrgs)){
+                        console.log(resOrgs);
+                    }
+                }
             }
         }
     })

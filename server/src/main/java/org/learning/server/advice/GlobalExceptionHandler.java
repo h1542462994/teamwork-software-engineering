@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     Object loginExceptionHandler(HttpServletRequest request, LoginException e){
         if (request.getRequestURI().startsWith("/api")) {
-            return Responses.fail("登录失败");
+            return Responses.fail("当前未登录");
         } else {
             return new ModelAndView("/login");
         }
