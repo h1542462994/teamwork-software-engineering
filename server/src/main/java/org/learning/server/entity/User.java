@@ -1,6 +1,8 @@
 package org.learning.server.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -13,6 +15,7 @@ public class User implements Serializable {
     @Id
     private String uid;
     private String name;
+    @JsonIgnore
     private String password;
     private Integer age;
     private Boolean sex;

@@ -32,7 +32,7 @@ class AsyncNet {
 
     /**
      * 通过网络请求获取当前用户的状态
-     * @returns {Promise<{tip: string, user: null}>}
+     * @returns {Promise<state>}
      */
     async userState() {
         let res = await this.post(this.uri_user_state, '', false);
@@ -51,7 +51,7 @@ class AsyncNet {
      * @param url 资源路径
      * @param body 请求体
      * @param doUpdate
-     * @returns {Promise<string|any>}
+     * @returns {Promise<string|response<any>>}
      */
     async post(url, body = '', doUpdate = true) {
         let formRequest = new Request(url, {
@@ -82,7 +82,7 @@ class AsyncNet {
      * 通过api/user/login 进行登录
      * @param uid
      * @param password
-     * @returns {Promise<string|*>}
+     * @returns {Promise<response_user>}
      */
     async userLogin(uid, password) {
         return this.post(this.uri_user_login, `uid=${uid}&password=${password}`)
@@ -90,7 +90,7 @@ class AsyncNet {
 
     /**
      * 通过api/org/all 获取所有organization的信息
-     * @returns {Promise<string|*>}
+     * @returns {Promise<response_organization>}
      */
     async orgAll() {
         return this.post(this.uri_org_all)
