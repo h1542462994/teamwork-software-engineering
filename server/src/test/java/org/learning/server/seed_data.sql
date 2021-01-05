@@ -33,12 +33,12 @@ truncate table course_tag;
 truncate table course_course_tags;
 set foreign_key_checks = 1;
 
-insert into course values (1, '网络工程原理', '网络工程原理是浙江工业大学计算机学院学生大二学习的课程' ,'');
-insert into course values (2, '计算机组成原理', '计算机组成原理是浙江工业大学计算机学院学生大二学习的课程','');
-insert into course values (3, '单片机原理', '单片机原理是浙江工业大学计算机学院学生大三学习的课程','');
-insert into course values (4, 'javaee程序', 'javaee程序是浙江工业大学计算机学院学生大三学习的课程','');
-insert into course values (5, '软件工程原理', '软件工程原理是浙江工业大学计算机学院学生大二学习的课程','');
-insert into course values (6, 'web应用', 'web应用是浙江工业大学计算机学院学生大二学习的课程','');
+insert into course values (1, '网络工程原理', '网络工程原理是浙江工业大学计算机学院学生大二学习的课程' , null);
+insert into course values (2, '计算机组成原理', '计算机组成原理是浙江工业大学计算机学院学生大二学习的课程',null);
+insert into course values (3, '单片机原理', '单片机原理是浙江工业大学计算机学院学生大三学习的课程',null);
+insert into course values (4, 'javaee程序', 'javaee程序是浙江工业大学计算机学院学生大三学习的课程',null);
+insert into course values (5, '软件工程原理', '软件工程原理是浙江工业大学计算机学院学生大二学习的课程',null);
+insert into course values (6, 'web应用', 'web应用是浙江工业大学计算机学院学生大二学习的课程',null);
 
 
 insert into course_tag values (1, '编译语言');
