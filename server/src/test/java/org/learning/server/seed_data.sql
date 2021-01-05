@@ -12,6 +12,7 @@ set foreign_key_checks = 0;
 truncate table organization;
 set foreign_key_checks = 1;
 
+
 insert into organization values (1, '计算机学院组织', '计算机学院');
 insert into organization values (2, '信息学院组织', '信息学院');
 
@@ -24,3 +25,4 @@ insert into department values (5, '软件工程1805部门', '软件工程1805', 
 insert into department values (6, '通信工程1801部门', '通信工程1801', 2);
 insert into department values (7, '通信工程1802部门', '通信工程1802', 2);
 insert into department values (8, '通信工程1803部门', '通信工程1803', 2);
+
