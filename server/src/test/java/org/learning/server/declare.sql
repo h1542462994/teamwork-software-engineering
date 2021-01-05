@@ -25,4 +25,20 @@ create table department (
     name varchar(255) null,
     organization_id int null,
     foreign key department_fk_organization(organization_id) references organization(id)
-)
+);
+
+create table course (
+    id int primary key,
+    name varchar(255),
+    info varchar(255)
+);
+
+create table course_tag (
+    id int primary key,
+    name varchar(255)
+);
+
+create table course_course_tag (
+    courses_id int primary key references course(id),
+    course_tags_id int primary key references course_tag(id)
+);
