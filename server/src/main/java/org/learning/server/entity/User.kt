@@ -12,16 +12,15 @@ import javax.persistence.OneToMany
  * a data of user
  */
 @Entity
-class User : UserBase(), Serializable {
+class User : Serializable {
     @Id
-    override var uid: String = ""
-    override var name: String = ""
-
+    var uid: String = ""
+    var name: String = ""
     @JsonIgnore
-    override var password: String = ""
-    override var age: Int = 1
-    override var sex: Boolean = false
-    override var email: String = ""
+    var password: String = ""
+    var age: Int = 1
+    var sex: Boolean = false
+    var email: String = ""
 
     @OneToMany(targetEntity = UserDepartment::class, mappedBy = "user")
     @JsonIgnore
@@ -32,11 +31,24 @@ class User : UserBase(), Serializable {
     var userOrganizations: List<UserOrganization> = LinkedList()
 
     // calculated property
-    val departments get() = userDepartments.map { it.department.toBase() }
-    val organizations get() = userOrganizations.map { it.organization.toBase() }
+    private val departments get() = userDepartments.map { it.department.toBase().apply { level = it.level } }
+    private val organizations get() = userOrganizations.map { it.organization.toBase().apply { level = it.level } }
 
     // partition function
     fun toBase(): UserBase {
+        return UserBase().apply {
+            uid = this@User.uid
+            name = this@User.name
+            age = this@User.age
+            sex = this@User.sex
+            email = this@User.email
+            departments = this@User.departments
+            organizations = this@User.organizations
+        }
+    }
+
+    @Deprecated("")
+    fun toBasePart(): UserBase {
         return UserBase().apply {
             uid = this@User.uid
             name = this@User.name

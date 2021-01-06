@@ -1,7 +1,7 @@
-import {organization} from "./organization";
-import {entry} from "./entry";
+import {Organization} from "./organization";
+import {Entry} from "./entry";
 
-export declare class entry_organization extends entry<number, organization> {
+export declare class EntryOrganization extends Entry<number, Organization> {
     key: number
-    value: organization
+    value: Organization
 }

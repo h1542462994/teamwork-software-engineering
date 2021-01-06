@@ -10,19 +10,22 @@ import javax.persistence.*
  * 表示一个组织，一个组织下有若干的部门。
  */
 @Entity
-class Organization: OrganizationBase(), Serializable {
+class Organization:  Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    override var id: Int = -1
-    override var name: String = ""
-    override var description: String = ""
+    var id: Int = -1
+    var name: String = ""
+    var description: String = ""
     @OneToMany(targetEntity = Department::class, mappedBy = "organization")
     var departments: List<Department> = LinkedList()
     @OneToMany(targetEntity = UserOrganization::class, mappedBy = "organization")
     @JsonIgnore
     var userOrganizations: List<UserOrganization> = LinkedList()
     // calculated property
-    val userExtends get() = userOrganizations.map { it.toBase() }
+    val users get() = userOrganizations.map { it.user.toBase() }
+            // plus 各个部门的user，这里使用到了高阶函数
+        .plus(userOrganizations.flatMap { it.organization.departments }
+            .flatMap { it.users }).distinct()
     // partition function
     fun toBase(): OrganizationBase {
         return OrganizationBase().apply {

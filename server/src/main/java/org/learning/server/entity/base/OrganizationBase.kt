@@ -1,7 +1,8 @@
 package org.learning.server.entity.base
 
-open class OrganizationBase {
-    open var id: Int = -1
-    open var name: String = ""
-    open var description: String = ""
+class OrganizationBase {
+    var id: Int = -1
+    var name: String = ""
+    var description: String = ""
+    var level: Int = 0
 }

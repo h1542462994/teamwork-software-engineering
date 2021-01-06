@@ -1,6 +1,6 @@
-import {entry} from "./entry";
+import {Entry} from "./entry";
 
-export declare class entry_string extends entry<number, string> {
+export declare class EntryString extends Entry<number, string> {
     key: number
     value: string
 }

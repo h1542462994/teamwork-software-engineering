@@ -1,7 +1,6 @@
 package org.learning.server.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import org.learning.server.entity.base.OrganizationBase
 import org.learning.server.entity.base.UserExtendInfo
 import javax.persistence.*
 
@@ -20,6 +19,7 @@ class UserOrganization {
      */
     var level: Int = 0
 
+    @Deprecated("")
     fun toBase(): UserExtendInfo {
         return UserExtendInfo().apply {
             user = this@UserOrganization.user.toBase()

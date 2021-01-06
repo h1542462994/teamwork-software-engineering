@@ -29,7 +29,8 @@ Vue.component('app-compact',{
         </div>
     </div>
     </nav>
-    <slot></slot>
+    <div v-if="state.user === null">你当前还没有登录</div>
+    <slot v-else></slot>
 </div>`
 
 })

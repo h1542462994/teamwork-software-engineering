@@ -4,8 +4,10 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 
-open class DepartmentBase {
-    open var id: Int = -1
-    open var name: String = ""
-    open var description: String = ""
+class DepartmentBase {
+    var id: Int = -1
+    var name: String = ""
+    var description: String = ""
+    var organization: OrganizationBase = OrganizationBase()
+    var level: Int = 0
 }

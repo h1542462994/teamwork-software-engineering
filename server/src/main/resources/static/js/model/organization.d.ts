@@ -1,8 +1,12 @@
-import {department} from "./department";
+import {Department} from "./department";
+import {User} from "./user";
 
-export declare class organization {
+export declare class Organization {
     id: number
     name: string
     description: string
-    departments: Array<department>
+
+    level: number
+    departments: Array<Department>
+    users: Array<User>
 }

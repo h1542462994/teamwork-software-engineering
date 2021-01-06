@@ -25,6 +25,7 @@ class UserDepartment {
     var level: Int = 0
 
     // partition function
+    @Deprecated("")
     fun toBase(): UserExtendInfo {
         return UserExtendInfo().apply {
             user = this@UserDepartment.user.toBase()

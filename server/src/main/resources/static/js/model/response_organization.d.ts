@@ -1,6 +1,6 @@
-import {organization} from "./organization";
-import {response} from "./response";
+import {Organization} from "./organization";
+import {Response} from "./response";
 
-export declare class response_organization extends response<organization> {
-    data: organization
+export declare class ResponseOrganization extends Response<Organization> {
+    data: Organization
 }

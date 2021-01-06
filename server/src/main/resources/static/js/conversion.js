@@ -5,24 +5,43 @@
 class Conversion {
     /**
      * 计算organization对应的select的各项
-     * @param organization {organization}
-     * @return {Array<entry_string>}
+     * @param organization {Organization}
+     * @return {Array<EntryOrganization | EntryDepartment>}
      */
     organizationToDepartmentHeader(organization) {
         let entries = []
         entries.push({
             key: organization.id,
             type: 'org',
-            value: organization.name
+            value: organization
             })
         organization.departments.forEach((d) => {
             entries.push({
                 key: d.id,
                 type: 'department',
-                value: d.name
+                value: d
                 })
         })
         return entries
+    }
+
+    /**
+     * 扩充organization的计算属性
+     * @param organization {Organization}
+     * @deprecated
+     */
+    extendOrganizationOfUserExtend(organization) {
+        organization.departments.forEach((department) => {
+            department.userExtends.forEach((user) => {
+                user.scope = 'department'
+                user.of = department
+            })
+        })
+
+        organization.userExtends.forEach((user) => {
+            user.scope = 'org'
+            user.of = organization
+        })
     }
 }
 

@@ -10,13 +10,13 @@ import javax.persistence.*
  * 表示一个部门，一个部门必须隶属于一个组织
  */
 @Entity
-class Department : DepartmentBase(), Serializable {
+class Department :  Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    override var id: Int = -1
-    override var name: String = ""
-    override var description: String = ""
+    var id: Int = -1
+    var name: String = ""
+    var description: String = ""
 
     @JsonIgnore
     @ManyToOne(targetEntity = Organization::class)
@@ -25,9 +25,18 @@ class Department : DepartmentBase(), Serializable {
     @JsonIgnore
     var userDepartments: List<UserDepartment> = LinkedList()
     // calculated property
-    val userExtends get() = userDepartments.map { it.toBase() }
+    val users get() = userDepartments.map { it.user.toBase() }.distinct()
     // partition function
     fun toBase() : DepartmentBase {
+        return DepartmentBase().apply {
+            id = this@Department.id
+            name = this@Department.name
+            description = this@Department.description
+            organization = this@Department.organization.toBase()
+        }
+    }
+    @Deprecated("")
+    fun toBasePart(): DepartmentBase {
         return DepartmentBase().apply {
             id = this@Department.id
             name = this@Department.name
