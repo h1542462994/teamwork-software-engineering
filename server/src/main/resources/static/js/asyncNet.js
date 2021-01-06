@@ -16,7 +16,6 @@ class AsyncNet {
     uri_user_login = "/api/user/login"
     uri_user_state = "/api/user/state"
     uri_org_all = "/api/org/all"
-    uri_course_all = "/api/course/all"
     //endregion
     //region public domain
     // add restAPI support
@@ -95,14 +94,6 @@ class AsyncNet {
      */
     async orgAll() {
         return this.post(this.uri_org_all)
-    }
-
-    /**
-     * 通过api/course/all 获取所有course的信息
-     * @returns {Promise<response_courses>}
-     */
-    async courseAll() {
-        return this.post(this.uri_course_all)
     }
 
     //endregion

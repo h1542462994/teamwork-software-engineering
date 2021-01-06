@@ -50,30 +50,17 @@
                 title: '企业在线学习平台',
                 menu: common.menu_index
             },
-            state: common.defaultUserState(),
-            /**
-             * @type Array<course>
-             */
-            courses: []
+            state: common.defaultUserState()
         },
         methods: {
             stateChanged(state) {
                 this.state = state
             },
             async init() {
-                document.title = app.c.title
+                document.title = app.c.title;
                 net.addWatcher(app.stateChanged)
                 app.state = await net.userState()
                 // to add the initialization code
-                if (common.isLogin(app.state)) {
-                    let resCourses = await net.courseAll()
-                    if (common.resOk(resCourses)) {
-                        app.courses = resCourses.data
-                        console.log(app.courses)
-                    }
-                }
-
-
             }
         }
     })
