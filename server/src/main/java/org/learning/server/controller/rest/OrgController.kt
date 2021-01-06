@@ -19,4 +19,14 @@ class OrgController {
     fun all(): Response<Iterable<Organization>> {
         return Responses.ok(orgService.findAll())
     }
+
+    @PostMapping("/get")
+    fun get(id: Int): Response<Organization?> {
+        val optional = orgService.findById(id)
+        return if (optional.isPresent) {
+            Responses.ok(optional.get())
+        } else {
+            Responses.fail()
+        }
+    }
 }

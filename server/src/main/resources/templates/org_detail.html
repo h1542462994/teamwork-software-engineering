@@ -43,7 +43,16 @@
                 title: '模板界面',
                 menu: common.menu_org
             },
-            state: common.defaultUserState()
+            state: common.defaultUserState(),
+            /**
+             * @type organization
+             */
+            organization: {
+                id: -1,
+                name: '某组织',
+                description: '某组织的描述',
+                departments: []
+            }
         },
         methods: {
             stateChanged(state) {
@@ -54,8 +63,17 @@
                 net.addWatcher(app.stateChanged)
                 app.state = await net.userState()
                 // to add the initialization code
-                console.log(common.uri(window.location))
-
+                if (common.isLogin(app.state)){
+                    // 获取uri部件
+                    let uri_component = common.uri(window.location)
+                    console.log(uri_component)
+                    // 获取/org/:{id}
+                    let organization_id = uri_component.paths[2]
+                    let resOrg = await net.orgGet(parseInt(organization_id))
+                    if (common.resOk(resOrg)) {
+                        app.organization = resOrg.data
+                    }
+                }
             }
         }
     })

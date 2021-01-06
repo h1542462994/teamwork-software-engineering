@@ -1,6 +1,9 @@
 package org.learning.server.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.jsonschema.JsonSerializableSchema
+import org.learning.server.entity.base.DepartmentBase
+import org.learning.server.entity.base.UserExtendInfo
 import javax.persistence.*
 
 /**
@@ -20,4 +23,12 @@ class UserDepartment {
      * 等级，level=0表示普通用户，level=1表示次管理员，level=2表示主管理员
      */
     var level: Int = 0
+
+    // partition function
+    fun toBase(): UserExtendInfo {
+        return UserExtendInfo().apply {
+            user = this@UserDepartment.user.toBase()
+            level = this@UserDepartment.level
+        }
+    }
 }

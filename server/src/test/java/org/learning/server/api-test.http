@@ -1,4 +1,11 @@
+
+###
 POST http://{{host}}/api/course/all
+Content-Type: application/x-www-form-urlencoded
+
+###
+
+POST http://{{host}}/api/org/all
 Content-Type: application/x-www-form-urlencoded
 
 

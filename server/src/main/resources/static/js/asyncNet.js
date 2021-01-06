@@ -16,6 +16,7 @@ class AsyncNet {
     uri_user_login = "/api/user/login"
     uri_user_state = "/api/user/state"
     uri_org_all = "/api/org/all"
+    uri_org_get = "/api/org/get"
     uri_course_all = "/api/course/all"
     //endregion
     //region public domain
@@ -103,6 +104,15 @@ class AsyncNet {
      */
     async courseAll() {
         return this.post(this.uri_course_all)
+    }
+
+    /**
+     * 通过api/org/get 获取id的organization的信息
+     * @returns {Promise<response_organization>}
+     * @param id {number}
+     */
+    async orgGet(id) {
+        return this.post(this.uri_org_get, `id=${id}`)
     }
 
     //endregion
