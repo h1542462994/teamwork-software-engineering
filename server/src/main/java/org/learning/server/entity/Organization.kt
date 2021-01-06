@@ -21,11 +21,13 @@ class Organization:  Serializable {
     @OneToMany(targetEntity = UserOrganization::class, mappedBy = "organization")
     @JsonIgnore
     var userOrganizations: List<UserOrganization> = LinkedList()
+
     // calculated property
     val users get() = userOrganizations.map { it.user.toBase() }
             // plus 各个部门的user，这里使用到了高阶函数
         .plus(userOrganizations.flatMap { it.organization.departments }
             .flatMap { it.users }).distinct()
+    val owner get() = userOrganizations.find { it.level == 2 }?.user?.toBase()
     // partition function
     fun toBase(): OrganizationBase {
         return OrganizationBase().apply {

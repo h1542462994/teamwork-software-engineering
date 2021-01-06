@@ -11,7 +11,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 //        Object user = request.getSession().getAttribute("user");
 //        if (user == null) {
-//            throw new LoginException("登录失败");
+//            throw new LoginException("你还没有登录");
 //        }
         return true;
     }

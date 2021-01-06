@@ -10,3 +10,8 @@ Content-Type: application/x-www-form-urlencoded
 
 
 ###
+
+POST http://{{host}}/api/org/grouped
+Content-Type: application/x-www-form-urlencoded
+
+###

@@ -49,7 +49,7 @@
                     <div class="card-body">
                         <div v-if="model.headers[model.selectIndex]" class="list-group">
                             <div v-for="user in model.headers[model.selectIndex].value.users"
-                                class="user-select-none list-group-item">
+                                class="user-select-none list-group-item" :class="user.uid === state.user.uid ? 'bg-blue': '' ">
                                 {{ user.name }}(#{{ user.uid }})
                                 <div>
                                     <span class="badge badge-rounded bg-violet badge-me"
