@@ -17,7 +17,7 @@
 </head>
 <body>
 <div id="app">
-    <app-compact :c="c">
+    <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
     </app-compact>
 </div>

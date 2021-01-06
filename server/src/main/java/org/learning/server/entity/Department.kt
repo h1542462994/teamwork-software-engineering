@@ -2,6 +2,7 @@ package org.learning.server.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.io.Serializable
+import java.util.*
 import javax.persistence.*
 
 /**
@@ -17,4 +18,6 @@ class Department : Serializable {
     @JsonIgnore
     @ManyToOne(targetEntity = Organization::class)
     var organization: Organization = Organization()
+    @OneToMany(targetEntity = UserDepartment::class, mappedBy = "department")
+    var userDepartments: List<UserDepartment> = LinkedList()
 }

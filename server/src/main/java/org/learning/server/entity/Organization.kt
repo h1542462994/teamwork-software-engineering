@@ -16,4 +16,6 @@ class Organization: Serializable {
     var description: String = ""
     @OneToMany(targetEntity = Department::class, mappedBy = "organization")
     var departments: List<Department> = LinkedList()
+    @OneToMany(targetEntity = UserOrganization::class, mappedBy = "organization")
+    var userOrganizations: List<UserOrganization> = LinkedList()
 }

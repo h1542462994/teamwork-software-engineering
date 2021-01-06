@@ -4,6 +4,29 @@
     margin-left: 10px;
 }
 
+.my-padding.navbar {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+a.card-link:hover {
+    text-decoration-line: underline;
+    text-decoration-color: white;
+}
+
 .bg-canyon {
     background-color: #fff3cd;
+}
+
+.section-course {
+    margin: 4px 10px;
+}
+
+.card-course {
+    margin: 10px;
+    width: 18rem;
+}
+
+img.card-img {
+    height: 14rem;
 }

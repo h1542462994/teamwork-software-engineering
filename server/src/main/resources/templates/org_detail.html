@@ -17,8 +17,16 @@
 </head>
 <body>
 <div id="app">
-    <app-compact :c="c">
+    <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <div class="row d-flex no-margin no-padding container-fluid" style="background-color: lightyellow;">
+            <div class="col-2" style="background-color: antiquewhite">
+
+            </div>
+            <div class="col" style="background-color: bisque">
+
+            </div>
+        </div>
     </app-compact>
 </div>
 
