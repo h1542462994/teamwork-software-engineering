@@ -13,6 +13,7 @@
     <script src="/js/bootstrap.js"></script>
     <script src="/js/common.js"></script>
     <script src="/js/asyncNet.js"></script>
+    <script src="/js/conversion.js"></script>
     <script src="/js/component.js"></script>
 </head>
 <body>
@@ -40,6 +41,8 @@
                 common: common,
                 // inject net object
                 net: net,
+                // inject the conversion object
+                conversion: conversion,
                 title: '模板界面',
                 menu: common.menu_org
             },
@@ -52,11 +55,17 @@
                 name: '某组织',
                 description: '某组织的描述',
                 departments: []
+            },
+            model: {
+                /**
+                 * @type Array<entry_string>
+                 */
+                headers: []
             }
         },
         methods: {
             stateChanged(state) {
-                this.state = state
+                app.state = state
             },
             async init() {
                 document.title = app.c.title;
@@ -72,6 +81,7 @@
                     let resOrg = await net.orgGet(parseInt(organization_id))
                     if (common.resOk(resOrg)) {
                         app.organization = resOrg.data
+                        app.model.headers = conversion.organizationToDepartmentHeader(app.organization)
                     }
                 }
             }

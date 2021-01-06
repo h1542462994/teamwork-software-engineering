@@ -15,6 +15,8 @@ class Department : DepartmentBase(), Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     override var id: Int = -1
+    override var name: String = ""
+    override var description: String = ""
 
     @JsonIgnore
     @ManyToOne(targetEntity = Organization::class)
