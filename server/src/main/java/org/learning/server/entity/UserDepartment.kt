@@ -1,5 +1,6 @@
 package org.learning.server.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.*
 
 /**
@@ -13,6 +14,7 @@ class UserDepartment {
     @ManyToOne(targetEntity = User::class)
     var user: User = User()
     @ManyToOne(targetEntity = Department::class)
+    @JsonIgnore
     var department: Department = Department()
     /**
      * 等级，level=0表示普通用户，level=1表示次管理员，level=2表示主管理员

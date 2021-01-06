@@ -43,3 +43,17 @@ create table course_course_tags (
     course_tags_id int not null references course_tag(id),
     primary key (courses_id, course_tags_id)
 );
+
+create table user_department (
+    id int primary key,
+    level int not null default 0,
+    department_id int not null references department(id),
+    user_uid varchar(255) references user(uid)
+);
+
+create table user_organization (
+    id int primary key,
+    level int not null default 0,
+    organization_id int not null references organization(id),
+    user_uid varchar(255) references user(uid)
+);
