@@ -21,6 +21,9 @@ class Organization:  Serializable {
     @OneToMany(targetEntity = UserOrganization::class, mappedBy = "organization")
     @JsonIgnore
     var userOrganizations: List<UserOrganization> = LinkedList()
+    @OneToMany(targetEntity = UserOrganizationInvitation::class, mappedBy = "organization")
+    @JsonIgnore
+    var userOrganizationInvitations: List<UserOrganizationInvitation> = LinkedList()
 
     // calculated property
     val users get() = userOrganizations.map { it.user.toBase() }
