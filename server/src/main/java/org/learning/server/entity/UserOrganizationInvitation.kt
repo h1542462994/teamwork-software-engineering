@@ -1,5 +1,6 @@
 package org.learning.server.entity
 
+import org.learning.server.entity.base.UserBase
 import javax.persistence.*
 
 /**
@@ -28,4 +29,11 @@ class UserOrganizationInvitation {
      * 这个申请是否处于活跃状态
      */
     val active get() = state == 0 || state == 1
+
+    // partition function
+    fun toUserBase(): UserBase {
+        return this.user.toBase().apply {
+            this.state = this@UserOrganizationInvitation.state
+        }
+    }
 }

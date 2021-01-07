@@ -9,4 +9,6 @@ export declare class User {
     sex: boolean
     organizations: Array<Organization>
     departments: Array<Department>
+
+    level: number
 }

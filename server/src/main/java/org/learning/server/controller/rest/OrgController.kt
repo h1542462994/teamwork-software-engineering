@@ -3,6 +3,7 @@ package org.learning.server.controller.rest
 import org.learning.server.common.SessionHelper
 import org.learning.server.entity.Organization
 import org.learning.server.entity.base.OrganizationBase
+import org.learning.server.entity.base.UserBase
 import org.learning.server.model.annotation.NoUsed
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
@@ -59,5 +60,15 @@ class OrgController {
     fun userInviteOrganization(orgId: Int, request: HttpServletRequest): Response<OrganizationBase> {
         val user = SessionHelper.of(request).user()!!
         return orgService.userInviteOrganization(orgId, user)
+    }
+
+    /**
+     * 获取用户申请加入组织的列表
+     */
+    @PostMapping("/invites/get")
+    fun getInvitesById(orgId: Int, request: HttpServletRequest): Response<List<UserBase>> {
+        val user = SessionHelper.of(request).user()!!
+        // TODO: 加入权限验证
+        return Responses.ok(orgService.getInvitesById(orgId));
     }
 }

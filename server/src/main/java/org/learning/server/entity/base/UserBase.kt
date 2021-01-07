@@ -11,6 +11,8 @@ class UserBase {
     var departments: List<DepartmentBase> = LinkedList()
     var organizations: List<OrganizationBase> = LinkedList()
 
+    var state: Int = -1
+
     override fun equals(other: Any?): Boolean {
         return if (other is UserBase) {
             Objects.equals(uid, other.uid)

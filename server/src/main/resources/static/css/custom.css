@@ -27,6 +27,10 @@ a.card-link:hover {
     width: 18rem;
 }
 
+.card-margin {
+    margin: 10px;
+}
+
 img.card-img {
     height: 14rem;
 }

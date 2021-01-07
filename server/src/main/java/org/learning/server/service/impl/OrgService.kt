@@ -4,6 +4,7 @@ import org.learning.server.entity.Organization
 import org.learning.server.entity.User
 import org.learning.server.entity.UserOrganizationInvitation
 import org.learning.server.entity.base.OrganizationBase
+import org.learning.server.entity.base.UserBase
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
 import org.learning.server.model.complex.OrganizationGrouped
@@ -84,5 +85,10 @@ class OrgService : IOrgService {
         // 保存提交
 
 
+    }
+
+    override fun getInvitesById(orgId: Int): List<UserBase> {
+        val organization = organizationRepository.findById(orgId).get()
+        return userOrganizationInvitationRepository.findAllByOrganizationAndInverse(organization, true).map { it.toUserBase() }.distinct()
     }
 }

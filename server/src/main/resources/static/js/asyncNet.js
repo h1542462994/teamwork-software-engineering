@@ -20,6 +20,7 @@ class AsyncNet {
     uri_org_grouped = "/api/org/grouped"
     uri_course_all = "/api/course/all"
     uri_org_user_invite = "/api/org/user_invite"
+    uri_org_invites_get = "/api/org/invites/get"
     //endregion
     //region public domain
     // add restAPI support
@@ -132,6 +133,15 @@ class AsyncNet {
      */
     async orgUserInvite(orgId) {
         return this.post(this.uri_org_user_invite, `orgId=${orgId}`)
+    }
+
+    /**
+     * 通过api/org/invites/get
+     * @param orgId
+     * @return {Promise<ResponseUsers>}
+     */
+    async orgInvitesGet(orgId) {
+        return this.post(this.uri_org_invites_get, `orgId=${orgId}`)
     }
 
     //endregion

@@ -27,21 +27,12 @@ class Conversion {
 
     /**
      * 扩充organization的计算属性
+     * @param user {User}
      * @param organization {Organization}
-     * @deprecated
      */
-    extendOrganizationOfUserExtend(organization) {
-        organization.departments.forEach((department) => {
-            department.userExtends.forEach((user) => {
-                user.scope = 'department'
-                user.of = department
-            })
-        })
-
-        organization.userExtends.forEach((user) => {
-            user.scope = 'org'
-            user.of = organization
-        })
+    extendOrganizationOfUser(user, organization) {
+        organization.level = organization.users.find((u) => u.uid === user.uid)
+            .organizations[0].level
     }
 }
 

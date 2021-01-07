@@ -68,8 +68,27 @@
                     </div>
                 </div>
             </div>
-            <div class="col" style="background-color: bisque">
-
+            <div class="col flex-wrap card-margin container-fluid" >
+                <div class="card card-block">
+                    <div class="card-body">
+                        <div v-if="organization.level > 0">
+                            <div class="title font-weight-bold">申请列表</div>
+                            <div class="list-group">
+                                <div v-for="user in invites" class="user-select-none list-group-item">
+                                    <div class="col-8">
+                                        {{ user.name }}
+                                    </div>
+                                    <button class="col-2 btn btn-primary btn-block">
+                                        同意
+                                    </button>
+                                    <button class="col btn btn-danger btn-block">
+                                        拒绝
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </app-compact>
@@ -100,6 +119,10 @@
                 description: '某组织的描述',
                 departments: []
             },
+            /**
+             * @type Array<User>
+             */
+            invites: [],
             model: {
                 /**
                  * @type Array<EntryDepartment | EntryOrganization>
@@ -129,8 +152,12 @@
                     let resOrg = await net.orgGet(parseInt(organization_id))
                     if (common.resOk(resOrg)) {
                         app.organization = resOrg.data
-                        //conversion.extendOrganizationOfUserExtend(app.organization)
+                        conversion.extendOrganizationOfUser(app.state.user, app.organization)
                         app.model.headers = conversion.organizationToDepartmentHeader(app.organization)
+                    }
+                    let resInvites = await net.orgInvitesGet(parseInt(organization_id))
+                    if (common.resOk(resInvites)) {
+                        app.invites = resInvites.data
                     }
                 }
             }
