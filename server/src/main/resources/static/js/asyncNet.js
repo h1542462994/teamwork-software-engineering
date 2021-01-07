@@ -17,6 +17,7 @@ class AsyncNet {
     uri_user_state = "/api/user/state"
     uri_org_all = "/api/org/all"
     uri_org_get = "/api/org/get"
+    uri_org_grouped = "/api/org/grouped"
     uri_course_all = "/api/course/all"
     //endregion
     //region public domain
@@ -113,6 +114,14 @@ class AsyncNet {
      */
     async orgGet(id) {
         return this.post(this.uri_org_get, `id=${id}`)
+    }
+
+    /**
+     * 通过api/org/grouped 获取分组过的organization的信息
+     * @return {Promise<ResponseOrganizationGrouped>}
+     */
+    async orgGrouped() {
+        return this.post(this.uri_org_grouped)
     }
 
     //endregion

@@ -25,13 +25,33 @@
             </ul>
         </div>
         <section class="organizations">
-            <div v-for="organization in organizations" class="container-fluid organization">
-                <div class="project">
+            <div class="container-fluid organization">
+                <div class="title font-weight-bold">我加入的部门</div>
+                <div v-for="organization in organizationGrouped.ofIn" class="project">
                     <div class="row bg-canyon has-shadow">
                         <div class="col d-flex align-items-center justify-content-between">
                             <div class="organization-title d-flex align-items-center">
                                 <div class="text">
-                                    <h4><a :href="'/org/' + organization.id ">{{ organization.name }}</a></h4>
+                                    <h4><a :href="'/org/' + organization.id ">{{ organization.name }}(#{{ organization.id }})</a></h4>
+                                    <div>
+                                        <span class="badge badge-primary badge-rounded bg-primary badge-me">{{ organization.description }}</span>
+                                        <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.departments">{{ department.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid organization">
+                <div class="title font-weight-bold">其他部门</div>
+                <div v-for="organization in organizationGrouped.ofOthers" class="project">
+                    <div class="row bg-canyon has-shadow">
+                        <div class="col d-flex align-items-center justify-content-between">
+                            <div class="organization-title d-flex align-items-center">
+                                <div class="text">
+                                    <h4><a :href="'/org/' + organization.id ">{{ organization.name }}(#{{ organization.id }})</a></h4>
                                     <div>
                                         <span class="badge badge-primary badge-rounded bg-primary badge-me">{{ organization.description }}</span>
                                         <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.departments">{{ department.name }}</span>
@@ -62,10 +82,11 @@
             },
             state: common.defaultUserState(),
             /**
-             * @type Array<organization>
+             * @type OrganizationGrouped
              */
-            organizations : {
-
+            organizationGrouped: {
+                ofIn: [],
+                ofOthers: []
             }
         },
         methods: {
@@ -78,9 +99,9 @@
                 app.state = await net.userState()
                 // to add the initialization code
                 if (common.isLogin(app.state)) {
-                    let resOrgs = await net.orgAll();
-                    if (common.resOk(resOrgs)){
-                        app.organizations = resOrgs.data
+                    let resOrgGrouped = await net.orgGrouped()
+                    if (common.resOk(resOrgGrouped)) {
+                        app.organizationGrouped = resOrgGrouped.data
                     }
                 }
             }
