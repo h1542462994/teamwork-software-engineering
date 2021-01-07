@@ -11,4 +11,5 @@ export declare class User {
     departments: Array<Department>
 
     level: number
+    state: number
 }
