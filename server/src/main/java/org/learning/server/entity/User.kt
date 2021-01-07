@@ -49,7 +49,6 @@ class User : Serializable {
         }
     }
 
-    @Deprecated("")
     fun toBasePart(): UserBase {
         return UserBase().apply {
             uid = this@User.uid

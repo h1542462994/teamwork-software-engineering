@@ -20,7 +20,12 @@ class UserOrganizationInvitation {
     var inverse: Boolean = false
 
     /**
-     * 0为申请(Pending)状态，1为同意(Accept)状态，2为拒绝(Decline)，3为确认(Ensure)状态
+     * 0为申请(Pending)状态，1为同意(Accept)状态，2为拒绝(Decline)状态
      */
     var state: Int = 0
+    // calculate property
+    /**
+     * 这个申请是否处于活跃状态
+     */
+    val active get() = state == 0 || state == 1
 }

@@ -6,6 +6,9 @@ export declare class Organization {
     name: string
     description: string
 
+
+    state: number | null
+    owner: User | null
     level: number
     departments: Array<Department>
     users: Array<User>

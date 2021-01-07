@@ -2,6 +2,8 @@ package org.learning.server.controller.rest
 
 import org.learning.server.common.SessionHelper
 import org.learning.server.entity.Organization
+import org.learning.server.entity.base.OrganizationBase
+import org.learning.server.model.annotation.NoUsed
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
 import org.learning.server.model.complex.OrganizationGrouped
@@ -19,10 +21,14 @@ class OrgController {
     lateinit var orgService: IOrgService
 
     @PostMapping("/all")
+    @NoUsed
     fun all(): Response<Iterable<Organization>> {
         return Responses.ok(orgService.findAll())
     }
 
+    /**
+     * 获取一个org的详细信息，在/org/:{id}使用
+     */
     @PostMapping("/get")
     fun get(id: Int): Response<Organization?> {
         val optional = orgService.findById(id)
@@ -33,6 +39,9 @@ class OrgController {
         }
     }
 
+    /**
+     * 获取一个用户的org列表，在/org中使用
+     */
     @PostMapping("/grouped")
     fun grouped(request: HttpServletRequest): Response<OrganizationGrouped> {
         val user = SessionHelper.of(request).user()
@@ -41,5 +50,14 @@ class OrgController {
         } else {
             Responses.fail()
         }
+    }
+
+    /**
+     * 用户申请加入一个组织或者取消申请加入一个组织
+     */
+    @PostMapping("/user_invite")
+    fun userInviteOrganization(orgId: Int, request: HttpServletRequest): Response<OrganizationBase> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.userInviteOrganization(orgId, user)
     }
 }
