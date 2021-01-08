@@ -1,28 +1,178 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:include="~{header::includes (${org.getName()})}">
-    <title>Title</title>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/style.default.css">
+    <link rel="stylesheet" href="/css/custom.css">
+    <meta charset="UTF-8">
+    <title>#title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/asyncNet.js"></script>
+    <script src="/js/conversion.js"></script>
+    <script src="/js/component.js"></script>
 </head>
 <body>
-<nav th:replace="component::nav(2)"></nav>
-<div>
-    <div th:include="~{component::warningBox}"></div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="row">#</th>
-                <th scope="row">部门名称</th>
-                <th scope="row">部门描述</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="s:${org.departments}">
-                <th scope="row" th:text="${s.tag}"></th>
-                <td th:text="${s.name}"></td>
-                <td th:text="${s.description}"></td>
-            </tr>
-        </tbody>
-    </table>
+<div id="app">
+    <app-compact :c="c" :state="state">
+        <div class="breadcrumb-holder container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item active"><a href="/org">部门</a></li>
+                <li class="breadcrumb-item">{{ organization.name }}</li>
+            </ul>
+        </div>
+        <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <div class="row d-flex no-margin no-padding container-fluid" style="background-color: lightyellow;">
+            <div class="flex-wrap" style="background-color: antiquewhite">
+                <div class="card card-course card-block">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ organization.name }}</h5>
+                        <p class="card-text">{{ organization.description }}</p>
+                        <div class="list-group">
+                            <div v-for="entry, index in model.headers" href="#"
+                                 class="user-select-none list-group-item list-group-item-action"
+                                 :class="index === model.selectIndex ? 'active' : ''"
+                                 v-on:click="model.selectIndex = index">
+                                <p class="no-margin-bottom">{{ entry.value.name }}</p>
+                                <small>{{ entry.value.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-wrap" style="background-color: antiquewhite">
+                <div class="card card-course card-block">
+                    <div class="card-body">
+                        <div v-if="model.headers[model.selectIndex]" class="list-group">
+                            <div v-for="user in model.headers[model.selectIndex].value.users"
+                                 class="user-select-none list-group-item"
+                                 :class="user.uid === state.user.uid ? 'bg-blue': '' ">
+                                {{ user.name }}(#{{ user.uid }})
+                                <div>
+                                    <span class="badge badge-rounded bg-violet badge-me"
+                                          v-for="org in user.organizations"
+                                          v-if="org.id === organization.id && org.level > 0">
+                                        {{ org.level === 1 ? '管理员' : '主管理员' }}
+                                    </span>
+                                    <span class="badge badge-rounded bg-blue badge-me"
+                                          v-for="department in user.departments"
+                                          v-if="department.organization.id === organization.id">{{ department.name }}
+                                        <span v-if="department.level > 0">-{{ department.level === 1 ? '管理员' : '主管理员'
+                                            }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col flex-wrap card-margin container-fluid">
+                <div class="title font-weight-bold">申请列表</div>
+                <div v-if="organization.level > 0" v-for="user in invites" class="card card-block">
+                    <div class="card-body row d-flex">
+                        <div class="col">
+                            {{ user.name }}
+                        </div>
+                        <div v-if="user.state === 0" class="col-2">
+                            <button class="btn btn-primary btn-block">
+                                同意
+                            </button>
+                        </div>
+                        <div v-if="user.state === 0" class="col-2">
+                            <button class="btn btn-danger btn-block">
+                                拒绝
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app-compact>
 </div>
+
+<script>
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            c: {
+                // inject common object
+                common: common,
+                // inject net object
+                net: net,
+                // inject the conversion object
+                conversion: conversion,
+                title: '模板界面',
+                menu: common.menu_org
+            },
+            state: common.defaultUserState(),
+            /**
+             * @type Organization
+             */
+            organization: {
+                id: -1,
+                name: '某组织',
+                description: '某组织的描述',
+                departments: []
+            },
+            /**
+             * @type Array<User>
+             */
+            invites: [],
+            model: {
+                /**
+                 * @type Array<EntryDepartment | EntryOrganization>
+                 */
+                headers: [],
+                /**
+                 * @type number
+                 */
+                selectIndex: 0
+            }
+        },
+        methods: {
+            stateChanged(state) {
+                app.state = state
+            },
+            async init() {
+                document.title = app.c.title;
+                net.addWatcher(app.stateChanged)
+                app.state = await net.userState()
+                // to add the initialization code
+                if (common.isLogin(app.state)) {
+                    // 获取uri部件
+                    let uri_component = common.uri(window.location)
+                    console.log(uri_component)
+                    // 获取/org/:{id}
+                    let organization_id = uri_component.paths[2]
+                    let resOrg = await net.orgGet(parseInt(organization_id))
+                    if (common.resOk(resOrg)) {
+                        app.organization = resOrg.data
+                        conversion.extendOrganizationOfUser(app.state.user, app.organization)
+                        app.model.headers = conversion.organizationToDepartmentHeader(app.organization)
+                    }
+                    let resInvites = await net.orgInvitesGet(parseInt(organization_id))
+                    if (common.resOk(resInvites)) {
+                        app.invites = resInvites.data
+                    }
+                }
+            }
+        }
+    })
+
+    window.onload = () => {
+        app.init();
+    }
+</script>
+
 </body>
 </html>

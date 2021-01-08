@@ -3,6 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/style.default.css">
+    <link rel="stylesheet" href="/css/custom.css">
     <meta charset="UTF-8">
     <title>#title</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -15,8 +17,22 @@
 </head>
 <body>
 <div id="app">
-    <app-compact :c="c">
+    <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <section class="section-course d-flex flex-wrap justify-content-start">
+            <div class="card card-course" style="max-width: 18rem; " v-for="course in courses">
+                <a href="/course/6">
+                    <img src="/img/mockup5.jpg" class="card-img-top card-img" alt="img">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.name }}</h5>
+                    <p class="card-text"><small>{{ course.info }}</small></p>
+                    <div>
+                        <span class="badge badge-rounded bg-blue badge-me" v-for="tag in course.courseTags">{{ tag.name }}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </app-compact>
 </div>
@@ -34,17 +50,30 @@
                 title: '企业在线学习平台',
                 menu: common.menu_index
             },
-            state: common.defaultUserState()
+            state: common.defaultUserState(),
+            /**
+             * @type Array<course>
+             */
+            courses: []
         },
         methods: {
             stateChanged(state) {
                 this.state = state
             },
             async init() {
-                document.title = app.c.title;
+                document.title = app.c.title
                 net.addWatcher(app.stateChanged)
                 app.state = await net.userState()
                 // to add the initialization code
+                if (common.isLogin(app.state)) {
+                    let resCourses = await net.courseAll()
+                    if (common.resOk(resCourses)) {
+                        app.courses = resCourses.data
+                        console.log(app.courses)
+                    }
+                }
+
+
             }
         }
     })

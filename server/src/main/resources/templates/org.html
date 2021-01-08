@@ -3,6 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/style.default.css">
+    <link rel="stylesheet" href="/css/custom.css">
     <meta charset="UTF-8">
     <title>#title</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -15,8 +17,59 @@
 </head>
 <body>
 <div id="app">
-    <app-compact :c="c">
+    <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <div class="breadcrumb-holder container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item active">组织</li>
+            </ul>
+        </div>
+        <section class="organizations">
+            <div class="container-fluid organization">
+                <div class="title font-weight-bold">我加入的部门</div>
+                <div v-for="organization in organizationGrouped.ofIn" class="project">
+                    <div class="row bg-canyon has-shadow">
+                        <div class="col d-flex align-items-center justify-content-between">
+                            <div class="organization-title d-flex align-items-center">
+                                <div class="text">
+                                    <h4><a :href="'/org/' + organization.id ">{{ organization.name }}(#{{ organization.id }})</a></h4>
+                                    <div>
+                                        <span class="badge badge-primary badge-rounded bg-primary badge-me">描述:{{ organization.description }}</span>
+                                        <span v-if="organization.owner" class="badge badge-rounded bg-orange badge-me">主管理员:{{ organization.owner.name }}</span>
+                                        <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.departments">{{ department.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid organization">
+                <div class="title font-weight-bold">其他部门</div>
+                <div v-for="organization in organizationGrouped.ofOthers" class="project">
+                    <div class="row bg-canyon has-shadow">
+                        <div class="col-10 d-flex align-items-center justify-content-between">
+                            <div class="organization-title d-flex align-items-center">
+                                <div class="text">
+                                    <h4><a :href="'/org/' + organization.id ">{{ organization.name }}(#{{ organization.id }})</a></h4>
+                                    <div>
+                                        <span class="badge badge-primary badge-rounded bg-primary badge-me">描述:{{ organization.description }}</span>
+                                        <span v-if="organization.owner" class="badge badge-rounded bg-orange badge-me">主管理员:{{ organization.owner.name }}</span>
+                                        <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.departments">{{ department.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2 align-self-center">
+                            <button v-if="organization.state === 0" class="btn btn-outline-primary btn-block" :disabled="model.inviting" v-on:click="userInvite(organization)">取消申请</button>
+                            <button v-else class="btn btn-primary btn-block" :disabled="model.inviting" v-on:click="userInvite(organization)">申请</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </app-compact>
 </div>
 
@@ -30,10 +83,20 @@
                 common: common,
                 // inject net object
                 net: net,
-                title: '企业在线学习平台',
-                menu: common.menu_index
+                title: '企业在线学习平台 - 组织',
+                menu: common.menu_org
             },
-            state: common.defaultUserState()
+            state: common.defaultUserState(),
+            model: {
+                inviting: false
+            },
+            /**
+             * @type OrganizationGrouped
+             */
+            organizationGrouped: {
+                ofIn: [],
+                ofOthers: []
+            }
         },
         methods: {
             stateChanged(state) {
@@ -44,6 +107,25 @@
                 net.addWatcher(app.stateChanged)
                 app.state = await net.userState()
                 // to add the initialization code
+                if (common.isLogin(app.state)) {
+                    let resOrgGrouped = await net.orgGrouped()
+                    if (common.resOk(resOrgGrouped)) {
+                        app.organizationGrouped = resOrgGrouped.data
+                    }
+                }
+            },
+            /**
+             *
+             * @param organization {Organization}
+             * @return {Promise<void>}
+             */
+            async userInvite(organization) {
+                app.model.inviting = true
+                let resUserInvite = await net.orgUserInvite(organization.id)
+                if (common.resOk(resUserInvite)) {
+                    organization.state = resUserInvite.data.state
+                }
+                app.model.inviting = false
             }
         }
     })

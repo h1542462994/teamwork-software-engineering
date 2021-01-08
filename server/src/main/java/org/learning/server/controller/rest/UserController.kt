@@ -2,6 +2,8 @@ package org.learning.server.controller.rest
 
 import org.learning.server.entity.User
 import org.learning.server.form.UserLoginForm
+import org.learning.server.form.UserRegisterForm
+import org.learning.server.model.annotation.NoLogin
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.ResponseTokens
 import org.learning.server.model.common.Responses
@@ -24,6 +26,7 @@ class UserController {
      * 用户登录
      */
     @PostMapping("/login")
+    @NoLogin
     fun login(@Valid userLoginForm: UserLoginForm, request: HttpServletRequest): Response<User> {
         val response = userService.login(userLoginForm)
         if (response.code == ResponseTokens.ok.code){
@@ -50,16 +53,18 @@ class UserController {
      * 登出
      */
     @PostMapping("/logout")
-    fun logout() : Response<Any> {
-        TODO("等待实现")
+    fun logout(request: HttpServletRequest) : Response<Any> {
+        request.session.removeAttribute(user);
+        return Responses.ok();
     }
 
     /**
      * 注册用户
      */
     @PostMapping("/register")
-    fun register(): Response<Any> {
-        TODO("等待实现")
+    @NoLogin
+    fun register(@Valid userRegisterForm: UserRegisterForm): Response<User> {
+        return userService.register(userRegisterForm);
     }
 
 }
