@@ -1,5 +1,6 @@
 package org.learning.server.model;
 
+@Deprecated
 public abstract class Group {
     private Integer id;
     private Integer tag;

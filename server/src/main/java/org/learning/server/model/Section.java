@@ -3,6 +3,7 @@ package org.learning.server.model;
 import java.util.LinkedList;
 import java.util.List;
 
+@Deprecated
 public class Section {
     private Integer id;
     private String name;

@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
+@Deprecated
 public class Course {
     private Integer id;
     private String name;
