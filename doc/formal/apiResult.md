@@ -25,6 +25,68 @@ uid=test&password=123456
 }
 ```
 
+### register（注册）
+
+```
+/api/user/register
+
+uid=cht&name=陈昊天&age=20&password=123456&rePassword=123456&sex=false&email=t1542462994@outlook.com
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": {
+    "uid": "cht",
+    "name": "陈昊天",
+    "age": 20,
+    "sex": false,
+    "email": "t1542462994@outlook.com"
+  }
+}
+```
+
+```json
+{
+  "code": 403,
+  "summary": "failed",
+  "message": "该用户已经注册",
+  "data": null
+}
+```
+
+### state
+
+```
+/api/user/state
+```
+
+```json
+{
+  "code": 401,
+  "summary": "noLogin",
+  "message": "未登录无法访问该资源",
+  "data": "当前未登录"
+}
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": {
+    "uid": "test",
+    "name": "测试人员",
+    "age": 18,
+    "sex": false,
+    "email": "test@outlook.com"
+  }
+}
+```
+
 ## OrgController
 
 ### create

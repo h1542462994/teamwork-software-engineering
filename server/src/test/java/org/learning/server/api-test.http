@@ -24,6 +24,23 @@ Content-Type: application/x-www-form-urlencoded
 
 uid=test&password=123456
 
+### user.register test
+
+POST http://{{host}}/api/user/register
+Content-Type: application/x-www-form-urlencoded
+
+uid=cht&name=陈昊天&age=20&password=123456&rePassword=123456&sex=false&email=t1542462994@outlook.com
+
+### user.state test
+
+POST http://{{host}}/api/user/state
+Content-Type: application/x-www-form-urlencoded
+
+### user.logout test
+
+POST http://{{host}}/api/user/logout
+Content-Type: application/x-www-form-urlencoded
+
 ### org.create test
 
 POST http://{{host}}/api/org/create
