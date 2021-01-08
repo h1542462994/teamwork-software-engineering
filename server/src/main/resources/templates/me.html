@@ -8,18 +8,38 @@
     <meta charset="UTF-8">
     <title>#title</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
     <script src="/js/bootstrap.js"></script>
     <script src="/js/common.js"></script>
     <script src="/js/asyncNet.js"></script>
     <script src="/js/component.js"></script>
 </head>
 <body>
-<div id="app">
+
+
+<div id="app" class="align-content-center">
     <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <h1 class="text-center">用户界面</h1>
+        <div class="form align-self-center col-6">
+            <div class="form-group form-inline">
+                <div v-if="state.user">
+                    <label>用户名:{{ state.user.name }}</label>
+                    <label>用户ID:{{ state.user.uid }}</label>
+                    <label>年龄:{{ state.user.age }}</label>
+                    <label v-if="state.user.sex === false">性别 :男</label>
+                        <label v-else>性别 :女</label>
+                    <label>电子邮箱:{{ state.user.email }}</label>
+                </div>
+            </div>
+        </div>
     </app-compact>
+
 </div>
 
 <script>
@@ -46,6 +66,7 @@
                 net.addWatcher(app.stateChanged)
                 app.state = await net.userState()
                 // to add the initialization code
+                net.loaded()
             }
         }
     })
