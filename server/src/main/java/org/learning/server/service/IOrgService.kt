@@ -14,15 +14,24 @@ import java.util.*
 interface IOrgService {
     @Deprecated("")
     fun findAll(): Iterable<Organization>
+
     @Deprecated("")
     fun findById(id: Int): Optional<Organization>
+
     @Deprecated("")
     fun grouped(user: User): OrganizationGrouped
+
     @Deprecated("")
     fun userInviteOrganization(orgId: Int, user: User): Response<OrganizationBase>
+
     @Deprecated("")
     fun getInvitesById(orgId: Int): List<UserBase>
-    fun createOrganization(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode>
-    fun createDepartmentNode(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode>
+
     fun all(): List<OrgSummary>
+
+    fun guardMainAdmin(orgNode: OrgNode, user: User)
+
+    fun create(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode>
+
+    fun delete(orgId: Int, user: User): Response<Any>
 }

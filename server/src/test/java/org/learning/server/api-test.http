@@ -59,3 +59,22 @@ name=软件工程01&description=软件工程的班级&parentId=1
 
 POST http://{{host}}/api/org/all
 Content-Type: application/x-www-form-urlencoded
+
+### message.post test
+
+POST http://{{host}}/api/message/post
+Content-Type: application/x-www-form-urlencoded
+
+type=ORGANIZATION&message=这是一则测试的消息&url=/org/1
+
+### message.get test
+
+POST http://{{host}}/api/message/get
+Content-Type: application/x-www-form-urlencoded
+
+### message.read test
+
+POST http://{{host}}/api/message/read
+Content-Type: application/x-www-form-urlencoded
+
+messageId=4

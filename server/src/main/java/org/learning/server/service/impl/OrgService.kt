@@ -21,6 +21,7 @@ import java.util.*
 
 @Service
 class OrgService : IOrgService {
+    //region inject components
     @Autowired
     lateinit var organizationRepository: OrganizationRepository
     @Autowired
@@ -29,40 +30,7 @@ class OrgService : IOrgService {
     lateinit var orgNodeRepository: OrgNodeRepository
     @Autowired
     lateinit var userOrgNodeRepository: UserOrgNodeRepository
-
-    /**
-     * 根据一个节点查找其组织结构的根节点
-     */
-    private fun getOrganizationOfNode(orgNode: OrgNode): OrgNode {
-        var current = orgNode
-        while (current.parentId != null) {
-            current = orgNodeRepository.findById(current.parentId!!).get()
-        }
-
-        return current
-    }
-
-    /**
-     * 查找组织（根节点）对应的概览数据
-     * 包括组织的基础数据，一级部门的基础数据，组织主管理员。
-     */
-    private fun getOrganizationBase(orgNode: OrgNode): OrgSummary {
-        if (orgNode.parentId != null) {
-            throw IllegalArgumentException("orgNode必须是根节点");
-        }
-        return orgNode.toOrgSummaryPart().apply {
-            owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
-            children = orgNodeRepository.findAllByParentId(orgNode.id).map { it.toOrgNodeSummaryPart() }
-        }
-    }
-
-    private fun guardMainAdmin(orgNode: OrgNode, user: User) {
-        // 向上查找组织节点
-        val org = this.getOrganizationBase(this.getOrganizationOfNode(orgNode))
-        if (org.owner.uid != user.uid) {
-            throw NoAllowedException("你不是组织主管理员，无法进行此操作")
-        }
-    }
+    //endregion
 
     override fun findAll(): Iterable<Organization> {
         return organizationRepository.findAll()
@@ -89,7 +57,7 @@ class OrgService : IOrgService {
         val org = organization.get().toStructInfo(user)
         if (org.state == null) {
             // 如果没有对应的申请则添加申请
-                // TODO 修改
+            // TODO 修改
 //            organization.get().userOrganizationInvitations.add(
 //                UserOrganizationInvitation().apply {
 //                    this.user = user
@@ -134,10 +102,99 @@ class OrgService : IOrgService {
         return userOrganizationInvitationRepository.findAllByOrganizationAndInverse(organization, true).map { it.toUserBase() }.distinct()
     }
 
+    //region tool functions
+
+    /**
+     * 检测用户是否能够是该节点所在组织的主管理员，如果不是则抛出异常
+     * @throws NoAllowedException 没有通过验证
+     */
+    override fun guardMainAdmin(orgNode: OrgNode, user: User) {
+        // 向上查找组织节点
+        val org = this.getOrganizationBase(this.getOrganizationOfNode(orgNode))
+        if (org.owner.uid != user.uid) {
+            throw NoAllowedException("你不是组织主管理员，无法进行此操作")
+        }
+    }
+
+    /**
+     * 根据一个节点查找其组织结构的根节点
+     */
+    private fun getOrganizationOfNode(orgNode: OrgNode): OrgNode {
+        var current = orgNode
+        while (current.parentId != null) {
+            current = orgNodeRepository.findById(current.parentId!!).get()
+        }
+
+        return current
+    }
+
+    /**
+     * 查找组织（根节点）对应的概览数据
+     * 包括组织的基础数据，一级部门的基础数据，组织主管理员。
+     */
+    private fun getOrganizationBase(orgNode: OrgNode): OrgSummary {
+        if (orgNode.parentId != null) {
+            throw IllegalArgumentException("orgNode必须是根节点");
+        }
+        return orgNode.toOrgSummaryPart().apply {
+            owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
+            children = orgNodeRepository.findAllByParentId(orgNode.id).map { it.toOrgNodeSummaryPart() }
+        }
+    }
+
+    /**
+     * 获取此节点以及其所有子孙节点
+     * @return 所有节点的平铺结果
+     */
+    private fun getFlatOrgNodesOfOrgNode(orgNode: OrgNode): List<OrgNode> {
+        val orgNodeList = LinkedList<OrgNode>()
+        val orgNodeResultList = LinkedList<OrgNode>()
+        orgNodeList.add(orgNode)
+        orgNodeResultList.add(orgNode)
+        while (orgNodeList.isNotEmpty()) {
+            val current = orgNodeList.first
+            orgNodeList.remove(current)
+            // 查找所有直接子节点
+            val children = orgNodeRepository.findAllByParentId(current.id)
+            orgNodeList.addAll(children)
+            orgNodeResultList.addAll(children)
+        }
+        return orgNodeResultList
+    }
+
+    /**
+     * 获取此节点以及所有子节点开设的课程，依赖于[getFlatOrgNodesOfOrgNode]
+     */
+    private fun getFlatCourseOpenOfOrgNode(orgNode: OrgNode): List<CourseOpen> {
+        TODO("Not yet implemented")
+    }
+    //endregion
+
+    //region services
+    /**
+     * 创建所有组织的概览信息
+     */
+    override fun all(): List<OrgSummary> {
+        return orgNodeRepository.findAllByParentId(null).map { this.getOrganizationBase(it) }
+    }
+
+    /**
+     * 创建节点，具体由[createOrganization]和[createDepartmentNode]节点实现
+     */
+    override fun create(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode> {
+        return if (orgNodeForm.parentId == null) {
+            // 如果没有指定父节点则视为创建组织
+            this.createOrganization(orgNodeForm, user)
+        } else {
+            // 如果指定了父节点则视为创建部门节点
+            this.createDepartmentNode(orgNodeForm, user)
+        }
+    }
+
     /**
      * 创建组织节点
      */
-    override fun createOrganization(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode> {
+    private fun createOrganization(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode> {
         var orgNode: OrgNode = orgNodeForm.toOrgNode()
         orgNode = orgNodeRepository.save(orgNode)
         /**
@@ -155,7 +212,7 @@ class OrgService : IOrgService {
     /**
      * 创建部门节点
      */
-    override fun createDepartmentNode(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode> {
+    private fun createDepartmentNode(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode> {
         val orgOptional = orgNodeRepository.findById(orgNodeForm.parentId!!)
         if (orgOptional.isEmpty) {
             return Responses.fail("不存在id为${orgNodeForm.parentId}的节点")
@@ -171,9 +228,27 @@ class OrgService : IOrgService {
     }
 
     /**
-     * 创建所有组织的概览信息
+     * 删除一个节点，具体由[deleteOrganization]和[deleteDepartmentNode]来实现
      */
-    override fun all(): List<OrgSummary> {
-        return orgNodeRepository.findAllByParentId(null).map { this.getOrganizationBase(it) }
+    override fun delete(orgId: Int, user: User): Response<Any> {
+        val orgOptional = orgNodeRepository.findById(orgId)
+        if (orgOptional.isEmpty) {
+            return Responses.fail("不存在id为${orgId}的节点")
+        }
+        val orgNode = orgOptional.get()
+        return if (orgNode.parentId == null) {
+            deleteOrganization(orgNode, user);
+        } else {
+            deleteDepartmentNode(orgNode, user);
+        }
     }
+
+    private fun deleteOrganization(orgNode: OrgNode, user: User): Response<Any> {
+        TODO("Not yet implemented")
+    }
+
+    private fun deleteDepartmentNode(orgNode: OrgNode, user: User): Response<Any> {
+        TODO("Not yet implemented")
+    }
+    //endregion
 }

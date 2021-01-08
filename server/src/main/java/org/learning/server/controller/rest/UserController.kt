@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
+/**
+ * 与用户有关的控制器
+ */
 @RestController
 @RequestMapping("/api/user")
 class UserController {

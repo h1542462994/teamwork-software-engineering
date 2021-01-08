@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
+/**
+ * 与组织有关的控制器
+ */
 @RestController
 @RequestMapping("/api/org")
 class OrgController {
@@ -87,13 +90,16 @@ class OrgController {
     @PostMapping("/create")
     fun create(@Valid orgNodeForm: OrgNodeForm, request: HttpServletRequest): Response<OrgNode> {
         val user = SessionHelper.of(request).user()!!
-        return if (orgNodeForm.parentId == null) {
-            // 如果没有指定父节点则视为创建组织
-            orgService.createOrganization(orgNodeForm, user)
-        } else {
-            // 如果指定了父节点则视为创建部门节点
-            orgService.createDepartmentNode(orgNodeForm, user)
-        }
+        return orgService.create(orgNodeForm, user)
+    }
+
+    /**
+     * 删除一个架构节点
+     */
+    @PostMapping("/delete")
+    fun delete(orgId: Int, request: HttpServletRequest): Response<Any> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.delete(orgId, user)
     }
 
     /**
@@ -103,5 +109,6 @@ class OrgController {
     fun all(): Response<List<OrgSummary>> {
         return Responses.ok(orgService.all())
     }
+
 
 }

@@ -216,3 +216,99 @@ name=软件工程01&description=软件工程的班级&parentId=1
   ]
 }
 ```
+
+## MessageController
+
+### post
+
+```
+/api/message/post
+
+type=ORGANIZATION&message=这是一则测试的消息&url=/org/1
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": {
+    "id": 8,
+    "type": "ORGANIZATION",
+    "message": "这是一则测试的消息",
+    "url": "/org/1",
+    "createTime": "2021-01-08 23:05:36.69",
+    "read": false
+  }
+}
+```
+
+### get
+
+```
+/api/message/get?[timeStamp=?]
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 1,
+      "type": "ORGANIZATION",
+      "message": "这是一则测试的消息",
+      "url": "/org/1",
+      "createTime": "2021-01-08 14:50:48.640",
+      "read": false
+    },
+    {
+      "id": 2,
+      "type": "ORGANIZATION",
+      "message": "这是一则测试的消息",
+      "url": "/org/1",
+      "createTime": "2021-01-08 14:53:53.286",
+      "read": false
+    },
+    {
+      "id": 3,
+      "type": "ORGANIZATION",
+      "message": "这是一则测试的消息",
+      "url": "/org/1",
+      "createTime": "2021-01-08 14:54:59.736",
+      "read": false
+    },
+    {
+      "id": 4,
+      "type": "ORGANIZATION",
+      "message": "这是一则测试的消息",
+      "url": "/org/1",
+      "createTime": "2021-01-08 15:00:28.528",
+      "read": false
+    }
+  ]
+}
+```
+
+### read
+
+```
+/api/message/read?messageId=4
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": {
+    "id": 4,
+    "type": "ORGANIZATION",
+    "message": "这是一则测试的消息",
+    "url": "/org/1",
+    "createTime": "2021-01-08 15:00:28.528",
+    "read": true
+  }
+}
+```
