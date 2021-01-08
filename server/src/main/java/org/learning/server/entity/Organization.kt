@@ -10,6 +10,7 @@ import javax.persistence.*
  * 表示一个组织，一个组织下有若干的部门。
  */
 @Entity
+@Deprecated("")
 class Organization:  Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

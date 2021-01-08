@@ -10,6 +10,7 @@ import javax.persistence.*
  * 表示用户和部门之间的关系
  */
 @Entity
+@Deprecated("")
 class UserDepartment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

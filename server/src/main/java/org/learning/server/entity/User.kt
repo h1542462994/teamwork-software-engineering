@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.learning.server.entity.base.UserBase
 import java.io.Serializable
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 /**
  * a data of user
@@ -21,6 +19,11 @@ class User : Serializable {
     var age: Int = 1
     var sex: Boolean = false
     var email: String = ""
+
+    @ManyToMany
+    var starCourses: List<Course> = LinkedList()
+    @ManyToMany
+    var favoriteTags: List<CourseTag> = LinkedList()
 
     @OneToMany(targetEntity = UserDepartment::class, mappedBy = "user")
     @JsonIgnore

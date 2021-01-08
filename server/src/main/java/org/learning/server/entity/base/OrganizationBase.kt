@@ -4,6 +4,7 @@ import org.learning.server.entity.User
 import org.learning.server.model.Department
 import java.util.*
 
+@Deprecated("")
 class OrganizationBase {
     var id: Int = -1
     var name: String = ""

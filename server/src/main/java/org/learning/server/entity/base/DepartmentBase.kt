@@ -4,6 +4,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 
+@Deprecated("")
 class DepartmentBase {
     var id: Int = -1
     var name: String = ""

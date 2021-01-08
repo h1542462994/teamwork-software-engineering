@@ -5,6 +5,7 @@ import org.learning.server.entity.base.UserExtendInfo
 import javax.persistence.*
 
 @Entity
+@Deprecated("")
 class UserOrganization {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

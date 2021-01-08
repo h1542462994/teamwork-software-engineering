@@ -7,6 +7,7 @@ import javax.persistence.*
  * 表示User和Organization的邀请情况
  */
 @Entity
+@Deprecated("")
 class UserOrganizationInvitation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
