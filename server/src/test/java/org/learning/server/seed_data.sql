@@ -86,4 +86,5 @@ insert into user_organization values (1, 2, 1, 'test');
 insert into user_organization values (2, 2, 2, 'test1');
 insert into user_organization values (3, 1, 1, 'test2');
 
-insert into user_department values (1, 2, 1, 'test2')
+insert into user_department values (1, 2, 1, 'test2');
+
