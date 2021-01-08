@@ -2,6 +2,7 @@ package org.learning.server.controller.rest
 
 import org.learning.server.entity.User
 import org.learning.server.form.UserLoginForm
+import org.learning.server.form.UserRegisterForm
 import org.learning.server.model.annotation.NoLogin
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.ResponseTokens
@@ -52,8 +53,9 @@ class UserController {
      * 登出
      */
     @PostMapping("/logout")
-    fun logout() : Response<Any> {
-        TODO("等待实现")
+    fun logout(request: HttpServletRequest) : Response<Any> {
+        request.session.removeAttribute(user);
+        return Responses.ok();
     }
 
     /**
@@ -61,8 +63,8 @@ class UserController {
      */
     @PostMapping("/register")
     @NoLogin
-    fun register(): Response<Any> {
-        TODO("等待实现")
+    fun register(@Valid userRegisterForm: UserRegisterForm): Response<User> {
+        return userService.register(userRegisterForm);
     }
 
 }

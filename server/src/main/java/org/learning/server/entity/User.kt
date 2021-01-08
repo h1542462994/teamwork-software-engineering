@@ -21,8 +21,10 @@ class User : Serializable {
     var email: String = ""
 
     @ManyToMany
+    @JsonIgnore
     var starCourses: List<Course> = LinkedList()
     @ManyToMany
+    @JsonIgnore
     var favoriteTags: List<CourseTag> = LinkedList()
 
     @OneToMany(targetEntity = UserDepartment::class, mappedBy = "user")

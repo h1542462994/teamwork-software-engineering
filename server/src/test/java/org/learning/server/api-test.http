@@ -1,4 +1,7 @@
 
+
+###
+
 ###
 POST http://{{host}}/api/course/all
 Content-Type: application/x-www-form-urlencoded
@@ -14,4 +17,28 @@ Content-Type: application/x-www-form-urlencoded
 POST http://{{host}}/api/org/grouped
 Content-Type: application/x-www-form-urlencoded
 
-###
+### user.login test
+
+POST http://{{host}}/api/user/login
+Content-Type: application/x-www-form-urlencoded
+
+uid=test&password=123456
+
+### org.create test
+
+POST http://{{host}}/api/org/create
+Content-Type: application/x-www-form-urlencoded
+
+name=计算机学院&description=计算机学院的组织&public=false
+
+### org.create test2
+
+POST http://{{host}}/api/org/create
+Content-Type: application/x-www-form-urlencoded
+
+name=软件工程01&description=软件工程的班级&parentId=1
+
+### org.all test
+
+POST http://{{host}}/api/org/all
+Content-Type: application/x-www-form-urlencoded

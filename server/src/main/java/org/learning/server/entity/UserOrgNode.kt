@@ -9,7 +9,7 @@ import javax.persistence.*
 class UserOrgNode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int = -1
+    var id: Int? = null
     @ManyToOne
     var user: User = User()
     @ManyToOne

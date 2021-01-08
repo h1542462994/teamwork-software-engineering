@@ -1,14 +1,17 @@
 package org.learning.server.service.impl
 
-import org.learning.server.entity.Organization
-import org.learning.server.entity.User
-import org.learning.server.entity.UserOrganizationInvitation
+import org.learning.server.entity.*
 import org.learning.server.entity.base.OrganizationBase
 import org.learning.server.entity.base.UserBase
+import org.learning.server.entity.enums.Level
+import org.learning.server.form.OrgNodeForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
+import org.learning.server.model.complex.OrgSummary
 import org.learning.server.model.complex.OrganizationGrouped
+import org.learning.server.repository.OrgNodeRepository
 import org.learning.server.repository.OrganizationRepository
+import org.learning.server.repository.UserOrgNodeRepository
 import org.learning.server.repository.UserOrganizationInvitationRepository
 import org.learning.server.service.IOrgService
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +24,36 @@ class OrgService : IOrgService {
     lateinit var organizationRepository: OrganizationRepository
     @Autowired
     lateinit var userOrganizationInvitationRepository: UserOrganizationInvitationRepository
+    @Autowired
+    lateinit var orgNodeRepository: OrgNodeRepository
+    @Autowired
+    lateinit var userOrgNodeRepository: UserOrgNodeRepository
+
+    /**
+     * 根据一个节点查找其组织结构的根节点
+     */
+    private fun getOrganizationOfNode(orgNode: OrgNode): OrgNode {
+        var current = orgNode
+        while (current.parentId != null) {
+            current = orgNodeRepository.findById(current.parentId!!).get()
+        }
+
+        return current
+    }
+
+    /**
+     * 查找组织（根节点）对应的概览数据
+     * 包括组织的基础数据，一级部门的基础数据，组织主管理员。
+     */
+    private fun getOrganizationBase(orgNode: OrgNode): OrgSummary {
+        if (orgNode.parentId != null) {
+            throw IllegalArgumentException("orgNode必须是根节点");
+        }
+        return orgNode.toOrgSummaryPart().apply {
+            owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
+            children = orgNodeRepository.findAllByParentId(orgNode.id).map { it.toOrgNodeSummaryPart() }
+        }
+    }
 
     override fun findAll(): Iterable<Organization> {
         return organizationRepository.findAll()
@@ -90,5 +123,51 @@ class OrgService : IOrgService {
     override fun getInvitesById(orgId: Int): List<UserBase> {
         val organization = organizationRepository.findById(orgId).get()
         return userOrganizationInvitationRepository.findAllByOrganizationAndInverse(organization, true).map { it.toUserBase() }.distinct()
+    }
+
+    /**
+     * 创建组织节点
+     */
+    override fun createOrganization(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode> {
+        var orgNode: OrgNode = orgNodeForm.toOrgNode()
+        orgNode = orgNodeRepository.save(orgNode)
+        /**
+         * 分配主管理员
+         */
+        val userOrgNode = UserOrgNode().apply {
+            this.orgNode = orgNode
+            this.user = user
+            this.level = Level.MAINADMIN
+        }
+        userOrgNodeRepository.save(userOrgNode)
+        return Responses.ok(orgNode)
+    }
+
+    /**
+     * 创建部门节点
+     */
+    override fun createDepartmentNode(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode> {
+        val orgOptional = orgNodeRepository.findById(orgNodeForm.parentId!!)
+        if (orgOptional.isEmpty) {
+            return Responses.fail("不存在id为${orgNodeForm.parentId}的节点")
+        }
+
+        // 向上查找组织节点
+        val org = this.getOrganizationBase(this.getOrganizationOfNode(orgOptional.get()))
+        if (org.owner.uid != user.uid) {
+            return Responses.fail("你没有权限进行该操作")
+        }
+
+        // 保存该节点
+        var orgNode = orgNodeForm.toOrgNode()
+        orgNode = orgNodeRepository.save(orgNode)
+        return Responses.ok(orgNode)
+    }
+
+    /**
+     * 创建所有组织的概览信息
+     */
+    override fun all(): List<OrgSummary> {
+        return orgNodeRepository.findAllByParentId(null).map { this.getOrganizationBase(it) }
     }
 }
