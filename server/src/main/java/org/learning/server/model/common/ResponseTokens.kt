@@ -6,6 +6,7 @@ object ResponseTokens {
     val failed = ResponseToken(403, "failed", "failed")
 
     object User {
-        val noLogin = ResponseToken(401, "noLogin", "未登录无法访问该资源")
+        val noLogin = ResponseToken(1, "noLogin", "未登录无法访问该资源")
+        var forbidden = ResponseToken(401, "forbidden", "没有足够的权限")
     }
 }

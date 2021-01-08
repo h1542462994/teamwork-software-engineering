@@ -1,6 +1,7 @@
 package org.learning.server.advice;
 
 import org.learning.server.entity.User;
+import org.learning.server.exception.NoAllowedException;
 import org.learning.server.form.UserLoginForm;
 import org.learning.server.model.ActionResult;
 import org.learning.server.model.common.ResponseToken;
@@ -29,6 +30,17 @@ public class GlobalExceptionHandler {
             return Responses.withToken(ResponseTokens.User.INSTANCE.getNoLogin(), e.getMessage());
         } else {
             return new ModelAndView("/login");
+        }
+    }
+
+    @ExceptionHandler(NoAllowedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    Object loginExceptionHandler(HttpServletRequest request, NoAllowedException e){
+        if (request.getRequestURI().startsWith("/api")) {
+            return Responses.withToken(ResponseTokens.User.INSTANCE.getForbidden(), e.getMessage());
+        } else {
+            return new ModelAndView("/");
         }
     }
 }

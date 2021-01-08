@@ -4,6 +4,7 @@ import org.learning.server.entity.*
 import org.learning.server.entity.base.OrganizationBase
 import org.learning.server.entity.base.UserBase
 import org.learning.server.entity.enums.Level
+import org.learning.server.exception.NoAllowedException
 import org.learning.server.form.OrgNodeForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
@@ -52,6 +53,14 @@ class OrgService : IOrgService {
         return orgNode.toOrgSummaryPart().apply {
             owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
             children = orgNodeRepository.findAllByParentId(orgNode.id).map { it.toOrgNodeSummaryPart() }
+        }
+    }
+
+    private fun guardMainAdmin(orgNode: OrgNode, user: User) {
+        // 向上查找组织节点
+        val org = this.getOrganizationBase(this.getOrganizationOfNode(orgNode))
+        if (org.owner.uid != user.uid) {
+            throw NoAllowedException("你不是组织主管理员，无法进行此操作")
         }
     }
 
@@ -152,11 +161,8 @@ class OrgService : IOrgService {
             return Responses.fail("不存在id为${orgNodeForm.parentId}的节点")
         }
 
-        // 向上查找组织节点
-        val org = this.getOrganizationBase(this.getOrganizationOfNode(orgOptional.get()))
-        if (org.owner.uid != user.uid) {
-            return Responses.fail("你没有权限进行该操作")
-        }
+        // 进行主管理员的权限验证。
+        this.guardMainAdmin(orgOptional.get(), user);
 
         // 保存该节点
         var orgNode = orgNodeForm.toOrgNode()
