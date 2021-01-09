@@ -1,5 +1,6 @@
 package org.learning.server.model;
 
+@Deprecated
 public class Media {
     private Integer id;
     private String mediaType;

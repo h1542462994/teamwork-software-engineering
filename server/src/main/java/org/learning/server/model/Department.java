@@ -1,5 +1,6 @@
 package org.learning.server.model;
 
+@Deprecated
 public class Department extends Group {
     public Department() {
 

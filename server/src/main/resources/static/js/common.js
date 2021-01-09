@@ -31,7 +31,7 @@ class Common {
     /**
      * 解析uri
      * @param {Location} location
-     * @return uri_component
+     * @return UriComponent
      */
     uri(location){
         let paths = location.pathname.split('/')

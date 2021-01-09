@@ -24,23 +24,22 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ActionResult<User> register(UserRegisterForm user) {
-        ActionResult<User> actionResult = new ActionResult<>();
+    public Response<User> register(UserRegisterForm user) {
 
         if (!user.getPassword().equals(user.getRePassword())) {
-            return actionResult.error("确认密码与密码不相等");
+            return Responses.fail("密码与确认密码不相等");
         }
 
         User formUser = user.toUser();
         // get the user in db
         Optional<User> dbUser = userRepository.findByUid(user.getUid());
         if (dbUser.isPresent()) {
-            return actionResult.error("该用户已经注册");
+            return Responses.fail("该用户已经注册");
         }
 
         userRepository.save(formUser);
 
-        return actionResult.value(formUser).success();
+        return Responses.ok(formUser);
     }
 
     @Override

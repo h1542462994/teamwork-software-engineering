@@ -19,6 +19,11 @@ class AsyncNet {
     uri_course_all = "/api/course/all"
     uri_course_add="/api/course/add"
     uri_course_publish="/api/course/publish"
+    uri_org_get = "/api/org/get"
+    uri_org_grouped = "/api/org/grouped"
+    uri_course_all = "/api/course/all"
+    uri_org_user_invite = "/api/org/user_invite"
+    uri_org_invites_get = "/api/org/invites/get"
     //endregion
     //region public domain
     // add restAPI support
@@ -35,7 +40,7 @@ class AsyncNet {
 
     /**
      * 通过网络请求获取当前用户的状态
-     * @returns {Promise<state>}
+     * @returns {Promise<State>}
      */
     async userState() {
         let res = await this.post(this.uri_user_state, '', false);
@@ -85,7 +90,7 @@ class AsyncNet {
      * 通过api/user/login 进行登录
      * @param uid
      * @param password
-     * @returns {Promise<response_user>}
+     * @returns {Promise<ResponseUser>}
      */
     async userLogin(uid, password) {
         return this.post(this.uri_user_login, `uid=${uid}&password=${password}`)
@@ -105,7 +110,7 @@ class AsyncNet {
 
     /**
      * 通过api/org/all 获取所有organization的信息
-     * @returns {Promise<response_organizations>}
+     * @returns {Promise<ResponseOrganizations>}
      */
     async orgAll() {
         return this.post(this.uri_org_all)
@@ -113,12 +118,46 @@ class AsyncNet {
 
     /**
      * 通过api/course/all 获取所有course的信息
-     * @returns {Promise<response_courses>}
+     * @returns {Promise<ResponseCourses>}
      */
     async courseAll() {
         return this.post(this.uri_course_all)
     }
 
+    /**
+     * 通过api/org/get 获取id的organization的信息
+     * @returns {Promise<ResponseOrganization>}
+     * @param id {number}
+     */
+    async orgGet(id) {
+        return this.post(this.uri_org_get, `id=${id}`)
+    }
+
+    /**
+     * 通过api/org/grouped 获取分组过的organization的信息
+     * @return {Promise<ResponseOrganizationGrouped>}
+     */
+    async orgGrouped() {
+        return this.post(this.uri_org_grouped)
+    }
+
+    /**
+     * 通过api/org/user_invite进行加入部门的申请
+     * @param orgId
+     * @return {Promise<ResponseOrganization>}
+     */
+    async orgUserInvite(orgId) {
+        return this.post(this.uri_org_user_invite, `orgId=${orgId}`)
+    }
+
+    /**
+     * 通过api/org/invites/get
+     * @param orgId
+     * @return {Promise<ResponseUsers>}
+     */
+    async orgInvitesGet(orgId) {
+        return this.post(this.uri_org_invites_get, `orgId=${orgId}`)
+    }
     //endregion
 }
 

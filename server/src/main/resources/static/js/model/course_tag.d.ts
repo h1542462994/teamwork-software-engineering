@@ -1,4 +1,5 @@
-export declare class course_tag {
+
+export declare class CourseTag {
     id: number
     name: string
 }

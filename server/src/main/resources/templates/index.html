@@ -16,9 +16,23 @@
 </head>
 <body>
 <div id="app">
-    <app-compact :c="c">
+    <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
         <div v-for="course in courses"></div>
+        <section class="section-course d-flex flex-wrap justify-content-start">
+            <div class="card card-course" style="max-width: 18rem; " v-for="course in courses">
+                <a href="/course/6">
+                    <img src="/img/mockup5.jpg" class="card-img-top card-img" alt="img">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.name }}</h5>
+                    <p class="card-text"><small>{{ course.info }}</small></p>
+                    <div>
+                        <span class="badge badge-rounded bg-blue badge-me" v-for="tag in course.courseTags">{{ tag.name }}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     </app-compact>
 </div>
 

@@ -1,6 +1,6 @@
-import {user} from './user'
+import {User} from './user'
 
-export declare class state {
+export declare class State {
     tip: string
-    user: user
+    user: User
 }

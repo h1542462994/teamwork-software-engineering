@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3548a72d-313d-4d13-a288-9cbddeb06295" name="默认的" comment="">
+      <change afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/teamwork-software-engineering.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/artifacts/demo_ear_exploded.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/artifacts/demo_ejb_exploded.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/artifacts/demo_war.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/artifacts/demo_war_exploded.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/META-INF/application.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/demo.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/HelloServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../demo/src/main/webapp/index.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/META-INF/application.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/cdi-api-javadoc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/cdi-api-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/cdi-api.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-api-javadoc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-api-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-api.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-core-impl-javadoc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-core-impl-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-core-impl.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-core-javadoc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-core-jsf-javadoc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-core-jsf-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-core-jsf.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-core-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-core.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-se-core-javadoc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-se-core-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-se-core.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-se-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-se.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-servlet-core-javadoc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-servlet-core-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-servlet-core.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-servlet-javadoc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-servlet-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-servlet.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-spi-javadoc.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-spi-sources.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/weld-spi.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/demo1/HelloServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/beans.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/artifacts/ejb_project1_ear_exploded.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/artifacts/ejb_project1_ejb_exploded.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/artifacts/ejb_project1_war.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/artifacts/ejb_project1_war_exploded.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/META-INF/application.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/ejb-project1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/web/WEB-INF/web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ejb-project1/web/index.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../temp/temp.iml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1m339cKc2uEsyc5A5n9q1vUkxGs" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JBossConfiguration" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
+      <option name="UPDATING_POLICY" value="restart-server" />
+      <deployment />
+      <server-settings>
+        <option name="SERVER" />
+        <option name="BINDING_SET_NAME" value="" />
+        <option name="DOMAIN" value="false" />
+        <option name="SERVER_GROUP" />
+        <option name="USERNAME" value="" />
+      </server-settings>
+      <predefined_log_file enabled="true" id="JBoss" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="55308" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Tomcat 9.0.31" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.31" ALTERNATIVE_JRE_ENABLED="false">
+      <deployment>
+        <artifact name="demo1:war exploded">
+          <settings>
+            <option name="CONTEXT_PATH" value="/demo1_war_exploded" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings />
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="demo1:war exploded" />
+        </option>
+      </method>
+    </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
+      <deployment />
+      <server-settings />
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="3548a72d-313d-4d13-a288-9cbddeb06295" name="默认的" comment="" />
+      <created>1608708298316</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1608708298316</updated>
+      <workItem from="1608708299629" duration="291000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+</project>

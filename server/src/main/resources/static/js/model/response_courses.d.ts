@@ -1,6 +1,7 @@
-import {course} from "./course";
-import {response} from "./response";
 
-export default class response_courses extends response<Array<course>> {
-    data: Array<course>
+import {Course} from "./course";
+import {Response} from "./response";
+
+export default class ResponseCourses extends Response<Array<Course>> {
+    data: Array<Course>
 }

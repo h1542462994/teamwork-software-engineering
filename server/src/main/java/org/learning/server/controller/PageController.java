@@ -1,5 +1,6 @@
 package org.learning.server.controller;
 
+import org.learning.server.model.annotation.NoLogin;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/")
+@NoLogin
 public class PageController {
 
     /**

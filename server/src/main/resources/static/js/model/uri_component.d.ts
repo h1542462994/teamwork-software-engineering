@@ -1,4 +1,4 @@
-export declare class uri_component {
+export declare class UriComponent {
     paths: string[]
     queries: any
 }
