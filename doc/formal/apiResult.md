@@ -162,20 +162,7 @@ name=软件工程01&description=软件工程的班级&parentId=1
       "id": 1,
       "name": "计算机学院",
       "description": "计算机学院的组织",
-      "children": [
-        {
-          "id": 4,
-          "name": "策划部",
-          "description": "软件工程的班级",
-          "children": []
-        },
-        {
-          "id": 5,
-          "name": "人力资源部",
-          "description": "软件工程的班级",
-          "children": []
-        }
-      ],
+      "children": [],
       "public": false,
       "owner": {
         "uid": "",
@@ -203,7 +190,7 @@ name=软件工程01&description=软件工程的班级&parentId=1
     },
     {
       "id": 3,
-      "name": "公关部",
+      "name": "计算机学院",
       "description": "计算机学院的组织",
       "children": [],
       "public": false,

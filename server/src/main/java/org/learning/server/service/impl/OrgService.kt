@@ -206,17 +206,11 @@ class OrgService : IOrgService {
         for (userOrgNode in userOrgNodes) {
             val (org, dep) = this.getFirstAndSecondOfNode(userOrgNode.orgNode)
             orgs.add(org.toOrgSummaryPart())
-            val orgSummary = orgs.find { it.id == org.id }!!
             if (dep != null) {
-                orgSummary.children.add(dep.toOrgNodeSummaryPart())
+                orgs.find { it.id == org.id }!!.children.add(dep.toOrgNodeSummaryPart())
             }
-            orgSummary.level = max(orgSummary.level, userOrgNode.level)
-        }
-
-        for (org in orgs) {
-            // 如果是管理员，则添加所有的部门（相当于可见）
-            if (org.level > 0) {
-                org.children.addAll(orgNodeRepository.findAllByParentId(org.id).map { it.toOrgNodeSummaryPart() })
+            orgs.find { it.id == org.id }!!.apply {
+                level = max(level, userOrgNode.level)
             }
         }
 
