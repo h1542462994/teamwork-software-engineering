@@ -8,6 +8,7 @@ import org.learning.server.exception.NoAllowedException
 import org.learning.server.form.OrgNodeForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
+import org.learning.server.model.complex.OrgNodeSummary
 import org.learning.server.model.complex.OrgSummary
 import org.learning.server.model.complex.OrganizationGrouped
 import org.learning.server.repository.OrgNodeRepository
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 import kotlin.collections.HashSet
 import kotlin.math.max
+import org.learning.server.common.MergeExtension.merge
 
 @Service
 class OrgService : IOrgService {
@@ -124,6 +126,7 @@ class OrgService : IOrgService {
 
     /**
      * 根据一个节点查找其组织结构的根节点
+     * TODO: Extend [getPathOfOrgNode]
      */
     private fun getOrganizationOfNode(orgNode: OrgNode): OrgNode {
         var current = orgNode
@@ -136,6 +139,7 @@ class OrgService : IOrgService {
 
     /**
      * 通过一个节点查找其根节点和一级子节点
+     * TODO: Extend [getPathOfOrgNode]
      */
     private fun getFirstAndSecondOfNode(orgNode: OrgNode): Pair<OrgNode, OrgNode?> {
         var prev: OrgNode? = null
@@ -149,6 +153,30 @@ class OrgService : IOrgService {
     }
 
     /**
+     * 获取一个节点一直到根节点的路径
+     */
+    private fun getPathOfOrgNode(orgNode: OrgNode): OrgSummary {
+        var orgNodeSummary: OrgNodeSummary? = null
+        var current = orgNode
+        while (current.parentId != null) {
+            current = orgNodeRepository.findById(current.parentId!!).get()
+            val temp = current.toOrgNodeSummaryPart().apply {
+                if (orgNodeSummary != null){
+                    children = hashSetOf(orgNodeSummary!!)
+                }
+            }
+            orgNodeSummary = temp
+        }
+
+        return current.toOrgSummaryPart().apply {
+            if (orgNodeSummary != null){
+                owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
+                children = hashSetOf(orgNodeSummary)
+            }
+        }
+    }
+
+    /**
      * 查找组织（根节点）对应的概览数据
      * 包括组织的基础数据，一级部门的基础数据，组织主管理员。
      */
@@ -159,6 +187,29 @@ class OrgService : IOrgService {
         return orgNode.toOrgSummaryPart().apply {
             owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
             children = HashSet(orgNodeRepository.findAllByParentId(orgNode.id).map { it.toOrgNodeSummaryPart() })
+        }
+    }
+
+    private fun getOrgNodeTree(orgNode: OrgNode, user: User, parent: OrgNodeSummary? = null): OrgNodeSummary {
+        var level = 0
+
+        userOrgNodeRepository.findByUserAndOrgNode(user, orgNode).apply {
+            if (this.isPresent){
+                level = this.get().level
+            }
+        }
+
+        return if (orgNode.parentId == null) {
+            orgNode.toOrgSummaryPart().apply {
+                this.level = level
+                owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
+                children = HashSet(orgNodeRepository.findAllByParentId(orgNode.id).map { getOrgNodeTree(it, user, this) })
+            }
+        } else {
+            orgNode.toOrgNodeSummaryPart().apply {
+                this.level = max(level, parent?.level ?: 0)
+                children = HashSet(orgNodeRepository.findAllByParentId(orgNode.id).map { getOrgNodeTree(it, user, this) })
+            }
         }
     }
 
@@ -188,6 +239,7 @@ class OrgService : IOrgService {
     private fun getFlatCourseOpenOfOrgNode(orgNode: OrgNode): List<CourseOpen> {
         TODO("Not yet implemented")
     }
+
 
     //endregion
 
@@ -221,6 +273,32 @@ class OrgService : IOrgService {
         }
 
         return orgs
+    }
+
+    override fun get(orgId: Int, user: User): Response<OrgSummary> {
+        val orgOptional = orgNodeRepository.findById(orgId)
+        if (orgOptional.isEmpty) {
+            return Responses.fail("不存在该部门")
+        } else if (orgOptional.get().parentId != null){
+            return Responses.fail("仅能查询部门节点")
+        }
+
+        // 查找用户所在的节点（指定部门）
+        val userOrgNodes = userOrgNodeRepository.findAllByUser(user).filter {
+            getOrganizationOfNode(it.orgNode).id == orgId
+        }
+
+        if (userOrgNodes.isEmpty()) {
+            return Responses.fail("你不在该部门")
+        }
+
+        val maxLevel = userOrgNodes.maxOf { it.level }
+        return if (maxLevel == 0) {
+            val merged = userOrgNodes.map { this.getPathOfOrgNode(it.orgNode) }.merge()
+            Responses.ok(merged.first() as OrgSummary)
+        } else {
+            Responses.ok(getOrgNodeTree(orgNodeRepository.findById(orgId).get(), user) as OrgSummary)
+        }
     }
 
     /**

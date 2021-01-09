@@ -71,6 +71,13 @@ Content-Type: application/x-www-form-urlencoded
 POST http://{{host}}/api/org/list
 Content-Type: application/x-www-form-urlencoded
 
+### org.get test
+
+POST http://{{host}}/api/org/get
+Content-Type: application/x-www-form-urlencoded
+
+orgId=1
+
 ### message.post test
 
 POST http://{{host}}/api/message/post
@@ -89,3 +96,4 @@ POST http://{{host}}/api/message/read
 Content-Type: application/x-www-form-urlencoded
 
 messageId=4
+

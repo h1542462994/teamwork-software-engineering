@@ -119,4 +119,13 @@ class OrgController {
         return Responses.ok(orgService.list(user))
     }
 
+    /**
+     * 获取用户在某个组织内的组织-部门树型结构
+     */
+    @PostMapping("/get")
+    fun get(orgId: Int, request: HttpServletRequest): Response<OrgSummary> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.get(orgId, user)
+    }
+
 }

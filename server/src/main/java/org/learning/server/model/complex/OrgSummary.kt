@@ -8,9 +8,4 @@ import org.learning.server.entity.User
 class OrgSummary : OrgNodeSummary() {
     var public: Boolean = false
     var owner: User = User()
-
-    /**
-     * 用户管理的级别，[org.learning.server.entity.enums.Level]
-     */
-    var level: Int = 0
 }

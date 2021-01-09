@@ -36,4 +36,6 @@ interface IOrgService {
     fun create(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode>
 
     fun delete(orgId: Int, user: User): Response<Any>
+
+    fun get(orgId: Int, user: User): Response<OrgSummary>
 }
