@@ -627,6 +627,29 @@ courseId=61&tagId=1
 }
 ```
 
+### getChapters
+
+```
+POST http://{{host}}/api/course/chapter/get
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 2,
+      "name": "第一章"
+    }
+  ]
+}
+```
+
 ### createChapter
 
 ```

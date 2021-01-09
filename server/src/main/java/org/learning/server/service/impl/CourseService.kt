@@ -26,19 +26,34 @@ class CourseService : ICourseService {
     @Autowired
     lateinit var mediaRepository: MediaRepository
 
+    private fun isCourseAdmin(course: Course, user: User): Boolean {
+        return course.owner.uid == user.uid || course.adminUsers.find { it.uid == user.uid } != null
+    }
+
     private fun guardAdmin(course: Course, user: User) {
-        if (course.owner.uid != user.uid && course.adminUsers.find { it.uid == user.uid } == null){
+        if (!isCourseAdmin(course, user)){
             throw NoAllowedException("你没有权限修改该课程")
         }
     }
 
-    private fun getCourseWithGuard(courseId: Int,user: User): Course {
+    private fun guardVisit(course: Course, user: User) {
+        if (isCourseAdmin(course, user)) {
+            // do Nothing
+        } else {
+            throw NoAllowedException("你没有权限访问chapter资源")
+        }
+    }
+
+    private fun getCourseEntity(courseId: Int): Course {
         val courseOptional = courseRepository.findById(courseId)
         if (courseOptional.isEmpty) {
             throw NoAllowedException("没有该课程")
         }
+        return courseOptional.get()
+    }
 
-        val course = courseOptional.get()
+    private fun getCourseWithGuard(courseId: Int,user: User): Course {
+        val course = getCourseEntity(courseId)
         this.guardAdmin(course, user)
         return course
     }
@@ -102,6 +117,7 @@ class CourseService : ICourseService {
         return Responses.ok(course.courseTags)
     }
 
+
     private fun getChapters(course: Course): LinkedList<Chapter> {
         return LinkedList(chapterRepository.findAllByCourseOrderByIndexAt(course))
     }
@@ -111,6 +127,14 @@ class CourseService : ICourseService {
             index, chapter -> chapter.indexAt = index
         }
         return chapterRepository.saveAll(chapters)
+    }
+
+    override fun getChapters(courseId: Int, user: User): Response<Iterable<ChapterInfo>> {
+        val course = getCourseEntity(courseId)
+
+        this.guardVisit(course, user)
+
+        return Responses.ok(chapterRepository.findAllByCourseOrderByIndexAt(course).map { it.toChapterInfo() })
     }
 
     override fun createChapter(courseId: Int, name: String, index: Int, user: User): Response<Iterable<ChapterInfo>> {

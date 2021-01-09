@@ -66,6 +66,15 @@ class CourseController {
     }
 
     /**
+     * 获取一个课程的chapters
+     */
+    @PostMapping("/chapter/get")
+    fun getChapters(courseId: Int, request: HttpServletRequest): Response<Iterable<ChapterInfo>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.getChapters(courseId, user)
+    }
+
+    /**
      * 在order处创建一个chapter
      */
     @PostMapping("/chapter/create")

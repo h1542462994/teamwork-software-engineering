@@ -130,6 +130,13 @@ Content-Type: application/x-www-form-urlencoded
 
 courseId=61&tagId=1
 
+### course.getChapters test
+
+POST http://{{host}}/api/course/chapter/get
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61
+
 ### course.createChapter test
 
 POST http://{{host}}/api/course/chapter/create
