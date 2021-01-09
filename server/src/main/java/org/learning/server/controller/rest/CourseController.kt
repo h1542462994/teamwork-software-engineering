@@ -48,6 +48,15 @@ class CourseController {
     }
 
     /**
+     * 删除一门课程
+     */
+    @PostMapping("/delete")
+    fun delete(courseId: Int, request: HttpServletRequest): Response<Any> {
+        val user = SessionHelper.of(request).user()!!
+        return Responses.ok(courseService.delete(courseId, user))
+    }
+
+    /**
      * 在课程中添加Tag
      */
     @PostMapping("/tag/create")

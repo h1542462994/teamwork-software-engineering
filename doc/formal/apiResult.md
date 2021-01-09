@@ -569,6 +569,24 @@ id=61&name=软件工程&info=软件工程专业必修课程&pic=uisafdadfafadf&p
 }
 ```
 
+### delete
+
+```json
+POST http://{{host}}/api/course/delete
+Content-Type: application/x-www-form-urlencoded
+
+courseId=60
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": true
+}
+```
+
 ### createTag
 
 ```

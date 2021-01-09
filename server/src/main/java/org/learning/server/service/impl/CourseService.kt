@@ -6,10 +6,7 @@ import org.learning.server.exception.NoAllowedException
 import org.learning.server.form.CourseForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
-import org.learning.server.repository.ChapterRepository
-import org.learning.server.repository.CourseRepository
-import org.learning.server.repository.CourseTagRepository
-import org.learning.server.repository.MediaRepository
+import org.learning.server.repository.*
 import org.learning.server.service.ICourseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -25,9 +22,17 @@ class CourseService : ICourseService {
     lateinit var chapterRepository: ChapterRepository
     @Autowired
     lateinit var mediaRepository: MediaRepository
+    @Autowired
+    lateinit var resourceRepository: ResourceRepository
 
     private fun isCourseAdmin(course: Course, user: User): Boolean {
         return course.owner.uid == user.uid || course.adminUsers.find { it.uid == user.uid } != null
+    }
+
+    private fun guardOwner(course: Course, user: User) {
+        if (course.owner.uid != user.uid) {
+            throw NoAllowedException("你没有权限删除该课程")
+        }
     }
 
     private fun guardAdmin(course: Course, user: User) {
@@ -72,10 +77,17 @@ class CourseService : ICourseService {
         // TODO: @Message 发送通知给相关的人员
     }
 
-    override fun delete(id: Int): Boolean {
-        // TODO 等待完善
-        courseRepository.deleteById(id)
+    override fun delete(courseId: Int, user: User): Boolean {
+        val course = getCourseEntity(courseId)
+        this.guardOwner(course, user)
+
+        deleteEntity(course)
         return true
+    }
+
+    private fun deleteEntity(course: Course) {
+        deleteChaptersAndResourcesByCourse(course)
+        courseRepository.delete(course)
     }
 
     override fun update(courseForm: CourseForm, user: User): Response<Course> {
@@ -88,6 +100,30 @@ class CourseService : ICourseService {
         course.updateFrom(courseForm)
         course = courseRepository.save(course)
         return Responses.ok(course)
+    }
+
+    override fun changeEditState(courseId: Int, edit: Boolean): Response<Course> {
+        TODO("Not yet implemented")
+    }
+
+    private fun deleteChaptersAndResourcesByCourse(course: Course) {
+        // TODO: 检查其他表的关联关系
+        // 删除所有章节
+        val chapters = getChapters(course)
+        chapters.forEach {
+            deleteMediasEntityByChapter(it)
+            chapterRepository.delete(it)
+        }
+        // 删除所有资源
+        val resources = resourceRepository.findAllByCourse(course).forEach {
+            deleteResourceEntity(it)
+        }
+        courseRepository.delete(course)
+    }
+
+    private fun deleteResourceEntity(resource: Resource) {
+        // TODO：删除文件资源
+        resourceRepository.delete(resource)
     }
 
     override fun createTag(courseId: Int, name: String, user: User): Response<Iterable<CourseTag>> {
@@ -189,7 +225,7 @@ class CourseService : ICourseService {
         val chapters = getChapters(course)
         val chapterFind = chapters.find { it.id == chapterId } ?: return Responses.fail("该chapter不属于该课程")
 
-        deleteMediasByChapter(chapterFind)
+        deleteMediasEntityByChapter(chapterFind)
 
         chapters.remove(chapterFind)
         chapterRepository.delete(chapterFind)
@@ -197,15 +233,15 @@ class CourseService : ICourseService {
         return Responses.ok(saveChapterOrders(chapters).map { it.toChapterInfo() })
     }
 
-    private fun deleteMediasByChapter(chapter: Chapter) {
+    private fun deleteMediasEntityByChapter(chapter: Chapter) {
         // TODO: 检查其他表的关联关系
         val medias = mediaRepository.findAllByChapter(chapter)
         medias.forEach {
-            deleteMedia(it)
+            deleteMediaEntity(it)
         }
     }
 
-    private fun deleteMedia(media: Media) {
+    private fun deleteMediaEntity(media: Media) {
         // TODO: 检查其他表的关联关系
         mediaRepository.delete(media)
     }
