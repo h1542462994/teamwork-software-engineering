@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * a data of user
@@ -20,6 +22,7 @@ public class User implements Serializable {
     private Integer age;
     private Boolean sex;
     private String email;
+
 
     public String getUid() {
         return uid;

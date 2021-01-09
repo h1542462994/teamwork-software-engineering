@@ -5,7 +5,7 @@ import org.learning.server.form.UserLoginForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.ResponseTokens
 import org.learning.server.model.common.Responses
-import org.learning.server.service.UserService
+import org.learning.server.service.IUserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,7 +17,7 @@ import javax.validation.Valid
 @RequestMapping("/api/user")
 class UserController {
     @Autowired
-    lateinit var userService: UserService
+    lateinit var IUserService: IUserService
     private val user: String = "user"
 
     /**
@@ -25,12 +25,12 @@ class UserController {
      */
     @PostMapping("/login")
     fun login(@Valid userLoginForm: UserLoginForm, request: HttpServletRequest): Response<User> {
-        val response = userService.login(userLoginForm)
+        val response = IUserService.login(userLoginForm)
         if (response.code == ResponseTokens.ok.code){
             // 在会话中添加用户
             request.session.setAttribute(user, response.data)
         }
-        return userService.login(userLoginForm)
+        return IUserService.login(userLoginForm)
     }
 
     /**

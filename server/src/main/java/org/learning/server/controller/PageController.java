@@ -48,6 +48,28 @@ public class PageController {
      * TODO @page:org_detail.html
      * @return page:org_detail.html
      */
+
     @GetMapping("/org/{id}")
     public String orgDetail(@PathVariable int id) { return "org_detail"; }
+
+    /**
+     *
+     */
+
+    @GetMapping("/manage")
+    public  String manage (){return "courseManage";}
+    /**
+     * @return page:courseManage.html
+     */
+
+    @GetMapping("/managelist")
+    public  String managelist (){return "courseManageList";}
+    /**
+     * @return page:courseManageList.html
+     */
+    @GetMapping("/manageUpdate")
+    public  String manageUpdate (){return "courseManageUpdate";}
+    /**
+     * @return page:courseManageUpdate.html
+     */
 }
