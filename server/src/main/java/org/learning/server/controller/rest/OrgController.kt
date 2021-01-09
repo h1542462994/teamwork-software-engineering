@@ -106,9 +106,17 @@ class OrgController {
      * 获取所有组织的概览信息
      */
     @PostMapping("/all")
-    fun all(): Response<List<OrgSummary>> {
+    fun all(): Response<Iterable<OrgSummary>> {
         return Responses.ok(orgService.all())
     }
 
+    /**
+     * 获取当前用户的组织概览列表
+     */
+    @PostMapping("/list")
+    fun list(request: HttpServletRequest): Response<Iterable<OrgSummary>> {
+        val user = SessionHelper.of(request).user()!!
+        return Responses.ok(orgService.list(user))
+    }
 
 }

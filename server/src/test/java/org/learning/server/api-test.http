@@ -52,7 +52,7 @@ Content-Type: application/x-www-form-urlencoded
 POST http://{{host}}/api/org/create
 Content-Type: application/x-www-form-urlencoded
 
-name=计算机学院&description=计算机学院的组织&public=false
+name=信息工程学院&description=计算机学院的组织&public=false
 
 ### org.create test2
 
@@ -64,6 +64,11 @@ name=软件工程01&description=软件工程的班级&parentId=1
 ### org.all test
 
 POST http://{{host}}/api/org/all
+Content-Type: application/x-www-form-urlencoded
+
+### org.list test
+
+POST http://{{host}}/api/org/list
 Content-Type: application/x-www-form-urlencoded
 
 ### message.post test

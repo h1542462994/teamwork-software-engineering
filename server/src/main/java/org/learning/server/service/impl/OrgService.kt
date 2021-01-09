@@ -18,16 +18,21 @@ import org.learning.server.service.IOrgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
+import kotlin.collections.HashSet
+import kotlin.math.max
 
 @Service
 class OrgService : IOrgService {
     //region inject components
     @Autowired
     lateinit var organizationRepository: OrganizationRepository
+
     @Autowired
     lateinit var userOrganizationInvitationRepository: UserOrganizationInvitationRepository
+
     @Autowired
     lateinit var orgNodeRepository: OrgNodeRepository
+
     @Autowired
     lateinit var userOrgNodeRepository: UserOrgNodeRepository
     //endregion
@@ -51,7 +56,7 @@ class OrgService : IOrgService {
 
     override fun userInviteOrganization(orgId: Int, user: User): Response<OrganizationBase> {
         val organization = organizationRepository.findById(orgId)
-        if (organization.isEmpty){
+        if (organization.isEmpty) {
             return Responses.fail("该组织不存在")
         }
         val org = organization.get().toStructInfo(user)
@@ -99,7 +104,8 @@ class OrgService : IOrgService {
 
     override fun getInvitesById(orgId: Int): List<UserBase> {
         val organization = organizationRepository.findById(orgId).get()
-        return userOrganizationInvitationRepository.findAllByOrganizationAndInverse(organization, true).map { it.toUserBase() }.distinct()
+        return userOrganizationInvitationRepository.findAllByOrganizationAndInverse(organization, true)
+            .map { it.toUserBase() }.distinct()
     }
 
     //region tool functions
@@ -129,6 +135,20 @@ class OrgService : IOrgService {
     }
 
     /**
+     * 通过一个节点查找其根节点和一级子节点
+     */
+    private fun getFirstAndSecondOfNode(orgNode: OrgNode): Pair<OrgNode, OrgNode?> {
+        var prev: OrgNode? = null
+        var current = orgNode
+        while (current.parentId != null) {
+            prev = current
+            current = orgNodeRepository.findById(current.parentId!!).get()
+        }
+
+        return Pair(current, prev)
+    }
+
+    /**
      * 查找组织（根节点）对应的概览数据
      * 包括组织的基础数据，一级部门的基础数据，组织主管理员。
      */
@@ -138,7 +158,7 @@ class OrgService : IOrgService {
         }
         return orgNode.toOrgSummaryPart().apply {
             owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
-            children = orgNodeRepository.findAllByParentId(orgNode.id).map { it.toOrgNodeSummaryPart() }
+            children = HashSet(orgNodeRepository.findAllByParentId(orgNode.id).map { it.toOrgNodeSummaryPart() })
         }
     }
 
@@ -168,14 +188,33 @@ class OrgService : IOrgService {
     private fun getFlatCourseOpenOfOrgNode(orgNode: OrgNode): List<CourseOpen> {
         TODO("Not yet implemented")
     }
+
     //endregion
 
     //region services
     /**
      * 创建所有组织的概览信息
      */
-    override fun all(): List<OrgSummary> {
+    override fun all(): Iterable<OrgSummary> {
         return orgNodeRepository.findAllByParentId(null).map { this.getOrganizationBase(it) }
+    }
+
+    override fun list(user: User): Iterable<OrgSummary> {
+        // 查找用户所在的组织节点
+        val userOrgNodes = userOrgNodeRepository.findAllByUser(user)
+        val orgs = HashSet<OrgSummary>()
+        for (userOrgNode in userOrgNodes) {
+            val (org, dep) = this.getFirstAndSecondOfNode(userOrgNode.orgNode)
+            orgs.add(org.toOrgSummaryPart())
+            if (dep != null) {
+                orgs.find { it.id == org.id }!!.children.add(dep.toOrgNodeSummaryPart())
+            }
+            orgs.find { it.id == org.id }!!.apply {
+                level = max(level, userOrgNode.level)
+            }
+        }
+
+        return orgs
     }
 
     /**

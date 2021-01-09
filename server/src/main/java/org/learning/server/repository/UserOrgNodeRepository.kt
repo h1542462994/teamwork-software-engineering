@@ -7,4 +7,5 @@ import org.springframework.data.repository.CrudRepository
 
 interface UserOrgNodeRepository: CrudRepository<UserOrgNode, Int> {
     fun findAllByOrgNodeAndLevel(orgNode: OrgNode, level: Int): List<UserOrgNode>
+    fun findAllByUser(user: User): List<UserOrgNode>
 }
