@@ -27,7 +27,9 @@ interface IOrgService {
     @Deprecated("")
     fun getInvitesById(orgId: Int): List<UserBase>
 
-    fun all(): List<OrgSummary>
+    fun all(): Iterable<OrgSummary>
+
+    fun list(user: User): Iterable<OrgSummary>
 
     fun guardMainAdmin(orgNode: OrgNode, user: User)
 

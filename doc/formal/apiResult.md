@@ -146,6 +146,67 @@ name=软件工程01&description=软件工程的班级&parentId=1
 }
 ```
 
+#### list
+
+```
+/api/org/list
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 1,
+      "name": "计算机学院",
+      "description": "计算机学院的组织",
+      "children": [],
+      "public": false,
+      "owner": {
+        "uid": "",
+        "name": "",
+        "age": 1,
+        "sex": false,
+        "email": ""
+      },
+      "level": 2
+    },
+    {
+      "id": 2,
+      "name": "计算机学院",
+      "description": "计算机学院的组织",
+      "children": [],
+      "public": false,
+      "owner": {
+        "uid": "",
+        "name": "",
+        "age": 1,
+        "sex": false,
+        "email": ""
+      },
+      "level": 2
+    },
+    {
+      "id": 3,
+      "name": "计算机学院",
+      "description": "计算机学院的组织",
+      "children": [],
+      "public": false,
+      "owner": {
+        "uid": "",
+        "name": "",
+        "age": 1,
+        "sex": false,
+        "email": ""
+      },
+      "level": 2
+    }
+  ]
+}
+```
+
 ### all（仅供测试）
 
 ```
