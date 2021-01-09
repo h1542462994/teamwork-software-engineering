@@ -7,7 +7,7 @@ import org.learning.server.model.annotation.NoLogin
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.ResponseTokens
 import org.learning.server.model.common.Responses
-import org.learning.server.service.UserService
+import org.learning.server.service.IUserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,7 +22,7 @@ import javax.validation.Valid
 @RequestMapping("/api/user")
 class UserController {
     @Autowired
-    lateinit var userService: UserService
+    lateinit var userService: IUserService
     private val user: String = "user"
 
     /**

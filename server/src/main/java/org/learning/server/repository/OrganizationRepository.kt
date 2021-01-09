@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository
 
 @Deprecated("")
 interface OrganizationRepository : CrudRepository<Organization, Int> {
+
 }

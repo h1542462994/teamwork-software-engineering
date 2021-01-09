@@ -1,3 +1,4 @@
+
 import {CourseTag} from "./course_tag";
 
 export declare class Course {

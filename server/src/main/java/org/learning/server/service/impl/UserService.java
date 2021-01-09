@@ -7,13 +7,14 @@ import org.learning.server.model.ActionResult;
 import org.learning.server.model.common.Response;
 import org.learning.server.model.common.Responses;
 import org.learning.server.repository.UserRepository;
+import org.learning.server.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserService implements org.learning.server.service.UserService {
+public class UserService implements IUserService {
 
     private UserRepository userRepository;
 
@@ -45,9 +46,9 @@ public class UserService implements org.learning.server.service.UserService {
     public Response<User> login(UserLoginForm user) {
 
         Optional<User> dbUser = userRepository.findByUid(user.getUid());
-        if (dbUser.isEmpty()) {
+        /*if (dbUser.isEmpty()) {
             return Responses.fail("该账号不存在");
-        }
+        }*/
 
         if (!dbUser.get().getPassword().equals(user.getPassword())){
             return Responses.fail("密码错误");
