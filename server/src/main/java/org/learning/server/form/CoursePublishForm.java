@@ -9,10 +9,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class CoursePublishForm {
-    @NotNull
-    @Range(min = 0, max = 200)
-    private Integer id;
-
 
     @NotNull
     @Size(min = 6, max = 128)
@@ -24,13 +20,6 @@ public class CoursePublishForm {
     @Size(min = 6, max = 128)
     private String pic;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getInfo() {
         return info;
@@ -58,7 +47,6 @@ public class CoursePublishForm {
 
     public Course toCourse(){
         Course course=new Course();
-        course.setId(getId());
         course.setInfo(getInfo());
         course.setName(getName());
         course.setPic(getPic());

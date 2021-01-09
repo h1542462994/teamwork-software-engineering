@@ -7,7 +7,7 @@ import org.learning.server.model.ActionResult;
 import org.learning.server.model.common.Response;
 import org.learning.server.model.common.Responses;
 
-public interface UserService {
+public interface IUserService {
     Response<User> register(UserRegisterForm user);
     Response<User> login(UserLoginForm user);
     boolean delete(String uid);

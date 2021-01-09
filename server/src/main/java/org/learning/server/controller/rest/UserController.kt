@@ -22,7 +22,7 @@ import javax.validation.Valid
 @RequestMapping("/api/user")
 class UserController {
     @Autowired
-    lateinit var IUserService: IUserService
+    lateinit var userService: IUserService
     private val user: String = "user"
 
     /**
@@ -31,12 +31,12 @@ class UserController {
     @PostMapping("/login")
     @NoLogin
     fun login(@Valid userLoginForm: UserLoginForm, request: HttpServletRequest): Response<User> {
-        val response = IUserService.login(userLoginForm)
+        val response = userService.login(userLoginForm)
         if (response.code == ResponseTokens.ok.code){
             // 在会话中添加用户
             request.session.setAttribute(user, response.data)
         }
-        return IUserService.login(userLoginForm)
+        return userService.login(userLoginForm)
     }
 
     /**
