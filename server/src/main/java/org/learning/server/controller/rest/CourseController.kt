@@ -30,10 +30,18 @@ class CourseController {
     /**
      * 添加新课程
      * */
-
     @PostMapping("/create")
     fun create(@Valid courseForm: CourseForm, request: HttpServletRequest): Response<Course> {
         val user = SessionHelper.of(request).user()!!
-        return courseService.create(courseForm)
+        return courseService.create(courseForm, user)
+    }
+
+    /**
+     * 修改课程的基础信息
+     */
+    @PostMapping("/update")
+    fun update(@Valid courseForm: CourseForm, request: HttpServletRequest): Response<Course> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.update(courseForm, user)
     }
 }

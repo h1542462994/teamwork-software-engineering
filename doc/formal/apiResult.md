@@ -498,3 +498,73 @@ type=ORGANIZATION&message=这是一则测试的消息&url=/org/1
   ]
 }
 ```
+
+### create
+
+```
+/api/course/create
+
+name=计算机组成原理&info=计算机组成原理必修课程，其前修课程有&pic=uisafdsafsdfsd&public=false
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": {
+    "id": 61,
+    "pic": "uisafdsafsdfsd",
+    "name": "计算机组成原理",
+    "info": "计算机组成原理必修课程，其前修课程有",
+    "inEdit": true,
+    "createTime": "2021-01-09 16:32:22.80",
+    "editTime": "2021-01-09 16:32:22.80",
+    "courseTags": [],
+    "owner": {
+      "uid": "test",
+      "name": "测试人员",
+      "age": 18,
+      "sex": false,
+      "email": "test@outlook.com"
+    },
+    "adminUsers": [],
+    "public": false
+  }
+}
+```
+
+### update
+
+```
+/api/course/update
+
+id=61&name=软件工程&info=软件工程专业必修课程&pic=uisafdadfafadf&public=false
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": {
+    "id": 61,
+    "pic": "uisafdadfafadf",
+    "name": "软件工程",
+    "info": "软件工程专业必修课程",
+    "inEdit": true,
+    "createTime": "2021-01-09 16:32:22.80",
+    "editTime": "2021-01-09 20:27:50.938",
+    "courseTags": [],
+    "owner": {
+      "uid": "test",
+      "name": "测试人员",
+      "age": 18,
+      "sex": false,
+      "email": "test@outlook.com"
+    },
+    "adminUsers": [],
+    "public": false
+  }
+}
+```

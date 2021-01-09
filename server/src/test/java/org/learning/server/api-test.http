@@ -101,3 +101,17 @@ messageId=4
 
 POST http://{{host}}/api/course/all
 Content-Type: application/x-www-form-urlencoded
+
+### course.create test
+
+POST http://{{host}}/api/course/create
+Content-Type: application/x-www-form-urlencoded
+
+name=计算机组成原理&info=计算机组成原理必修课程，其前修课程有&pic=uisafdsafsdfsd&public=false
+
+### course.update test
+
+POST http://{{host}}/api/course/update
+Content-Type: application/x-www-form-urlencoded
+
+id=61&name=软件工程&info=软件工程专业必修课程&pic=uisafdadfafadf&public=false
