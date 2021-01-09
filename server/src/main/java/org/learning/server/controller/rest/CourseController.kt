@@ -1,13 +1,10 @@
 package org.learning.server.controller.rest
 
+import org.learning.server.common.SessionHelper
 import org.learning.server.entity.Course
-import org.learning.server.form.CoursePublishForm
-import org.learning.server.model.ActionResult
+import org.learning.server.form.CourseForm
 import org.learning.server.model.common.Response
-import org.learning.server.model.common.ResponseToken
-import org.learning.server.model.common.ResponseTokens
 import org.learning.server.model.common.Responses
-import org.learning.server.service.ICourseService
 import org.learning.server.service.impl.CourseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,11 +20,20 @@ class CourseController {
     lateinit var courseService: CourseService
 
     /**
+     * 仅供测试，查找所有课程
+     */
+    @PostMapping("/all")
+    fun all(): Response<Iterable<Course>> {
+        return Responses.ok(courseService.all())
+    }
+
+    /**
      * 添加新课程
      * */
 
-    @PostMapping("/addCourse")
-    fun addCourse(@Valid coursePublishForm: CoursePublishForm, request: HttpServletRequest): Response<Course> {
-        return courseService.create(coursePublishForm)
+    @PostMapping("/create")
+    fun create(@Valid courseForm: CourseForm, request: HttpServletRequest): Response<Course> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.create(courseForm)
     }
 }

@@ -1,8 +1,7 @@
 package org.learning.server.service.impl
 
 import org.learning.server.entity.Course
-import org.learning.server.form.CoursePublishForm
-import org.learning.server.model.ActionResult
+import org.learning.server.form.CourseForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
 import org.learning.server.repository.CourseRepository
@@ -15,11 +14,11 @@ class CourseService : ICourseService {
     @Autowired
     lateinit var courseRepository: CourseRepository
 
-    override fun findAll(): Iterable<Course> {
+    override fun all(): Iterable<Course> {
         return courseRepository.findAll();
     }
 
-    override fun create(courseForm: CoursePublishForm): Response<Course> {
+    override fun create(courseForm: CourseForm): Response<Course> {
         var course = courseForm.toCourse()
         //get the course in db
         course = courseRepository.save(course)

@@ -119,7 +119,7 @@ class OrgService : IOrgService {
     override fun guardMainAdmin(orgNode: OrgNode, user: User) {
         // 向上查找组织节点
         val org = this.getOrganizationBase(this.getOrganizationOfNode(orgNode))
-        if (org.owner.uid != user.uid) {
+        if (org != null && org.owner.uid != user.uid) {
             throw NoAllowedException("你不是组织主管理员，无法进行此操作")
         }
     }
@@ -180,12 +180,17 @@ class OrgService : IOrgService {
      * 查找组织（根节点）对应的概览数据
      * 包括组织的基础数据，一级部门的基础数据，组织主管理员。
      */
-    private fun getOrganizationBase(orgNode: OrgNode): OrgSummary {
+    private fun getOrganizationBase(orgNode: OrgNode): OrgSummary? {
         if (orgNode.parentId != null) {
             throw IllegalArgumentException("orgNode必须是根节点");
         }
+        val userOrgNode = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN)
+        if (userOrgNode.isEmpty()) {
+
+            return null
+        }
         return orgNode.toOrgSummaryPart().apply {
-            owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
+            owner = userOrgNode.first().user
             children = HashSet(orgNodeRepository.findAllByParentId(orgNode.id).map { it.toOrgNodeSummaryPart() })
         }
     }
@@ -248,7 +253,7 @@ class OrgService : IOrgService {
      * 创建所有组织的概览信息
      */
     override fun all(): Iterable<OrgSummary> {
-        return orgNodeRepository.findAllByParentId(null).map { this.getOrganizationBase(it) }
+        return orgNodeRepository.findAllByParentId(null).mapNotNull { this.getOrganizationBase(it) }
     }
 
     override fun list(user: User): Iterable<OrgSummary> {

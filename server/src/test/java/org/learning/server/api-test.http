@@ -97,3 +97,7 @@ Content-Type: application/x-www-form-urlencoded
 
 messageId=4
 
+### course.all test
+
+POST http://{{host}}/api/course/all
+Content-Type: application/x-www-form-urlencoded

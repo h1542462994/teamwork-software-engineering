@@ -4,20 +4,21 @@ import org.hibernate.validator.constraints.Range;
 import org.learning.server.entity.Course;
 import org.learning.server.form.pattern.Patterns;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class CoursePublishForm {
+public class CourseForm {
 
     @NotNull
-    @Size(min = 6, max = 128)
+    @Max(128)
     private String info;
     @NotNull
-    @Size(min = 6, max = 128)
+    @Max(128)
     private String name;
     @NotNull
-    @Size(min = 6, max = 128)
+    @Max(128)
     private String pic;
 
 

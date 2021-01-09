@@ -455,3 +455,46 @@ type=ORGANIZATION&message=这是一则测试的消息&url=/org/1
   }
 }
 ```
+
+## CourseController
+
+### all（仅供测试）
+
+```
+/api/course/all
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 1,
+      "pic": null,
+      "name": "网络工程原理",
+      "info": "网络工程原理是浙江工业大学计算机学院学生大二学习的课程",
+      "inEdit": false,
+      "createTime": "2021-01-08 15:00:28.528",
+      "editTime": "2021-01-08 15:00:28.528",
+      "courseTags": [
+        {
+          "id": 1,
+          "name": "编译语言"
+        },
+        {
+          "id": 2,
+          "name": "网络管理"
+        },
+        {
+          "id": 3,
+          "name": "前端程序"
+        }
+      ],
+      "owner": null,
+      "adminUsers": []
+    }
+  ]
+}
+```
