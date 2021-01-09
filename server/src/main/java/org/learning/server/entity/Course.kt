@@ -21,7 +21,7 @@ class Course {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SS", timezone = "UTC")
     var editTime: Timestamp = Timestamp(0)
     @ManyToMany(targetEntity = CourseTag::class)
-    var courseTags: List<CourseTag> = LinkedList()
+    var courseTags: MutableList<CourseTag> = LinkedList()
     @ManyToOne
     var owner: User = User()
     /**

@@ -146,7 +146,7 @@ name=软件工程01&description=软件工程的班级&parentId=1
 }
 ```
 
-#### list
+### list
 
 ```
 /api/org/list
@@ -566,5 +566,167 @@ id=61&name=软件工程&info=软件工程专业必修课程&pic=uisafdadfafadf&p
     "adminUsers": [],
     "public": false
   }
+}
+```
+
+### createTag
+
+```
+POST http://{{host}}/api/course/tag/create
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&name=编译语言
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 9,
+      "name": "程序员"
+    },
+    {
+      "id": 10,
+      "name": "计算机"
+    },
+    {
+      "id": 1,
+      "name": "编译语言"
+    }
+  ]
+}
+```
+
+### removeTag
+
+```
+POST http://{{host}}/api/course/tag/delete
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&tagId=1
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 9,
+      "name": "程序员"
+    },
+    {
+      "id": 10,
+      "name": "计算机"
+    }
+  ]
+}
+```
+
+### createChapter
+
+```
+POST http://{{host}}/api/course/chapter/create
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&name=第一章&index=0
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 2,
+      "name": "第一章"
+    },
+    {
+      "id": 1,
+      "name": "第一章"
+    }
+  ]
+}
+```
+
+### updateChapter
+
+```
+POST http://{{host}}/api/course/chapter/update
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&chapterId=1&name=第二章
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 2,
+      "name": "第一章"
+    },
+    {
+      "id": 1,
+      "name": "第二章"
+    }
+  ]
+}
+```
+
+### moveChapter
+
+```
+POST http://{{host}}/api/course/chapter/move
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&chapterId=1&index=0
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 1,
+      "name": "第二章"
+    },
+    {
+      "id": 2,
+      "name": "第一章"
+    }
+  ]
+}
+```
+
+### deleteChapter
+
+```
+POST http://{{host}}/api/course/chapter/delete
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&chapterId=1
+```
+
+```json
+{
+  "code": 200,
+  "summary": "ok",
+  "message": "ok",
+  "data": [
+    {
+      "id": 2,
+      "name": "第一章"
+    }
+  ]
 }
 ```
