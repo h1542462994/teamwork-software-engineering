@@ -1,11 +1,9 @@
 package org.learning.server.service
 
-import org.learning.server.entity.Chapter
-import org.learning.server.entity.Course
-import org.learning.server.entity.CourseTag
-import org.learning.server.entity.User
+import org.learning.server.entity.*
 import org.learning.server.entity.base.ChapterInfo
 import org.learning.server.form.CourseForm
+import org.learning.server.form.ResourceForm
 import org.learning.server.model.common.Response
 
 interface ICourseService {
@@ -21,4 +19,13 @@ interface ICourseService {
     fun updateChapter(courseId: Int, chapterId: Int, name: String, user: User): Response<Iterable<ChapterInfo>>
     fun moveChapter(courseId: Int, chapterId: Int, index: Int, user: User): Response<Iterable<ChapterInfo>>
     fun deleteChapter(courseId: Int, chapterId: Int, user: User): Response<Iterable<ChapterInfo>>
+    fun getResources(courseId: Int, user: User): Response<Iterable<Resource>>
+    fun createResource(courseId: Int, resourceForm: ResourceForm, user: User): Response<Iterable<Resource>>
+    fun updateResource(courseId: Int, resourceId: Int, name: String, user: User): Response<Iterable<Resource>>
+    fun deleteResource(courseId: Int, resourceId: Int, user: User): Response<Iterable<Resource>>
+    fun getMedias(chapterId: Int, user: User): Response<Iterable<Media>>
+    fun createMedia(chapterId: Int, name: String, index: Int, resourceId: Int, user: User): Response<Iterable<Media>>
+    fun updateMedia(chapterId: Int, mediaId: Int, name: String, user: User): Response<Iterable<Media>>
+    fun moveMedia(chapterId: Int, mediaId: Int, index: Int, user: User): Response<Iterable<Media>>
+    fun deleteMedia(chapterId: Int, mediaId: Int, user: User): Response<Iterable<Media>>
 }

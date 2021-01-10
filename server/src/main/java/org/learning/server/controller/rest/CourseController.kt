@@ -1,10 +1,10 @@
 package org.learning.server.controller.rest
 
 import org.learning.server.common.SessionHelper
-import org.learning.server.entity.Course
-import org.learning.server.entity.CourseTag
+import org.learning.server.entity.*
 import org.learning.server.entity.base.ChapterInfo
 import org.learning.server.form.CourseForm
+import org.learning.server.form.ResourceForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
 import org.learning.server.service.impl.CourseService
@@ -117,5 +117,86 @@ class CourseController {
     fun deleteChapter(courseId: Int, chapterId: Int, request: HttpServletRequest): Response<Iterable<ChapterInfo>> {
         val user = SessionHelper.of(request).user()!!
         return courseService.deleteChapter(courseId, chapterId, user)
+    }
+
+    /**
+     * 获取一个课程的resources
+     */
+    @PostMapping("/resource/get")
+    fun getResources(courseId: Int, request: HttpServletRequest) : Response<Iterable<Resource>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.getResources(courseId, user)
+    }
+
+    /**
+     * 创建一个资源
+     */
+    @PostMapping("/resource/create")
+    fun createResource(courseId: Int, @Valid resourceForm: ResourceForm, request: HttpServletRequest): Response<Iterable<Resource>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.createResource(courseId, resourceForm, user)
+    }
+
+    /**
+     * 更新一个资源
+     */
+    @PostMapping("/resource/update")
+    fun updateResource(courseId: Int, resourceId: Int, name: String, request: HttpServletRequest): Response<Iterable<Resource>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.updateResource(courseId, resourceId, name, user)
+    }
+
+    /**
+     * 删除一个资源
+     */
+    @PostMapping("/resource/delete")
+    fun deleteResource(courseId: Int, resourceId: Int, request: HttpServletRequest): Response<Iterable<Resource>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.deleteResource(courseId, resourceId, user)
+    }
+
+    /**
+     * 获取一个chapter的medias
+     */
+    @PostMapping("/media/get")
+    fun getMedias(chapterId: Int, request: HttpServletRequest): Response<Iterable<Media>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.getMedias(chapterId, user)
+    }
+
+    /**
+     * 创建一个media
+     */
+    @PostMapping("/media/create")
+    fun createMedia(chapterId: Int, name: String, index: Int, resourceId: Int, request: HttpServletRequest): Response<Iterable<Media>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.createMedia(chapterId, name, index, resourceId, user)
+    }
+
+    /**
+     * 更新一个media
+     */
+    @PostMapping("/media/update")
+    fun updateMedia(chapterId: Int, mediaId: Int, name: String, request: HttpServletRequest): Response<Iterable<Media>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.updateMedia(chapterId, mediaId, name, user)
+    }
+
+    /**
+     * 移动一个media
+     */
+    @PostMapping("/media/move")
+    fun moveMedia(chapterId: Int, mediaId: Int, index: Int, request: HttpServletRequest): Response<Iterable<Media>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.moveMedia(chapterId, mediaId, index, user)
+    }
+
+    /**
+     * 删除一个media
+     */
+    @PostMapping("/media/delete")
+    fun deleteMedia(chapterId: Int, mediaId: Int, request: HttpServletRequest): Response<Iterable<Media>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.deleteMedia(chapterId, mediaId, user)
     }
 }
