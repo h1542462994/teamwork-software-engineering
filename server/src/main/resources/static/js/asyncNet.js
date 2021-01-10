@@ -17,6 +17,7 @@ class AsyncNet {
     uri_user_state = "/api/user/state"
     uri_org_all = "/api/org/all"
     uri_org_get = "/api/org/get"
+    uri_org_list = "/api/org/list"
     uri_org_grouped = "/api/org/grouped"
     uri_org_user_invite = "/api/org/user_invite"
     uri_org_invites_get = "/api/org/invites/get"
@@ -129,6 +130,7 @@ class AsyncNet {
     }
 
     /**
+     * @deprecated
      * 通过api/org/grouped 获取分组过的organization的信息
      * @return {Promise<ResponseOrganizationGrouped>}
      */
@@ -152,6 +154,14 @@ class AsyncNet {
      */
     async orgInvitesGet(orgId) {
         return this.post(this.uri_org_invites_get, `orgId=${orgId}`)
+    }
+
+    /**
+     * 通过api/org/list获取部门信息
+     * @return {Promise<ResponseOrganizations>}
+     */
+    async orgList() {
+        return this.post(this.uri_org_list)
     }
     //endregion
 }

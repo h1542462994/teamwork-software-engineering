@@ -277,7 +277,9 @@ class OrgService : IOrgService {
         val orgs = HashSet<OrgSummary>()
         for (userOrgNode in userOrgNodes) {
             val (org, dep) = this.getFirstAndSecondOfNode(userOrgNode.orgNode)
-            orgs.add(org.toOrgSummaryPart())
+            orgs.add(org.toOrgSummaryPart().apply {
+                this.owner = this@OrgService.getOrganizationBase(org)!!.owner
+            })
             val orgSummary = orgs.find { it.id == org.id }!!
             if (dep != null) {
                 orgSummary.children.add(dep.toOrgNodeSummaryPart())
