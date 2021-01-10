@@ -1,5 +1,6 @@
 package org.learning.server.form
 
+import org.learning.server.common.TimeStampHelper
 import org.learning.server.entity.User
 import org.learning.server.entity.UserMessage
 import java.sql.Timestamp
@@ -22,7 +23,7 @@ class MessageForm {
             this.type = this@MessageForm.type
             this.message = this@MessageForm.message
             this.url = this@MessageForm.url
-            this.createTime = Timestamp.valueOf(LocalDateTime.now().plusHours(8))
+            this.createTime = TimeStampHelper.now()
             this.isRead = false
         }
     }

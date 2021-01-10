@@ -1,11 +1,13 @@
 package org.learning.server.controller.rest
 
+import org.learning.server.common.SessionHelper
 import org.learning.server.entity.Course
-import org.learning.server.form.CourseSelectForm
+import org.learning.server.entity.CourseTag
+import org.learning.server.entity.base.ChapterInfo
+import org.learning.server.form.CourseForm
 import org.learning.server.model.common.Response
-import org.learning.server.model.common.ResponseTokens
-import org.learning.server.model.common.ResponseTokens.ok
-import org.learning.server.service.ICourseService
+import org.learning.server.model.common.Responses
+import org.learning.server.service.impl.CourseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,18 +22,101 @@ class CourseController {
     lateinit var courseService: ICourseService
     private var course: String = "course"
     /**
-     * 根据课程id查找课程
+     * 仅供测试，查找所有课程
+     */
+    @PostMapping("/all")
+    fun all(): Response<Iterable<Course>> {
+        return Responses.ok(courseService.all())
+    }
+
+    /**
+     * 添加新课程
      * */
-    @PostMapping("/selectid")
-    fun selectid(@Valid courseSelectForm: CourseSelectForm, request: HttpServletRequest): Response<Course> {
-        var response = courseService.selectid(courseSelectForm)
-        if (response.code == ResponseTokens.ok.code) {
-            //将查找到的对象存储在session作用域中
-            request.session.setAttribute(course, response.data)
-        }
-        return courseService.selectid(courseSelectForm)
+    @PostMapping("/create")
+    fun create(@Valid courseForm: CourseForm, request: HttpServletRequest): Response<Course> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.create(courseForm, user)
+    }
 
+    /**
+     * 修改课程的基础信息
+     */
+    @PostMapping("/update")
+    fun update(@Valid courseForm: CourseForm, request: HttpServletRequest): Response<Course> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.update(courseForm, user)
+    }
 
+    /**
+     * 删除一门课程
+     */
+    @PostMapping("/delete")
+    fun delete(courseId: Int, request: HttpServletRequest): Response<Any> {
+        val user = SessionHelper.of(request).user()!!
+        return Responses.ok(courseService.delete(courseId, user))
+    }
+
+    /**
+     * 在课程中添加Tag
+     */
+    @PostMapping("/tag/create")
+    fun createTag(courseId: Int, name: String, request: HttpServletRequest): Response<Iterable<CourseTag>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.createTag(courseId, name, user)
+    }
+
+    /**
+     * 在课程中移除tag
+     */
+    @PostMapping("/tag/delete")
+    fun removeTag(courseId: Int, tagId: Int, request: HttpServletRequest): Response<Iterable<CourseTag>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.deleteTag(courseId, tagId, user)
+    }
+
+    /**
+     * 获取一个课程的chapters
+     */
+    @PostMapping("/chapter/get")
+    fun getChapters(courseId: Int, request: HttpServletRequest): Response<Iterable<ChapterInfo>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.getChapters(courseId, user)
+    }
+
+    /**
+     * 在order处创建一个chapter
+     */
+    @PostMapping("/chapter/create")
+    fun createChapter(courseId: Int, name: String, index: Int, request: HttpServletRequest): Response<Iterable<ChapterInfo>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.createChapter(courseId, name, index, user)
+    }
+
+    /**
+     * 更新一个chapter的名字
+     */
+    @PostMapping("/chapter/update")
+    fun updateChapter(courseId: Int, chapterId: Int, name: String, request: HttpServletRequest): Response<Iterable<ChapterInfo>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.updateChapter(courseId, chapterId, name, user)
+    }
+
+    /**
+     * 移动一个chapter的位置
+     */
+    @PostMapping("/chapter/move")
+    fun moveChapter(courseId: Int, chapterId: Int, index: Int, request: HttpServletRequest): Response<Iterable<ChapterInfo>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.moveChapter(courseId, chapterId, index, user)
+    }
+
+    /**
+     * 删除一个chapter（包含子级media）
+     */
+    @PostMapping("/chapter/delete")
+    fun deleteChapter(courseId: Int, chapterId: Int, request: HttpServletRequest): Response<Iterable<ChapterInfo>> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.deleteChapter(courseId, chapterId, user)
     }
 
 }

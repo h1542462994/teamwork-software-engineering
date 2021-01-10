@@ -71,6 +71,13 @@ Content-Type: application/x-www-form-urlencoded
 POST http://{{host}}/api/org/list
 Content-Type: application/x-www-form-urlencoded
 
+### org.get test
+
+POST http://{{host}}/api/org/get
+Content-Type: application/x-www-form-urlencoded
+
+orgId=1
+
 ### message.post test
 
 POST http://{{host}}/api/message/post
@@ -89,3 +96,78 @@ POST http://{{host}}/api/message/read
 Content-Type: application/x-www-form-urlencoded
 
 messageId=4
+
+### course.all test
+
+POST http://{{host}}/api/course/all
+Content-Type: application/x-www-form-urlencoded
+
+### course.create test
+
+POST http://{{host}}/api/course/create
+Content-Type: application/x-www-form-urlencoded
+
+name=计算机组成原理&info=计算机组成原理必修课程，其前修课程有&pic=uisafdsafsdfsd&public=false
+
+### course.update test
+
+POST http://{{host}}/api/course/update
+Content-Type: application/x-www-form-urlencoded
+
+id=61&name=软件工程&info=软件工程专业必修课程&pic=uisafdadfafadf&public=false
+
+### course.delete test
+
+POST http://{{host}}/api/course/delete
+Content-Type: application/x-www-form-urlencoded
+
+courseId=60
+
+### course.createTag test
+
+POST http://{{host}}/api/course/tag/create
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&name=编译语言
+
+### course.removeTag test
+
+POST http://{{host}}/api/course/tag/delete
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&tagId=1
+
+### course.getChapters test
+
+POST http://{{host}}/api/course/chapter/get
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61
+
+### course.createChapter test
+
+POST http://{{host}}/api/course/chapter/create
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&name=第一章&index=0
+
+### course.updateChapter test
+
+POST http://{{host}}/api/course/chapter/update
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&chapterId=1&name=第二章
+
+### course.moveChapter test
+
+POST http://{{host}}/api/course/chapter/move
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&chapterId=1&index=0
+
+### course.deleteChapter test
+
+POST http://{{host}}/api/course/chapter/delete
+Content-Type: application/x-www-form-urlencoded
+
+courseId=61&chapterId=1
