@@ -22,6 +22,7 @@ import java.util.*
 import kotlin.collections.HashSet
 import kotlin.math.max
 import org.learning.server.common.MergeExtension.merge
+import org.learning.server.model.complex.UserInfo
 
 @Service
 class OrgService : IOrgService {
@@ -121,6 +122,20 @@ class OrgService : IOrgService {
         val org = this.getOrganizationBase(this.getOrganizationOfNode(orgNode))
         if (org != null && org.owner.uid != user.uid) {
             throw NoAllowedException("你不是组织主管理员，无法进行此操作")
+        }
+    }
+
+    override fun guardVisit(orgNode: OrgNode, user: User) {
+        val org = this.getOrganizationBase(this.getOrganizationOfNode(orgNode))!!
+        if (org.owner.uid == user.uid) {
+            // do Nothing
+            return
+        }
+        val userOrgNodes = userOrgNodeRepository.findAllByUser(user).filter {
+            this.getOrganizationOfNode(it.orgNode).id == org.id
+        }
+        if (userOrgNodes.isEmpty()) {
+            throw NoAllowedException("你不再这个组织内")
         }
     }
 
@@ -306,6 +321,68 @@ class OrgService : IOrgService {
         }
     }
 
+    /**
+     * 更改一个节点的信息
+     */
+    override fun update(orgId: Int, orgNodeForm: OrgNodeForm, user: User): Response<OrgSummary> {
+        val org = getEntity(orgId)
+        this.guardMainAdmin(org, user)
+        org.name = orgNodeForm.name!!
+        org.description = orgNodeForm.description!!
+        org.public = orgNodeForm.public!!
+        orgNodeRepository.save(org)
+
+        return this.get(orgId, user)
+    }
+
+    /**
+     * 获取一个节点下面的所有人员
+     */
+    override fun getPersons(orgId: Int, user: User): List<UserInfo> {
+        val orgNode = getEntity(orgId)
+        this.guardVisit(orgNode, user)
+        return getPersonsInner(orgNode, 0)
+    }
+
+    private fun getPersonsInner(orgNode: OrgNode, depth: Int) : List<UserInfo> {
+        val userList: LinkedList<UserInfo> = LinkedList()
+        val userOrgNodes = userOrgNodeRepository.findAllByOrgNode(orgNode)
+        userList.addAll(userOrgNodes.map { it.toUserInfo(depth) })
+        val orgNodesChildren = orgNodeRepository.findAllByParentId(orgNode.id)
+        orgNodesChildren.forEach {
+            userList.addAll(this.getPersonsInner(it, depth + 1))
+        }
+        return userList.merge().map { it as UserInfo }
+    }
+
+    override fun removePerson(orgId: Int, personUid: String, user: User): Response<User> {
+        TODO("Not yet implemented")
+    }
+
+    override fun exitPerson(orgId: Int, user: User): Response<Any> {
+        TODO("Not yet implemented")
+    }
+
+    override fun inviteList(orgId: Int, user: User): Response<UserOrgNodeInvitation> {
+        TODO("Not yet implemented")
+    }
+
+    override fun orgInvitePerson(orgId: Int, personUid: String, user: User): Response<Any> {
+        TODO("Not yet implemented")
+    }
+
+    override fun personInviteOrg(orgId: Int, personUid: String, user: User): Response<Any> {
+        TODO("Not yet implemented")
+    }
+
+    override fun processInvite(inviteId: Int, user: User, accept: Boolean): Response<Any> {
+        TODO("Not yet implemented")
+    }
+
+    override fun changeLevel(orgId: Int, personUid: String, level: Int): Response<Any> {
+        TODO("Not yet implemented")
+    }
+
     private fun getEntity(orgId: Int): OrgNode {
         val orgOptional = orgNodeRepository.findById(orgId)
         if (orgOptional.isEmpty) {
@@ -381,15 +458,41 @@ class OrgService : IOrgService {
         return Responses.ok()
     }
 
+    /**
+     * 删除一个组织
+     */
     private fun deleteOrganization(orgNode: OrgNode) {
         val depNodes = orgNodeRepository.findAllByParentId(orgNode.id)
         depNodes.forEach {
             deleteDepartmentNode(it)
         }
+        val userOrgNodes = userOrgNodeRepository.findAllByOrgNode(orgNode)
+        userOrgNodeRepository.deleteAll(userOrgNodes)
         orgNodeRepository.delete(orgNode)
+
+        // TODO: 发送通知
     }
 
+    /**
+     * 删除一个部门节点
+     */
     private fun deleteDepartmentNode(orgNode: OrgNode) {
+        val depNodes = orgNodeRepository.findAllByParentId(orgNode.id)
+        // move the person
+        val userOrgNodes = userOrgNodeRepository.findAllByOrgNode(orgNode)
+        userOrgNodes.forEach {
+            it.level = Level.NORMAL
+            it.orgNode = getOrganizationOfNode(orgNode)
+        }
+        userOrgNodeRepository.saveAll(userOrgNodes)
+
+        depNodes.forEach {
+            deleteDepartmentNode(it)
+        }
+
+        orgNodeRepository.delete(orgNode)
+
+        // TODO: 发送通知
     }
     //endregion
 }

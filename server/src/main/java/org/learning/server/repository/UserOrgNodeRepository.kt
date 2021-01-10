@@ -8,6 +8,7 @@ import java.util.*
 
 interface UserOrgNodeRepository: CrudRepository<UserOrgNode, Int> {
     fun findAllByOrgNodeAndLevel(orgNode: OrgNode, level: Int): List<UserOrgNode>
+    fun findAllByOrgNode(orgNode: OrgNode): List<UserOrgNode>
     fun findAllByUser(user: User): List<UserOrgNode>
     fun findByUserAndOrgNode(user: User, orgNode: OrgNode): Optional<UserOrgNode>
 }
