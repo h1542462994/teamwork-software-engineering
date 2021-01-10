@@ -1,7 +1,9 @@
 package org.learning.server.service.impl
 
+import org.learning.server.entity.Course
 import org.learning.server.entity.User
 import org.learning.server.entity.UserMessage
+import org.learning.server.entity.enums.MessageType
 import org.learning.server.form.MessageForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
@@ -43,5 +45,13 @@ class MessageService: IMessageService {
         userMessage.isRead = true
         userMessage = userMessageRepository.save(userMessage)
         return Responses.ok(userMessage)
+    }
+
+    override fun postCourseEditChange(course: Course, user: User) {
+        this.post(MessageForm().apply {
+            this.type = MessageType.course
+            this.message = "课程${course.name}的编辑状态切换到${course.inEdit}"
+            this.url = "/course/${course.id}"
+        }, user)
     }
 }

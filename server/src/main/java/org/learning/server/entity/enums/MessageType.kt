@@ -1,5 +1,6 @@
 package org.learning.server.entity.enums
 
 object MessageType {
-    const val ORGANIZATION = "ORGANIZATION"
+    const val org = "org"
+    const val course = "course"
 }

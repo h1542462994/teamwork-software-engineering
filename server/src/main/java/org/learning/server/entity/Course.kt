@@ -29,7 +29,7 @@ class Course {
      */
     var isPublic: Boolean = false
     @ManyToMany
-    var adminUsers: List<User> = LinkedList()
+    var adminUsers: MutableList<User> = LinkedList()
 
     fun updateFrom(courseForm: CourseForm) {
         name = courseForm.name

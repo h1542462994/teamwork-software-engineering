@@ -26,6 +26,10 @@ class CourseService : ICourseService {
     lateinit var mediaRepository: MediaRepository
     @Autowired
     lateinit var resourceRepository: ResourceRepository
+    @Autowired
+    lateinit var userRepository: UserRepository
+    @Autowired
+    lateinit var messageService: MessageService
     //endregion
 
     //region tool functions
@@ -52,6 +56,15 @@ class CourseService : ICourseService {
         } else {
             throw NoAllowedException("你没有权限访问chapter资源")
         }
+    }
+
+    // 获取与之相关的用户
+    private fun getRelatedUserOfCourse(course: Course): Iterable<User> {
+        val list = LinkedList<User>()
+        list.add(course.owner)
+        list.addAll(course.adminUsers)
+        // TODO: 添加其他用户
+        return list
     }
     //endregion
 
@@ -111,6 +124,14 @@ class CourseService : ICourseService {
         return courseRepository.findAll();
     }
 
+    override fun adminList(user: User): Iterable<Course> {
+        TODO("Not yet implemented")
+    }
+
+    override fun list(user: User): Iterable<Course> {
+        TODO("Not yet implemented")
+    }
+
     override fun create(courseForm: CourseForm, user: User): Response<Course> {
         // 设置course的owner
         var course = courseForm.toCourse(user)
@@ -146,8 +167,18 @@ class CourseService : ICourseService {
         return Responses.ok(course)
     }
 
-    override fun changeEditState(courseId: Int, edit: Boolean): Response<Course> {
-        TODO("Not yet implemented")
+    override fun changeEditState(courseId: Int, edit: Boolean, user: User): Response<Course> {
+        val course = getCourseEntity(courseId)
+        this.guardAdmin(course, user)
+
+        // TODO：发送状态变更的通知
+        if (course.inEdit != edit) {
+            this.getRelatedUserOfCourse(course).forEach {
+                messageService.postCourseEditChange(course, it)
+            }
+        }
+
+        return Responses.ok(course)
     }
     //endregion
 
@@ -435,4 +466,49 @@ class CourseService : ICourseService {
     }
     //endregion
 
+    //region admin related services
+    private fun getUserEntity(uid: String): User {
+        val userOptional = userRepository.findByUid(uid)
+        if (userOptional.isEmpty) {
+            throw NoAllowedException("不存在当前用户")
+        }
+        return userOptional.get()
+    }
+
+    override fun addAdmin(courseId: Int, adminUid: String, user: User): Response<Course> {
+        var course = getCourseEntity(courseId)
+        this.guardOwner(course, user)
+        val adminUser = getUserEntity(adminUid)
+        if (course.adminUsers.find { it.uid == adminUid } == null) {
+            course.adminUsers.add(adminUser)
+            course = courseRepository.save(course)
+        }
+
+        return Responses.ok(course)
+    }
+
+    override fun deleteAdmin(courseId: Int, adminUid: String, user: User): Response<Course> {
+        var course = getCourseEntity(courseId)
+        this.guardOwner(course, user)
+        val adminUser = course.adminUsers.find { it.uid == adminUid }
+        if (adminUser != null) {
+            course.adminUsers.remove(adminUser)
+            course = courseRepository.save(course)
+        }
+
+        return Responses.ok(course)
+    }
+
+    override fun exitAdmin(courseId: Int, user: User): Response<Any> {
+        var course = getCourseEntity(courseId)
+        this.guardAdmin(course, user)
+        val adminUser = course.adminUsers.find { it.uid == user.uid }
+        if (adminUser != null) {
+            course.adminUsers.remove(adminUser)
+            course = courseRepository.save(course)
+        }
+
+        return Responses.ok()
+    }
+    //endregion
 }

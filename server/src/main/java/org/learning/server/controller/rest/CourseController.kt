@@ -199,4 +199,31 @@ class CourseController {
         val user = SessionHelper.of(request).user()!!
         return courseService.deleteMedia(chapterId, mediaId, user)
     }
+
+    /**
+     * 向课程中添加一个管理员
+     */
+    @PostMapping("/admin/add")
+    fun addAdmin(courseId: Int, adminUid: String, request: HttpServletRequest): Response<Course> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.addAdmin(courseId, adminUid, user)
+    }
+
+    /**
+     * 向课程中删除一个管理员
+     */
+    @PostMapping("/admin/delete")
+    fun deleteAdmin(courseId: Int, adminUid: String, request: HttpServletRequest): Response<Course> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.deleteAdmin(courseId, adminUid, user)
+    }
+
+    /**
+     * 主动放弃对一个课程的管理权限
+     */
+    @PostMapping("/admin/exit")
+    fun exitAdmin(courseId: Int, request: HttpServletRequest): Response<Any> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.exitAdmin(courseId, user)
+    }
 }
