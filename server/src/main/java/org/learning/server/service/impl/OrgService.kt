@@ -306,6 +306,14 @@ class OrgService : IOrgService {
         }
     }
 
+    private fun getEntity(orgId: Int): OrgNode {
+        val orgOptional = orgNodeRepository.findById(orgId)
+        if (orgOptional.isEmpty) {
+            throw NoAllowedException("不存在id为${orgId}的节点")
+        }
+        return orgOptional.get()
+    }
+
     /**
      * 创建节点，具体由[createOrganization]和[createDepartmentNode]节点实现
      */
@@ -341,16 +349,13 @@ class OrgService : IOrgService {
      * 创建部门节点
      */
     private fun createDepartmentNode(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode> {
-        val orgOptional = orgNodeRepository.findById(orgNodeForm.parentId!!)
-        if (orgOptional.isEmpty) {
-            return Responses.fail("不存在id为${orgNodeForm.parentId}的节点")
-        }
+        var orgNode = getEntity(orgNodeForm.parentId!!)
 
         // 进行主管理员的权限验证。
-        this.guardMainAdmin(orgOptional.get(), user);
+        this.guardMainAdmin(orgNode, user);
 
         // 保存该节点
-        var orgNode = orgNodeForm.toOrgNode()
+        orgNode = orgNodeForm.toOrgNode()
         orgNode = orgNodeRepository.save(orgNode)
         return Responses.ok(orgNode)
     }
@@ -364,19 +369,27 @@ class OrgService : IOrgService {
             return Responses.fail("不存在id为${orgId}的节点")
         }
         val orgNode = orgOptional.get()
-        return if (orgNode.parentId == null) {
-            deleteOrganization(orgNode, user);
+        this.guardMainAdmin(orgNode,user)
+
+
+        if (orgNode.parentId == null) {
+            deleteOrganization(orgNode);
         } else {
-            deleteDepartmentNode(orgNode, user);
+            deleteDepartmentNode(orgNode);
         }
+
+        return Responses.ok()
     }
 
-    private fun deleteOrganization(orgNode: OrgNode, user: User): Response<Any> {
-        TODO("Not yet implemented")
+    private fun deleteOrganization(orgNode: OrgNode) {
+        val depNodes = orgNodeRepository.findAllByParentId(orgNode.id)
+        depNodes.forEach {
+            deleteDepartmentNode(it)
+        }
+        orgNodeRepository.delete(orgNode)
     }
 
-    private fun deleteDepartmentNode(orgNode: OrgNode, user: User): Response<Any> {
-        TODO("Not yet implemented")
+    private fun deleteDepartmentNode(orgNode: OrgNode) {
     }
     //endregion
 }

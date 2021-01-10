@@ -28,14 +28,9 @@ interface IOrgService {
     fun getInvitesById(orgId: Int): List<UserBase>
 
     fun all(): Iterable<OrgSummary>
-
     fun list(user: User): Iterable<OrgSummary>
-
     fun guardMainAdmin(orgNode: OrgNode, user: User)
-
     fun create(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode>
-
     fun delete(orgId: Int, user: User): Response<Any>
-
     fun get(orgId: Int, user: User): Response<OrgSummary>
 }
