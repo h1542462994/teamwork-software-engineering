@@ -58,20 +58,21 @@ public class PageController {
      *
      */
 
-    @GetMapping("/manage")
-    public  String manage (){return "courseManage";}
+    @GetMapping("/courseOpen")
+    public  String courseOpen (){return "courseOpen";}
+    /**
+     * @return page:courseOpen.html
+     */
+
+    @GetMapping("/courseManage")
+    public  String courseManage (){return "courseManage";}
     /**
      * @return page:courseManage.html
      */
 
-    @GetMapping("/managelist")
-    public  String managelist (){return "courseManageList";}
+    @GetMapping("/courseEdit")
+    public String courseEdit(){return "courseEdit";}
     /**
-     * @return page:courseManageList.html
-     */
-    @GetMapping("/manageUpdate")
-    public  String manageUpdate (){return "courseManageUpdate";}
-    /**
-     * @return page:courseManageUpdate.html
+     * @return page:courseEdit.html
      */
 }

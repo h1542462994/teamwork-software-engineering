@@ -7,6 +7,7 @@ object Responses {
     fun <T> ok(message: String) = Response<T>(ResponseTokens.ok, message)
     @JvmStatic
     fun <T> ok(data: T) = Response(ResponseTokens.ok, data)
+
     @JvmStatic
     fun <T> ok(message: String, data: T) = Response(ResponseTokens.ok, message, data)
     @JvmStatic

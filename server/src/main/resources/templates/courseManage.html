@@ -3,9 +3,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/layui/lay/modules/laydate/default/layui.css" media="all">
     <meta charset="UTF-8">
-    <title>#title</title>
+    <title>课程管理</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
             integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -21,240 +22,143 @@
     <script src="/layui/layui.js"></script>
 </head>
 <body>
+<div id="app">
+   <!-- <app-compact  :state="state">-->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #CCE5FF;">
 
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <a class="navbar-brand" href="/courseManage">课程管理</a>
 
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-        <a class="navbar-brand" href="#">课程管理</a>
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-                <a class="nav-link" href="/manage">发布课程</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="/manageUpdate">更新发布</a>
-            </li>
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <div class="dropdown">
+                    <a class="btn dropdown-toggle" href="/courseEdit" role="button" id="dropdownMenuLink"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        课程内容
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="/courseEdit">创建课程</a>
+                        <a class="dropdown-item" href="/courseEdit">编辑课程</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a class="btn dropdown-toggle" href="/courseOpen" role="button" id="dropdownMenuLink2"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        课程发布
+                    </a>
 
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-4" type="search" placeholder="输入要发布课程的编号" aria-label="Search">
-            <button class="btn  btn-outline-primary my-2 my-sm-0" type="submit">搜索</button>
-        </form>
-    </div>
-</nav>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="/courseOpen">更新发布</a>
 
-<br><br>
+                    </div>
+                </div>
 
-<!--以下为更新发布表单内容-->
-<form class="form align-self-center" role="form">
-    <div class="alert alert-dark" role="alert">
-        基础信息
-    </div>
-<!--此部分信息可修改，根据查询的id自动显示-->
-    <div class="form-group form-inline">
-        <label class="col-sm-2 control-label">编号：</label>
-        <input type="text" class="col-sm-7 form-control" id="id">
-    </div>
+            </ul>
+            <!--创建课程时搜索框隐藏-->
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-4" type="search" placeholder="输入课程编号" aria-label="Search"
+                       v-model="model.id">
+                <button class="btn  btn-outline-primary my-2 my-sm-0" type="submit" id="selectid_btn"
+                        v-on:click="selectid">搜索
+                </button>
+            </form>
+        </div>
+    </nav>
+    <br><br>
+        <table id="demo" lay-filter="test"></table>
+        <table class="table table-hover">
 
-    <div class="form-group form-inline">
-        <label class="col-sm-2 control-label">名称：</label>
-        <input type="text" class="col-sm-7 form-control" id="name">
-    </div>
+            <tbody>
+            <tr class="row" style="color:#007BFF;">
+                &nbsp;
+                <!--空格-->
+                <th class="col-sm-1" >操作</th>
+                <th class="col-sm-1" >编号</th>
+                <th class="col-sm-1" >课程名称</th>
+                <th class="col-sm-3" >课程详情</th>
+                <th class="col-sm-1" >是否公开</th>
+                <th class="col-sm-2" >创建时间</th>
+                <th class="col-sm-2" >编辑时间</th>
+            </tr>
+            <!--不用配置文件怎么调用数据库数据呀？-->
+            <!--<s:iterator value="course" ></s:iterator>-->
+            <tr class="row" style="height:60px; overflow:hidden;">
+                <td class="col-sm-1">
+                    &nbsp;
+                    <a href="//www.runoob.com/"><i class="bi bi-trash-fill"></i></a>
+                    <a href="/manageUpdate"><i class="bi bi-pencil-square"></i></a>
+                </td>
 
+               <!-- <td class="col-sm-2">{{state.course.id}} {{state.course.pic}}</td>
+                <td class="col-sm-1">{{state.course.name}}</td>
+                <td class="col-sm-3">{{state.course.info}}</td>
+                <td class="col-sm-1">{{state.course.isEdit}}</td>
+                <td class="col-sm-2">{{state.course.createTime}}</td>
+                <td class="col-sm-2">{{state.course.editTime}}</td>-->
+            </tr>
+            <tr class="row" style="height:80px; overflow:hidden;">
+                <td class="col-sm-1">
+                    &nbsp;
+                    <a href="//www.runoob.com/"><i class="bi bi-trash-fill"></i></a>
+                    <a href="/manageUpdate"><i class="bi bi-pencil-square"></i></a>
+                </td>
 
-    <div class="mb-3 form-group form-inline" >
-        <label class="col-sm-2 control-label"> 摘要：</label>
-        <textarea class="col-sm-7 form-control" rows="3" id="info" ></textarea>
-    </div>
+                <td class="col-sm-1">57</td>
+                <td class="col-sm-2">市场营销</td>
+                <td class="col-sm-3">市场是商品经济的范畴，是一种以商品交换为内容的经济联系形式。对于企业来说，市场是营销活动的出发点和归宿。</td>
+                <td class="col-sm-1">是</td>
+                <td class="col-sm-2">2020-12-31</td>
+                <td class="col-sm-2">2021-01-09</td>
+            </tr>
 
-    <div class="mb-3 form-group form-inline">
-        <label class="col-sm-2 control-label"> 主图：</label>
-        <textarea class="col-sm-7 form-control" rows="4" id="pic" ></textarea>
-    </div>
+            </tbody>
+        </table>
 
-    <p class="form-control-static"  style="text-align:center">最佳尺寸：750*380px或750*750px</p>
-
-    <div class="form-group form-inline">
-        <label class="col-sm-2 control-label">课程创建时间:</label>
-        <input type="text" class="col-sm-7 form-control" id="createTime">
-    </div>
-    <div class="alert alert-dark" role="alert">
-        章节信息有待完善
-    </div>
-    <!--此部分信息可修改，根据查询的id自动显示-->
-    <div class="form-group form-inline">
-        <label class="col-sm-2 control-label">课程资源：</label>
-        <input type="file" class="col-sm-7 form-control-file" >
-    </div>
-
-
-    <div class="form-group form-inline">
-        <label class="col-sm-2 control-label">课程分类：</label>
-        <select class="col-sm-7 form-control">
-            <option>经济管理</option>
-            <option>计算机</option>
-            <option>心理学</option>
-            <option>艺术设计</option>
-            <option>法学</option>
-        </select>
-    </div>
-
-    <div class="form-group form-inline">
-        <label class="col-sm-2 control-label">课程修改时间:</label>
-        <input type="text" class="col-sm-7 form-control" id="editTime">
-    </div>
-    <div class="radio form-group form-inline">
-        <label class="col-sm-2 control-label">是否可编辑:</label>
-        <input type="radio" class="col-sm-1 form-control" name="optionsRadios" id="edit" value="option1" checked>
-        是
-
-        <input type="radio" class="col-sm-1 form-control" name="optionsRadios" id="uedit" value="option2">
-        否
-    </div>
-
-    <div class="alert alert-primary" role="alert">
-        发布信息
-    </div>
-    <div class="form-group form-inline" style="text-align:center">
-        <label class="col-sm-2 control-label">发布对象：</label>
-        <select class="col-sm-7 form-control" placeholder="请选择发布对象">
-            <option>工程部</option>
-            <option>财务部</option>
-            <option>人力资源部</option>
-            <option>策划部</option>
-            <option>公关部</option>
-        </select>
-    </div>
-
-
-    <div class="form-group form-inline" style="text-align:center">
-
-        <label class="col-sm-2 control-label">开课时间：</label>
-        <input type="text" class="col-sm-2 form-control" id="start_time">
-        <label class="col-sm-2 control-label">结课时间：</label>
-        <input type="text" class="col-sm-2 form-control" id="end_time">
-
-    </div>
-
-    <div class="radio  form-group form-inline">
-        <label class="col-sm-2 control-label">是否公开:</label>
-            <input type="radio" class="col-sm-1 form-control" name="optionsRadios" id="public" value="option1" checked>
-            是
-
-            <input type="radio" class="col-sm-1 form-control" name="optionsRadios" id="private" value="option2">
-            否
-    </div>
-
-    <div class="button-group" style="text-align:center">
-        <button type="submit" class="btn btn-primary" id="add_btn">保存</button>
-        <button type="reset" class="btn btn-light">取消</button>
-    </div>
-
-</form>
+        <nav aria-label="Page navigation example" style="text-align:center">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">上一页</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">下一页</a></li>
+            </ul>
+        </nav>
+    <!--</app-compact>-->
+</div>
 <script>
-
-
-    $("#mytab a").click(function(e){
-      e.preventDefault();
-      $(this).tab("show");
-    })
-
-    layui.use('laydate', function(){
-        var laydate = layui.laydate;
-        var now=new Date();
-        //日期范围
-        var startTime=laydate.render({
-
-            elem: '#start_time',
-            type: 'datetime',
-            format: 'yyyy-MM-dd HH:mm:ss',
-            theme: '#007BFF',
-            min:now.toLocaleString(),
-            max:"2099-12-31",//设置一个默认最大值
-            ready: function(date){
-                //可以自定义时分秒
-                this.dateTime.hours=now.getHours();
-                this.dateTime.minutes=now.getMinutes();
-                this.dateTime.seconds=now.getSeconds();
-            },
-            done: function(value, date){
-                //开始时间框里设置结束时间的最小时间
-                endTime.config.min ={
-                    year:date.year,
-                    month:date.month-1, //关键
-                    date: date.date,
-                    hours: this.dateTime.hours,
-                    minutes: this.dateTime.minutes,
-                    seconds : this.dateTime.seconds
-                };
-            }
-        });
-        var endTime= laydate.render({
-
-            elem: '#end_time',//选择器结束时间
-            type: 'datetime',
-            format: 'yyyy-MM-dd HH:mm:ss',
-            theme: '#007BFF',
-            min:"1970-1-1 00:00:00",//设置min默认最小值
-            done: function(value,date){
-                //在结束时间框里设置开始时间的最大时间
-                startTime.config.max={
-                    year:date.year,
-                    month:date.month-1,//关键
-                    date: date.date,
-                    hours: 0,
-                    minutes: 0,
-                    seconds : 0
-                }
-            }
-        });
-    });
-
     let app = new Vue({
         el: '#app',
         data: {
-            c: {
-                // inject common object
-                common: common,
-                // inject net object
-                net: net,
-                title: '课程管理',
-                menu: common.menu_index
+            model: {
+                id: '',
             },
-            model:{
-                id:id,
-                name:name,
-                info:this.info,
-                pic:this.pic
-            },
-            state: common.defaultUserState()
+            state: common.CourseState()
+
         },
         methods: {
             stateChanged(state) {
                 this.state = state
             },
-            async addCourse() {
-                let add_btn = $('#add_btn')
-                let res = await net.coursePublish(app.model.id, app.model.name,app.model.info,app.model.pic);
-                add_btn.disabled = true;
+            async selectid() {
+                let selectid_btn = $('#selectid_btn')
+                let res = await net.courseSelect(app.model.id);
+                selectid_btn.disabled = true;
                 if (res !== net.net_fail && res.code === 200) {
-                    console.log(res)
-                    window.location.assign('/')
+                    window.location.assign('/managelist')
                 }
-                add_btn.disabled = false;
+                selectid_btn.disabled = false;
             },
             async init() {
                 document.title = app.c.title;
                 net.addWatcher(app.stateChanged)
-                net.loaded()
+                app.state = await net.userState()
                 // to add the initialization code
+                net.loaded()
             }
         }
     })
-
     window.onload = () => {
         app.init();
     }
 </script>
-
 </body>
 </html>

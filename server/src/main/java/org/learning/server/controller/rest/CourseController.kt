@@ -1,14 +1,11 @@
 package org.learning.server.controller.rest
 
 import org.learning.server.entity.Course
-import org.learning.server.form.CoursePublishForm
-import org.learning.server.model.ActionResult
+import org.learning.server.form.CourseSelectForm
 import org.learning.server.model.common.Response
-import org.learning.server.model.common.ResponseToken
 import org.learning.server.model.common.ResponseTokens
-import org.learning.server.model.common.Responses
+import org.learning.server.model.common.ResponseTokens.ok
 import org.learning.server.service.ICourseService
-import org.learning.server.service.impl.CourseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,14 +17,21 @@ import javax.validation.Valid
 @RequestMapping("/api/course")
 class CourseController {
     @Autowired
-    lateinit var courseService: CourseService
-
+    lateinit var courseService: ICourseService
+    private var course: String = "course"
     /**
-     * 添加新课程
+     * 根据课程id查找课程
      * */
+    @PostMapping("/selectid")
+    fun selectid(@Valid courseSelectForm: CourseSelectForm, request: HttpServletRequest): Response<Course> {
+        var response = courseService.selectid(courseSelectForm)
+        if (response.code == ResponseTokens.ok.code) {
+            //将查找到的对象存储在session作用域中
+            request.session.setAttribute(course, response.data)
+        }
+        return courseService.selectid(courseSelectForm)
 
-    @PostMapping("/addCourse")
-    fun addCourse(@Valid coursePublishForm: CoursePublishForm, request: HttpServletRequest): Response<Course> {
-        return courseService.create(coursePublishForm)
+
     }
+
 }

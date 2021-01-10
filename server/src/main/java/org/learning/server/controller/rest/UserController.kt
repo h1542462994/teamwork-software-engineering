@@ -1,5 +1,6 @@
 package org.learning.server.controller.rest
 
+import org.learning.server.entity.Course
 import org.learning.server.entity.User
 import org.learning.server.form.UserLoginForm
 import org.learning.server.form.UserRegisterForm
@@ -24,7 +25,7 @@ class UserController {
     @Autowired
     lateinit var userService: IUserService
     private val user: String = "user"
-
+    private val course: String = "course"
     /**
      * 用户登录
      */
@@ -49,6 +50,20 @@ class UserController {
             Responses.fail("你还没有登录")
         } else {
             Responses.ok(user as User)
+        }
+    }
+
+    /**
+     *获取当前查询的课程
+     */
+    @PostMapping("/coursestate")
+    fun courseState(request: HttpServletRequest):Response<Course>{
+        var course=request.session.getAttribute(course)
+        return if(course==null){
+            Responses.fail("该课程尚未创建")
+        }
+        else{
+            Responses.ok(course as Course)
         }
     }
 

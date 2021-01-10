@@ -16,14 +16,12 @@ class AsyncNet {
     uri_user_login = "/api/user/login"
     uri_user_state = "/api/user/state"
     uri_org_all = "/api/org/all"
-    uri_course_all = "/api/course/all"
-    uri_course_add="/api/course/add"
-    uri_course_publish="/api/course/publish"
     uri_org_get = "/api/org/get"
     uri_org_grouped = "/api/org/grouped"
-    uri_course_all = "/api/course/all"
     uri_org_user_invite = "/api/org/user_invite"
     uri_org_invites_get = "/api/org/invites/get"
+    uri_course_all = "/api/course/all"
+    uri_course_selectid="/api/course/selectid"
     //endregion
     //region public domain
     // add restAPI support
@@ -97,15 +95,12 @@ class AsyncNet {
     }
 
     /**
-     * 通过api/user/publish 发布课程
+     * 通过api/course/selectid 进行课程查询
      * @param id
-     * @param  name
-     * @param info
-     * @param pic
-     * @returns {Promise<response_course>}
+     * @returns {Promise<string|response<*>>}
      */
-    async coursePublish(id,name,info,pic){
-        return  this.post(this.uri_course_publish,`id=${id}&info=${info}$name=${name}$pic=${pic}`)
+    async courseSelect(id){
+        return this.post(this.uri_course_selectid,`id=${id}`)
     }
 
     /**
