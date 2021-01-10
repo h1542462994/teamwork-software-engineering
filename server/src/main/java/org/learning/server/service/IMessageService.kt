@@ -1,5 +1,6 @@
 package org.learning.server.service
 
+import org.learning.server.entity.Course
 import org.learning.server.entity.User
 import org.learning.server.entity.UserMessage
 import org.learning.server.form.MessageForm
@@ -20,4 +21,7 @@ interface IMessageService {
      * 阅读一条消息
      */
     fun read(messageId: Int, user: User): Response<UserMessage>
+
+    fun postCourseEditChange(course: Course, user: User)
+
 }

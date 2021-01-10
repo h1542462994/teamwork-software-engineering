@@ -46,9 +46,9 @@ public class UserService implements IUserService {
     public Response<User> login(UserLoginForm user) {
 
         Optional<User> dbUser = userRepository.findByUid(user.getUid());
-        /*if (dbUser.isEmpty()) {
+        if (dbUser.isEmpty()) {
             return Responses.fail("该账号不存在");
-        }*/
+        }
 
         if (!dbUser.get().getPassword().equals(user.getPassword())){
             return Responses.fail("密码错误");

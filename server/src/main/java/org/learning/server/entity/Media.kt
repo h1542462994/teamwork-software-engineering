@@ -16,7 +16,7 @@ class Media {
     /**
      * 显示的位置
      */
-    var order: Int = 0
+    var indexAt: Int = 0
     @ManyToOne
     @JsonIgnore
     var resource: Resource = Resource()
