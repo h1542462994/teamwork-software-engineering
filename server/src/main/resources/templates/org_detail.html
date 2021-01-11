@@ -88,22 +88,41 @@
                 </div>
             </div>
             <div class="col flex-wrap card-margin container-fluid">
-                <div class="card">
-                    <div class="card-title">
-                        <h5>申请用户加入组织</h5>
-                    </div>
+                <div class="card card-block">
                     <div class="card-body">
-                        <div v-for="invite in inviteModel.inviteList" class="hover-select">
-                            申请用户 {{ invite.user.name }}#{{ invite.user.uid }} 加入 {{ invite.orgNode.name
-                            }}#{{ invite.orgNode.id }}
+                        <h5 class="card-title">
+                            {{ organization.name }}#{{ organization.id }}
+                        </h5>
+                        <div>
+                            描述： {{ organization.description }}
+                        </div>
+                        <div>
+                            是否公开的组织：
+                            <input type="checkbox" v-model="organization.public">
+                            {{ organization.public === true? '公开' : '不公开' }}
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-title">
-                        <h5>用户申请加入组织</h5>
-                    </div>
+                <div class="card card-block">
                     <div class="card-body">
+                        <h5 class="card-title">
+                            申请用户加入组织
+                        </h5>
+                        <div v-for="invite in inviteModel.inviteList" class="hover-select">
+                            {{ invite.user.name }}#{{ invite.user.uid }} -&gt;
+                            <span class="badge badge-me bg-blue">
+                                <span v-if="invite.orgNode.id !== invite.root.id">{{ invite.root.name }}#{{ invite.root.id }}</span>&nbsp;
+                                {{ invite.orgNode.name }}#{{ invite.orgNode.id }}
+                            </span>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-block">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            用户申请加入组织
+                        </h5>
                         <div v-for="invite in inviteModel.inviteListInverse" class="hover-select">
                             用户 {{ invite.user.name }}#{{ invite.user.uid }} 申请加入 {{ invite.orgNode.name
                             }}#{{ invite.orgNode.id }}

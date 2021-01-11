@@ -7,4 +7,5 @@ export declare class UserOrgNodeInvitation {
     inverse: boolean
     user: User
     orgNode: Organization | Department
+    root: Organization
 }
