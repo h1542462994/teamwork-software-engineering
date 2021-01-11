@@ -9,5 +9,6 @@ import java.util.*
 
 interface UserOrgNodeInvitationRepository: CrudRepository<UserOrgNodeInvitation, Int> {
     fun findAllByOrgNode(orgNode: OrgNode): List<UserOrgNodeInvitation>
+    fun findAllByUser(user: User): List<UserOrgNodeInvitation>
     fun findByUserAndOrgNodeAndInverse(user: User, orgNode: OrgNode, inverse: Boolean): Optional<UserOrgNodeInvitation>
 }

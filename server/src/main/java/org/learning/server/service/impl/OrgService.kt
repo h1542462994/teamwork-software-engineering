@@ -8,9 +8,6 @@ import org.learning.server.exception.NoAllowedException
 import org.learning.server.form.OrgNodeForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
-import org.learning.server.model.complex.OrgNodeSummary
-import org.learning.server.model.complex.OrgSummary
-import org.learning.server.model.complex.OrganizationGrouped
 import org.learning.server.service.IOrgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -18,7 +15,7 @@ import java.util.*
 import kotlin.collections.HashSet
 import kotlin.math.max
 import org.learning.server.common.MergeExtension.merge
-import org.learning.server.model.complex.UserInfo
+import org.learning.server.model.complex.*
 import org.learning.server.repository.*
 
 @Service
@@ -367,6 +364,12 @@ class OrgService : IOrgService {
         return userList.merge().map { it as UserInfo }
     }
 
+    private fun toInvitation(userOrgNodeInvitation: UserOrgNodeInvitation) : Invitation {
+        return userOrgNodeInvitation.toInvitation(
+            this.getOrganizationOfNode(userOrgNodeInvitation.orgNode)
+        )
+    }
+
     override fun removePerson(orgId: Int, personUid: String, user: User): Response<User> {
         TODO("Not yet implemented")
     }
@@ -375,12 +378,25 @@ class OrgService : IOrgService {
         TODO("Not yet implemented")
     }
 
-    override fun inviteList(orgId: Int, user: User): Response<Iterable<UserOrgNodeInvitation>> {
+    private fun getInviteEntity(inviteId: Int) : UserOrgNodeInvitation {
+        val inviteOptional = userOrgNodeInvitationRepository.findById(inviteId)
+        if (inviteOptional.isEmpty) {
+            throw NoAllowedException("不存在该invite")
+        }
+        return inviteOptional.get()
+    }
+
+    override fun inviteList(orgId: Int, user: User): Response<Iterable<Invitation>> {
         val orgNode = getEntity(orgId)
         this.guardMainAdmin(orgNode, user)
         val orgNodes = this.getFlatOrgNodesOfOrgNode(orgNode)
         val userOrgNodeInvitations = orgNodes.flatMap { userOrgNodeInvitationRepository.findAllByOrgNode(it) }
-        return Responses.ok(userOrgNodeInvitations)
+        return Responses.ok(userOrgNodeInvitations.map { this.toInvitation(it) })
+    }
+
+    override fun inviteListOfUser(user: User): Response<Iterable<Invitation>> {
+        val userOrgNodeInvitation = userOrgNodeInvitationRepository.findAllByUser(user)
+        return Responses.ok(userOrgNodeInvitation.map { this.toInvitation(it) })
     }
 
     override fun orgInvitePerson(orgId: Int, personUid: String, user: User): Response<Any> {
@@ -414,19 +430,84 @@ class OrgService : IOrgService {
     }
 
     override fun personInviteOrg(orgId: Int, user: User): Response<Any> {
-        TODO("Not yet implemented")
+        val orgNode = this.getOrganizationOfNode(getEntity(orgId))
+        if (this.getPersonsInner(orgNode).find { it.uid == user.uid } != null) {
+            return Responses.fail("你已经加入该组织")
+        } else {
+            userOrgNodeInvitationRepository.save(UserOrgNodeInvitation().apply {
+                this.user = user
+                this.orgNode = orgNode
+                this.inverse = true
+            })
+        }
+        return Responses.ok()
     }
 
     override fun cancelInvite(inviteId: Int, user: User): Response<Any> {
-        TODO("Not yet implemented")
+        val invite = getInviteEntity(inviteId)
+        if (invite.inverse) {
+            // 用户申请加入组织
+            if (invite.user.uid == user.uid) {
+                userOrgNodeInvitationRepository.delete(invite)
+                return Responses.ok()
+            }
+        } else {
+            // 组织申请用户加入组织
+            this.guardMainAdmin(invite.orgNode, user)
+            userOrgNodeInvitationRepository.delete(invite)
+            return Responses.ok()
+        }
+
+        return Responses.fail("权限不足")
     }
 
     override fun processInvite(inviteId: Int, user: User, accept: Boolean): Response<Any> {
-        TODO("Not yet implemented")
+        val invite = getInviteEntity(inviteId)
+        if (invite.inverse) {
+            // 用户申请加入组织
+            this.guardMainAdmin(invite.orgNode, user)
+            if (accept) {
+                this.processInviteInner(invite)
+            } else {
+                userOrgNodeInvitationRepository.delete(invite)
+            }
+        } else {
+            // 组织申请用户加入组织
+            if (user.uid != invite.user.uid) {
+                return Responses.fail("权限不足")
+            }
+            if (accept) {
+                this.processInviteInner(invite)
+            } else {
+                userOrgNodeInvitationRepository.delete(invite)
+            }
+        }
+        return Responses.ok()
     }
 
-    override fun changeLevel(orgId: Int, personUid: String, level: Int): Response<Any> {
-        TODO("Not yet implemented")
+    private fun processInviteInner(invite: UserOrgNodeInvitation) {
+        if (this.userOrgNodeRepository.findByUserAndOrgNode(invite.user, invite.orgNode).isEmpty) {
+            this.userOrgNodeRepository.save(UserOrgNode().apply {
+                this.user = invite.user
+                this.orgNode = invite.orgNode
+                this.level = 0
+            })
+        }
+    }
+
+    override fun changeLevel(orgId: Int, personUid: String, level: Int, user: User): Response<Any> {
+        val orgNode = this.getEntity(orgId)
+        this.guardMainAdmin(orgNode, user)
+        val person = this.getUserEntity(personUid)
+        val userOrgNodeOptional = userOrgNodeRepository.findByUserAndOrgNode(person, orgNode)
+        if (userOrgNodeOptional.isEmpty) {
+            return Responses.fail("该用户和组织的关系不存在")
+        }
+
+        val userOrgNode = userOrgNodeOptional.get()
+        userOrgNode.level = level
+        userOrgNodeRepository.save(userOrgNode)
+        return Responses.ok()
     }
 
     private fun getEntity(orgId: Int): OrgNode {

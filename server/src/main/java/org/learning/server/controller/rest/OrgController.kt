@@ -11,6 +11,7 @@ import org.learning.server.form.OrgNodeForm
 import org.learning.server.model.annotation.NoUsed
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
+import org.learning.server.model.complex.Invitation
 import org.learning.server.model.complex.OrgSummary
 import org.learning.server.model.complex.OrganizationGrouped
 import org.learning.server.model.complex.UserInfo
@@ -153,9 +154,18 @@ class OrgController {
      * 查找一个组织的申请列表
      */
     @PostMapping("/invite/get")
-    fun inviteList(orgId: Int, request: HttpServletRequest): Response<Iterable<UserOrgNodeInvitation>> {
+    fun inviteList(orgId: Int, request: HttpServletRequest): Response<Iterable<Invitation>> {
         val user = SessionHelper.of(request).user()!!
         return orgService.inviteList(orgId, user)
+    }
+
+    /**
+     * 查找一个用户的申请列表
+     */
+    @PostMapping("/invite/get/user")
+    fun inviteListOfUser(request: HttpServletRequest): Response<Iterable<Invitation>> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.inviteListOfUser(user);
     }
 
     /**

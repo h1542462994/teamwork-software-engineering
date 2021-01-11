@@ -8,10 +8,7 @@ import org.learning.server.entity.base.OrganizationBase
 import org.learning.server.entity.base.UserBase
 import org.learning.server.form.OrgNodeForm
 import org.learning.server.model.common.Response
-import org.learning.server.model.complex.OrgNodeSummary
-import org.learning.server.model.complex.OrgSummary
-import org.learning.server.model.complex.OrganizationGrouped
-import org.learning.server.model.complex.UserInfo
+import org.learning.server.model.complex.*
 import java.util.*
 
 interface IOrgService {
@@ -40,12 +37,14 @@ interface IOrgService {
     fun getPersons(orgId: Int, user: User): List<UserInfo>
     fun removePerson(orgId: Int, personUid: String, user: User): Response<User>
     fun exitPerson(orgId: Int, user: User): Response<Any>
-    fun inviteList(orgId: Int, user: User): Response<Iterable<UserOrgNodeInvitation>>
+    fun inviteList(orgId: Int, user: User): Response<Iterable<Invitation>>
+    fun inviteListOfUser(user: User): Response<Iterable<Invitation>>
     fun orgInvitePerson(orgId: Int, personUid: String, user: User): Response<Any>
     fun personInviteOrg(orgId: Int, user: User): Response<Any>
     fun cancelInvite(inviteId: Int, user: User): Response<Any>
     fun processInvite(inviteId: Int, user: User, accept: Boolean): Response<Any>
-    fun changeLevel(orgId: Int, personUid: String, level: Int): Response<Any>
+    fun changeLevel(orgId: Int, personUid: String, level: Int, user: User): Response<Any>
     fun guardVisit(orgNode: OrgNode, user: User)
     fun searchPerson(orgId: Int, query: String, user: User): Response<Iterable<User>>
+
 }
