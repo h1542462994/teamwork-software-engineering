@@ -11,10 +11,6 @@ import org.learning.server.model.common.Responses
 import org.learning.server.model.complex.OrgNodeSummary
 import org.learning.server.model.complex.OrgSummary
 import org.learning.server.model.complex.OrganizationGrouped
-import org.learning.server.repository.OrgNodeRepository
-import org.learning.server.repository.OrganizationRepository
-import org.learning.server.repository.UserOrgNodeRepository
-import org.learning.server.repository.UserOrganizationInvitationRepository
 import org.learning.server.service.IOrgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -23,6 +19,7 @@ import kotlin.collections.HashSet
 import kotlin.math.max
 import org.learning.server.common.MergeExtension.merge
 import org.learning.server.model.complex.UserInfo
+import org.learning.server.repository.*
 
 @Service
 class OrgService : IOrgService {
@@ -38,6 +35,9 @@ class OrgService : IOrgService {
 
     @Autowired
     lateinit var userOrgNodeRepository: UserOrgNodeRepository
+
+    @Autowired
+    lateinit var userRepository: UserRepository
     //endregion
 
     override fun findAll(): Iterable<Organization> {
@@ -495,6 +495,19 @@ class OrgService : IOrgService {
         orgNodeRepository.delete(orgNode)
 
         // TODO: 发送通知
+    }
+
+    override fun searchPerson(orgId: Int, query: String, user: User): Response<Iterable<User>>{
+        val org = getEntity(orgId)
+        this.guardVisit(org, user)
+        val existUsers = this.getPersonsInner(org, 0);
+
+        val users = userRepository.findAllByNameLikeOrUidLikeOrderByUid("%${query}%", "%${query}%");
+        return Responses.ok(
+            users.filter {
+                existUsers.find { it2 -> it2.uid == it.uid } == null
+            }
+        )
     }
     //endregion
 }

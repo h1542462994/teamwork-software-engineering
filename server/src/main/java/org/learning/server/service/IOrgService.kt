@@ -46,4 +46,5 @@ interface IOrgService {
     fun processInvite(inviteId: Int, user: User, accept: Boolean): Response<Any>
     fun changeLevel(orgId: Int, personUid: String, level: Int): Response<Any>
     fun guardVisit(orgNode: OrgNode, user: User)
+    fun searchPerson(orgId: Int, query: String, user: User): Response<Iterable<User>>
 }

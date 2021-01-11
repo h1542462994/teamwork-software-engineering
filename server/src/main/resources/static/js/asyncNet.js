@@ -21,6 +21,8 @@ class AsyncNet {
     uri_org_grouped = "/api/org/grouped"
     uri_org_user_invite = "/api/org/user_invite"
     uri_org_invites_get = "/api/org/invites/get"
+    uri_org_get_person = "/api/org/person/get"
+    uri_org_search_person = "/api/org/person/search"
     uri_course_all = "/api/course/all"
     uri_course_selectid="/api/course/selectid"
     //endregion
@@ -158,10 +160,29 @@ class AsyncNet {
     /**
      * 通过api/org/get获取部门的细节信息
      * @param orgId
-     * @return {Promise<void>}
+     * @return {Promise<ResponseOrganization>}
      */
     async orgGet(orgId) {
         return this.post(this.uri_org_get, `orgId=${orgId}`)
+    }
+
+    /**
+     * 通过api/org/person/get 获取人员列表
+     * @param orgId
+     * @return {Promise<ResponseUsers>}
+     */
+    async orgGetPerson(orgId) {
+        return this.post(this.uri_org_get_person, `orgId=${orgId}`)
+    }
+
+    /**
+     * 通过api/org/person/search 搜索用户
+     * @param orgId
+     * @param query
+     * @return {Promise<ResponseUsers>}
+     */
+    async orgSearchPerson(orgId, query) {
+        return this.post(this.uri_org_search_person, `orgId=${orgId}&query=${query}`)
     }
     //endregion
 }

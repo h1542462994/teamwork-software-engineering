@@ -3,6 +3,7 @@ package org.learning.server.model.complex
 class UserTag {
     var uid: String = ""
     var nodeId: Int = -1
+    var name: String = ""
     var depth: Int = 0
     var level: Int = 0
 
