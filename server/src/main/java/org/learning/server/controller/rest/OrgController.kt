@@ -4,6 +4,7 @@ import org.learning.server.common.SessionHelper
 import org.learning.server.entity.OrgNode
 import org.learning.server.entity.Organization
 import org.learning.server.entity.User
+import org.learning.server.entity.UserOrgNodeInvitation
 import org.learning.server.entity.base.OrganizationBase
 import org.learning.server.entity.base.UserBase
 import org.learning.server.form.OrgNodeForm
@@ -146,5 +147,23 @@ class OrgController {
     fun searchPerson(orgId: Int, query: String, request: HttpServletRequest): Response<Iterable<User>> {
         val user = SessionHelper.of(request).user()!!
         return orgService.searchPerson(orgId, query, user)
+    }
+
+    /**
+     * 查找一个组织的申请列表
+     */
+    @PostMapping("/invite/get")
+    fun inviteList(orgId: Int, request: HttpServletRequest): Response<Iterable<UserOrgNodeInvitation>> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.inviteList(orgId, user)
+    }
+
+    /**
+     * 组织邀请用户加入
+     */
+    @PostMapping("/invite/org2person")
+    fun orgInvitePerson(orgId: Int, personUid: String, request: HttpServletRequest): Response<Any> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.orgInvitePerson(orgId, personUid, user)
     }
 }

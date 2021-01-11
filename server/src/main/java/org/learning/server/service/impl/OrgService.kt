@@ -38,6 +38,9 @@ class OrgService : IOrgService {
 
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var userOrgNodeInvitationRepository: UserOrgNodeInvitationRepository
     //endregion
 
     override fun findAll(): Iterable<Organization> {
@@ -260,6 +263,13 @@ class OrgService : IOrgService {
         TODO("Not yet implemented")
     }
 
+    private fun getUserEntity(uid: String): User {
+        val userOptional = userRepository.findByUid(uid)
+        if (userOptional.isEmpty) {
+            throw NoAllowedException("不存在该用户")
+        }
+        return userOptional.get()
+    }
 
     //endregion
 
@@ -346,7 +356,7 @@ class OrgService : IOrgService {
         return getPersonsInner(orgNode, 0)
     }
 
-    private fun getPersonsInner(orgNode: OrgNode, depth: Int) : List<UserInfo> {
+    private fun getPersonsInner(orgNode: OrgNode, depth: Int = 0) : List<UserInfo> {
         val userList: LinkedList<UserInfo> = LinkedList()
         val userOrgNodes = userOrgNodeRepository.findAllByOrgNode(orgNode)
         userList.addAll(userOrgNodes.map { it.toUserInfo(depth) })
@@ -365,15 +375,49 @@ class OrgService : IOrgService {
         TODO("Not yet implemented")
     }
 
-    override fun inviteList(orgId: Int, user: User): Response<UserOrgNodeInvitation> {
-        TODO("Not yet implemented")
+    override fun inviteList(orgId: Int, user: User): Response<Iterable<UserOrgNodeInvitation>> {
+        val orgNode = getEntity(orgId)
+        this.guardMainAdmin(orgNode, user)
+        val orgNodes = this.getFlatOrgNodesOfOrgNode(orgNode)
+        val userOrgNodeInvitations = orgNodes.flatMap { userOrgNodeInvitationRepository.findAllByOrgNode(it) }
+        return Responses.ok(userOrgNodeInvitations)
     }
 
     override fun orgInvitePerson(orgId: Int, personUid: String, user: User): Response<Any> {
+        val orgNode = getEntity(orgId)
+        this.guardMainAdmin(orgNode, user)
+        val person = getUserEntity(personUid)
+        // 获取组织节点
+        val org = this.getOrganizationOfNode(orgNode)
+        if (getPersonsInner(orgNode).find { it.uid == personUid } != null) {
+            // 如果这个用户已经是这个组织的了，则直接添加
+            if (userOrgNodeRepository.findByUserAndOrgNode(person, orgNode).isEmpty) {
+                userOrgNodeRepository.save(UserOrgNode().apply {
+                    this.level = 0
+                    this.user = person
+                    this.orgNode = orgNode
+                })
+            }
+        } else {
+            // 否则发送邀请
+            val userOrgNodeInvitationOptional = userOrgNodeInvitationRepository.findByUserAndOrgNodeAndInverse(user, orgNode, false);
+            if (userOrgNodeInvitationOptional.isEmpty) {
+                userOrgNodeInvitationRepository.save(UserOrgNodeInvitation().apply {
+                    this.user = person
+                    this.orgNode = orgNode
+                    this.inverse = false
+                })
+            }
+        }
+
+        return Responses.ok()
+    }
+
+    override fun personInviteOrg(orgId: Int, user: User): Response<Any> {
         TODO("Not yet implemented")
     }
 
-    override fun personInviteOrg(orgId: Int, personUid: String, user: User): Response<Any> {
+    override fun cancelInvite(inviteId: Int, user: User): Response<Any> {
         TODO("Not yet implemented")
     }
 
@@ -500,13 +544,11 @@ class OrgService : IOrgService {
     override fun searchPerson(orgId: Int, query: String, user: User): Response<Iterable<User>>{
         val org = getEntity(orgId)
         this.guardVisit(org, user)
-        val existUsers = this.getPersonsInner(org, 0);
+        //val existUsers = this.getPersonsInner(org, 0);
 
         val users = userRepository.findAllByNameLikeOrUidLikeOrderByUid("%${query}%", "%${query}%");
         return Responses.ok(
-            users.filter {
-                existUsers.find { it2 -> it2.uid == it.uid } == null
-            }
+            users
         )
     }
     //endregion

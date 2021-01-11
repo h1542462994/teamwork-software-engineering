@@ -20,9 +20,11 @@ class AsyncNet {
     uri_org_list = "/api/org/list"
     uri_org_grouped = "/api/org/grouped"
     uri_org_user_invite = "/api/org/user_invite"
-    uri_org_invites_get = "/api/org/invites/get"
+    uri_org_invite_get = "/api/org/invite/get"
     uri_org_get_person = "/api/org/person/get"
     uri_org_search_person = "/api/org/person/search"
+    uri_org_invite_list = "/api/org/invite/get"
+    uri_org_invite_org2person = "/api/org/invite/org2person"
     uri_course_all = "/api/course/all"
     uri_course_selectid="/api/course/selectid"
     //endregion
@@ -132,6 +134,7 @@ class AsyncNet {
     }
 
     /**
+     * @deprecated
      * 通过api/org/user_invite进行加入部门的申请
      * @param orgId
      * @return {Promise<ResponseOrganization>}
@@ -141,6 +144,7 @@ class AsyncNet {
     }
 
     /**
+     * @deprecated
      * 通过api/org/invites/get
      * @param orgId
      * @return {Promise<ResponseUsers>}
@@ -183,6 +187,25 @@ class AsyncNet {
      */
     async orgSearchPerson(orgId, query) {
         return this.post(this.uri_org_search_person, `orgId=${orgId}&query=${query}`)
+    }
+
+    /**
+     * 通过api/org/invite/get 搜索申请列表
+     * @param orgId
+     * @return {Promise<ResponseUserOrgNodeInvitations>}
+     */
+    async orgInviteList(orgId) {
+        return this.post(this.uri_org_invite_get, `orgId=${orgId}`)
+    }
+
+    /**
+     * 通过api/org/invite/org2person 进行邀请
+     * @param orgId
+     * @param personUid
+     * @return {Promise<Response<any>>}
+     */
+    async orgInvitePerson(orgId, personUid) {
+        return this.post(this.uri_org_invite_org2person, `orgId=${orgId}&personUid=${personUid}`)
     }
     //endregion
 }

@@ -88,7 +88,29 @@
                 </div>
             </div>
             <div class="col flex-wrap card-margin container-fluid">
-                <div class="title font-weight-bold">申请列表</div>
+                <div class="card">
+                    <div class="card-title">
+                        <h5>申请用户加入组织</h5>
+                    </div>
+                    <div class="card-body">
+                        <div v-for="invite in inviteModel.inviteList" class="hover-select">
+                            申请用户 {{ invite.user.name }}#{{ invite.user.uid }} 加入 {{ invite.orgNode.name
+                            }}#{{ invite.orgNode.id }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <h5>用户申请加入组织</h5>
+                    </div>
+                    <div class="card-body">
+                        <div v-for="invite in inviteModel.inviteListInverse" class="hover-select">
+                            用户 {{ invite.user.name }}#{{ invite.user.uid }} 申请加入 {{ invite.orgNode.name
+                            }}#{{ invite.orgNode.id }}
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
         </div>
@@ -105,23 +127,34 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form form-inline">
-                                    <input class="col" placeholder="请搜索用户" v-model="inviteModel.query">
+                                    <label>
+                                        <input class="col" placeholder="请搜索用户" v-model="inviteModel.query">
+                                    </label>
                                     <button class="btn btn-primary btn-sm" v-on:click="searchPerson">搜索</button>
                                 </div>
                                 <div>
-                                    <div v-for="user in inviteModel.users" class="hover-select user-select-none">
+                                    <div v-for="user in inviteModel.users" class="hover-select user-select-none"
+                                         v-on:click="clickUserAdd(user)">
                                         {{ user.name }}#{{ user.uid }}
                                     </div>
                                 </div>
                             </div>
                             <div class="col">
-                                列表
+                                <div>邀请列表</div>
+                                <div>
+                                    <div v-for="user in inviteModel.selectUsers" class="hover-select user-select-none"
+                                         v-on:click="clickUserRemove(user)">
+                                        {{ user.name }}#{{ user.uid }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary">提交</button>
+                        <button type="button" class="btn btn-primary" :disabled="inviteModel.processing"
+                                v-on:click="submitInvite">提交
+                        </button>
                     </div>
                 </div>
             </div>
@@ -168,9 +201,24 @@
                 users: []
             },
             inviteModel: {
+                processing: false,
                 query: '',
+                /**
+                 * @type Array<User>
+                 */
                 users: [],
-                selectUsers: []
+                /**
+                 * @type Array<User>
+                 */
+                selectUsers: [],
+                /**
+                 * @type Array<UserOrgNodeInvitation>
+                 */
+                inviteList: [],
+                /**
+                 * @type Array<UserOrgNodeInvitation>
+                 */
+                inviteListInverse: []
             }
         },
         methods: {
@@ -182,7 +230,6 @@
                 if (common.resOk(resUsers)) {
                     app.model.users = resUsers.data
                 }
-
             },
             async navigateToChild(orgId) {
                 app.model.history.push(app.model.current)
@@ -204,7 +251,49 @@
                     app.inviteModel.users = resUsersSearch.data
                 }
             },
-
+            async getInviteList() {
+                let org_id = app.organization.id
+                let resInviteList = await net.orgInviteList(org_id)
+                if (common.resOk(resInviteList)) {
+                    app.inviteModel.inviteList = resInviteList.data.filter(
+                        (value) => value.inverse === false
+                    )
+                    app.inviteModel.inviteListInverse = resInviteList.data.filter(
+                        (value) => value.inverse === true
+                    )
+                }
+            },
+            /**
+             * 将一个用户加入selectUsers
+             * @param user {User}
+             */
+            clickUserAdd(user) {
+                if (app.inviteModel.selectUsers.find(
+                    (value) => value.uid === user.uid
+                ) === undefined) {
+                    app.inviteModel.selectUsers.push(user)
+                }
+            },
+            /**
+             * 将一个用户从一个selectUsers删除
+             * @param user {User}
+             */
+            clickUserRemove(user) {
+                app.inviteModel.selectUsers = app.inviteModel.selectUsers.filter(
+                    (value) => value.uid !== user.uid
+                )
+            },
+            async submitInvite() {
+                app.inviteModel.processing = true
+                app.inviteModel.selectUsers.forEach(
+                    (value) => {
+                        net.orgInvitePerson(app.model.current.id, value.uid)
+                    }
+                )
+                app.inviteModel.selectUsers = []
+                app.inviteModel.processing = false
+                await app.getInviteList()
+            },
             async init() {
                 document.title = app.c.title;
                 net.addWatcher(app.stateChanged)
@@ -220,8 +309,9 @@
                     if (common.resOk(resOrg)) {
                         app.organization = resOrg.data
                         app.model.current = app.organization
-                        app.model.isOwn = app.model.current.owner.uid == app.state.user.uid
+                        app.model.isOwn = app.model.current.owner.uid === app.state.user.uid
                         await app.updatePerson(organization_id)
+                        await app.getInviteList()
                     }
                 }
             }

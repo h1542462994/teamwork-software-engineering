@@ -40,9 +40,10 @@ interface IOrgService {
     fun getPersons(orgId: Int, user: User): List<UserInfo>
     fun removePerson(orgId: Int, personUid: String, user: User): Response<User>
     fun exitPerson(orgId: Int, user: User): Response<Any>
-    fun inviteList(orgId: Int, user: User): Response<UserOrgNodeInvitation>
+    fun inviteList(orgId: Int, user: User): Response<Iterable<UserOrgNodeInvitation>>
     fun orgInvitePerson(orgId: Int, personUid: String, user: User): Response<Any>
-    fun personInviteOrg(orgId: Int, personUid: String, user: User): Response<Any>
+    fun personInviteOrg(orgId: Int, user: User): Response<Any>
+    fun cancelInvite(inviteId: Int, user: User): Response<Any>
     fun processInvite(inviteId: Int, user: User, accept: Boolean): Response<Any>
     fun changeLevel(orgId: Int, personUid: String, level: Int): Response<Any>
     fun guardVisit(orgNode: OrgNode, user: User)
