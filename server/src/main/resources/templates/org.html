@@ -27,7 +27,7 @@
         <section class="organizations">
             <div class="container-fluid organization">
                 <div class="title font-weight-bold">我加入的部门</div>
-                <div v-for="organization in organizationGrouped.ofIn" class="project">
+                <div v-for="organization in organizationsOfIn" class="project">
                     <div class="row bg-canyon has-shadow">
                         <div class="col d-flex align-items-center justify-content-between">
                             <div class="organization-title d-flex align-items-center">
@@ -36,7 +36,7 @@
                                     <div>
                                         <span class="badge badge-primary badge-rounded bg-primary badge-me">描述:{{ organization.description }}</span>
                                         <span v-if="organization.owner" class="badge badge-rounded bg-orange badge-me">主管理员:{{ organization.owner.name }}</span>
-                                        <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.departments">{{ department.name }}</span>
+                                        <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.children">{{ department.name }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -47,26 +47,26 @@
 
             <div class="container-fluid organization">
                 <div class="title font-weight-bold">其他部门</div>
-                <div v-for="organization in organizationGrouped.ofOthers" class="project">
-                    <div class="row bg-canyon has-shadow">
-                        <div class="col-10 d-flex align-items-center justify-content-between">
-                            <div class="organization-title d-flex align-items-center">
-                                <div class="text">
-                                    <h4><a :href="'/org/' + organization.id ">{{ organization.name }}(#{{ organization.id }})</a></h4>
-                                    <div>
-                                        <span class="badge badge-primary badge-rounded bg-primary badge-me">描述:{{ organization.description }}</span>
-                                        <span v-if="organization.owner" class="badge badge-rounded bg-orange badge-me">主管理员:{{ organization.owner.name }}</span>
-                                        <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.departments">{{ department.name }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-2 align-self-center">
-                            <button v-if="organization.state === 0" class="btn btn-outline-primary btn-block" :disabled="model.inviting" v-on:click="userInvite(organization)">取消申请</button>
-                            <button v-else class="btn btn-primary btn-block" :disabled="model.inviting" v-on:click="userInvite(organization)">申请</button>
-                        </div>
-                    </div>
-                </div>
+<!--                <div v-for="organization in organizationGrouped.ofOthers" class="project">-->
+<!--                    <div class="row bg-canyon has-shadow">-->
+<!--                        <div class="col-10 d-flex align-items-center justify-content-between">-->
+<!--                            <div class="organization-title d-flex align-items-center">-->
+<!--                                <div class="text">-->
+<!--                                    <h4><a :href="'/org/' + organization.id ">{{ organization.name }}(#{{ organization.id }})</a></h4>-->
+<!--                                    <div>-->
+<!--                                        <span class="badge badge-primary badge-rounded bg-primary badge-me">描述:{{ organization.description }}</span>-->
+<!--                                        <span v-if="organization.owner" class="badge badge-rounded bg-orange badge-me">主管理员:{{ organization.owner.name }}</span>-->
+<!--                                        <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.departments">{{ department.name }}</span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-2 align-self-center">-->
+<!--                            <button v-if="organization.state === 0" class="btn btn-outline-primary btn-block" :disabled="model.inviting" v-on:click="userInvite(organization)">取消申请</button>-->
+<!--                            <button v-else class="btn btn-primary btn-block" :disabled="model.inviting" v-on:click="userInvite(organization)">申请</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </section>
 
@@ -91,12 +91,11 @@
                 inviting: false
             },
             /**
-             * @type OrganizationGrouped
+             * @type Array<Organization>
              */
-            organizationGrouped: {
-                ofIn: [],
-                ofOthers: []
-            }
+            organizationsOfIn: [
+
+            ]
         },
         methods: {
             stateChanged(state) {
@@ -108,9 +107,9 @@
                 app.state = await net.userState()
                 // to add the initialization code
                 if (common.isLogin(app.state)) {
-                    let resOrgGrouped = await net.orgGrouped()
-                    if (common.resOk(resOrgGrouped)) {
-                        app.organizationGrouped = resOrgGrouped.data
+                    let resOrgIn = await net.orgList()
+                    if (common.resOk(resOrgIn)) {
+                        app.organizationsOfIn = resOrgIn.data
                     }
                 }
             },

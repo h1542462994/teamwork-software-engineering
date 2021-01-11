@@ -52,6 +52,25 @@ create table if not exists department
         primary key,
     description varchar(255) null,
     name varchar(255) null,
+    organization_id int null references organization(id)
+);
+
+create table course (
+    id int primary key,
+    info varchar(255) null,
+    name varchar(255) null,
+    pic varchar(255) null
+);
+
+create table course_tag (
+    id int primary key,
+    name varchar(255) null
+);
+
+create table course_course_tags (
+    courses_id int not null references course(id),
+    course_tags_id int not null references course_tag(id),
+    primary key (courses_id, course_tags_id)
     organization_id int null,
     constraint department_fk_organization
         foreign key (organization_id) references organization (id)

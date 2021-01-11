@@ -17,10 +17,12 @@ class AsyncNet {
     uri_user_state = "/api/user/state"
     uri_org_all = "/api/org/all"
     uri_org_get = "/api/org/get"
+    uri_org_list = "/api/org/list"
     uri_org_grouped = "/api/org/grouped"
-    uri_course_all = "/api/course/all"
     uri_org_user_invite = "/api/org/user_invite"
     uri_org_invites_get = "/api/org/invites/get"
+    uri_course_all = "/api/course/all"
+    uri_course_selectid="/api/course/selectid"
     //endregion
     //region public domain
     // add restAPI support
@@ -94,6 +96,15 @@ class AsyncNet {
     }
 
     /**
+     * 通过api/course/selectid 进行课程查询
+     * @param id
+     * @returns {Promise<string|response<*>>}
+     */
+    async courseSelect(id){
+        return this.post(this.uri_course_selectid,`id=${id}`)
+    }
+
+    /**
      * 通过api/org/all 获取所有organization的信息
      * @returns {Promise<ResponseOrganizations>}
      */
@@ -119,6 +130,7 @@ class AsyncNet {
     }
 
     /**
+     * @deprecated
      * 通过api/org/grouped 获取分组过的organization的信息
      * @return {Promise<ResponseOrganizationGrouped>}
      */
@@ -144,6 +156,13 @@ class AsyncNet {
         return this.post(this.uri_org_invites_get, `orgId=${orgId}`)
     }
 
+    /**
+     * 通过api/org/list获取部门信息
+     * @return {Promise<ResponseOrganizations>}
+     */
+    async orgList() {
+        return this.post(this.uri_org_list)
+    }
     //endregion
 }
 

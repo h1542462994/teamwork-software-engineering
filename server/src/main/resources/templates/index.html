@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.css">
@@ -19,6 +18,7 @@
 <div id="app">
     <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <div v-for="course in courses"></div>
         <section class="section-course d-flex flex-wrap justify-content-start">
             <div class="card card-course" style="max-width: 18rem; " v-for="course in courses">
                 <a href="/course/6">
@@ -33,7 +33,6 @@
                 </div>
             </div>
         </section>
-
     </app-compact>
 </div>
 

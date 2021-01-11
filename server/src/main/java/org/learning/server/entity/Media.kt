@@ -1,5 +1,6 @@
 package org.learning.server.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.*
 import javax.persistence.*
 
@@ -15,7 +16,12 @@ class Media {
     /**
      * 显示的位置
      */
-    var order: Int = 0
-    @ManyToMany
-    var resource: List<Resource> = LinkedList()
+    var indexAt: Int = 0
+    @ManyToOne
+    @JsonIgnore
+    var resource: Resource = Resource()
+
+    @ManyToOne
+    @JsonIgnore
+    var chapter: Chapter = Chapter()
 }

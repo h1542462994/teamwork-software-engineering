@@ -7,6 +7,7 @@ object Responses {
     fun <T> ok(message: String) = Response<T>(ResponseTokens.ok, message)
     @JvmStatic
     fun <T> ok(data: T) = Response(ResponseTokens.ok, data)
+
     @JvmStatic
     fun <T> ok(message: String, data: T) = Response(ResponseTokens.ok, message, data)
     @JvmStatic
@@ -20,7 +21,7 @@ object Responses {
     @JvmStatic
     fun <T> withToken(token: ResponseToken) = Response<T>(token)
     @JvmStatic
-    fun <T> withToken(token: ResponseToken, data: T) = Response(token, data)
+    fun <T> withToken(token: ResponseToken, message: String) = Response<T>(token, message)
     @JvmStatic
     fun <T> withToken(token: ResponseToken, message: String, data: T) = Response(token, message, data)
 }

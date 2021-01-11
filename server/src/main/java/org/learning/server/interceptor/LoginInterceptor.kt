@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorContro
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import java.lang.Exception
+import javax.security.auth.login.LoginException
 import kotlin.Throws
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -25,7 +26,7 @@ class LoginInterceptor : HandlerInterceptor {
                     true
                 }
                 user == null -> {
-                    false
+                    throw LoginException("当前未登录")
                 }
                 else -> {
                     true

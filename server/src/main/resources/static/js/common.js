@@ -9,6 +9,11 @@ class Common {
             user: null,
         }
     }
+    CourseState(){
+        return{
+            course:null,
+        }
+    }
 
     /**
      * 判断当前是否处于登录状态

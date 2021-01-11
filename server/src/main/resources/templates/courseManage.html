@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/layui/lay/modules/laydate/default/layui.css" media="all">
+    <meta charset="UTF-8">
+    <title>课程管理</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/asyncNet.js"></script>
+    <script src="/js/component.js"></script>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+<div id="app">
+   <!-- <app-compact  :state="state">-->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #CCE5FF;">
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <a class="navbar-brand" href="/courseManage">课程管理</a>
+
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <div class="dropdown">
+                    <a class="btn dropdown-toggle" href="/courseEdit" role="button" id="dropdownMenuLink"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        课程内容
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="/courseEdit">创建课程</a>
+                        <a class="dropdown-item" href="/courseEdit">编辑课程</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a class="btn dropdown-toggle" href="/courseOpen" role="button" id="dropdownMenuLink2"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        课程发布
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="/courseOpen">更新发布</a>
+
+                    </div>
+                </div>
+
+            </ul>
+            <!--创建课程时搜索框隐藏-->
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-4" type="search" placeholder="输入课程编号" aria-label="Search"
+                       v-model="model.id">
+                <button class="btn  btn-outline-primary my-2 my-sm-0" type="submit" id="selectid_btn"
+                        v-on:click="selectid">搜索
+                </button>
+            </form>
+        </div>
+    </nav>
+    <br><br>
+        <table id="demo" lay-filter="test"></table>
+        <table class="table table-hover">
+
+            <tbody>
+            <tr class="row" style="color:#007BFF;">
+                &nbsp;
+                <!--空格-->
+                <th class="col-sm-1" >操作</th>
+                <th class="col-sm-1" >编号</th>
+                <th class="col-sm-1" >课程名称</th>
+                <th class="col-sm-3" >课程详情</th>
+                <th class="col-sm-1" >是否公开</th>
+                <th class="col-sm-2" >创建时间</th>
+                <th class="col-sm-2" >编辑时间</th>
+            </tr>
+            <!--不用配置文件怎么调用数据库数据呀？-->
+            <!--<s:iterator value="course" ></s:iterator>-->
+            <tr class="row" style="height:60px; overflow:hidden;">
+                <td class="col-sm-1">
+                    &nbsp;
+                    <a href="//www.runoob.com/"><i class="bi bi-trash-fill"></i></a>
+                    <a href="/manageUpdate"><i class="bi bi-pencil-square"></i></a>
+                </td>
+
+               <!-- <td class="col-sm-2">{{state.course.id}} {{state.course.pic}}</td>
+                <td class="col-sm-1">{{state.course.name}}</td>
+                <td class="col-sm-3">{{state.course.info}}</td>
+                <td class="col-sm-1">{{state.course.isEdit}}</td>
+                <td class="col-sm-2">{{state.course.createTime}}</td>
+                <td class="col-sm-2">{{state.course.editTime}}</td>-->
+            </tr>
+            <tr class="row" style="height:80px; overflow:hidden;">
+                <td class="col-sm-1">
+                    &nbsp;
+                    <a href="//www.runoob.com/"><i class="bi bi-trash-fill"></i></a>
+                    <a href="/manageUpdate"><i class="bi bi-pencil-square"></i></a>
+                </td>
+
+                <td class="col-sm-1">57</td>
+                <td class="col-sm-2">市场营销</td>
+                <td class="col-sm-3">市场是商品经济的范畴，是一种以商品交换为内容的经济联系形式。对于企业来说，市场是营销活动的出发点和归宿。</td>
+                <td class="col-sm-1">是</td>
+                <td class="col-sm-2">2020-12-31</td>
+                <td class="col-sm-2">2021-01-09</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example" style="text-align:center">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">上一页</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">下一页</a></li>
+            </ul>
+        </nav>
+    <!--</app-compact>-->
+</div>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            model: {
+                id: '',
+            },
+            state: common.CourseState()
+
+        },
+        methods: {
+            stateChanged(state) {
+                this.state = state
+            },
+            async selectid() {
+                let selectid_btn = $('#selectid_btn')
+                let res = await net.courseSelect(app.model.id);
+                selectid_btn.disabled = true;
+                if (res !== net.net_fail && res.code === 200) {
+                    window.location.assign('/managelist')
+                }
+                selectid_btn.disabled = false;
+            },
+            async init() {
+                document.title = app.c.title;
+                net.addWatcher(app.stateChanged)
+                app.state = await net.userState()
+                // to add the initialization code
+                net.loaded()
+            }
+        }
+    })
+    window.onload = () => {
+        app.init();
+    }
+</script>
+</body>
+</html>

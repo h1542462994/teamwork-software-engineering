@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/layui/lay/modules/laydate/default/layui.css" media="all">
+    <meta charset="UTF-8">
+    <title>#title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/asyncNet.js"></script>
+    <script src="/js/component.js"></script>
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/layui/layui.js"></script>
+</head>
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <a class="navbar-brand" href="#">课程管理</a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+                <a class="nav-link" href="/manage">发布课程</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/manageUpdate">更新发布</a>
+            </li>
+
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-4" type="search" placeholder="输入课程编号" aria-label="Search">
+            <button class="btn  btn-outline-primary my-2 my-sm-0" type="submit">搜索</button>
+        </form>
+    </div>
+</nav>
+
+<body>
+<br><br>
+
+<!--以下为发布课程表单内容-->
+<form class="form align-self-center" role="form">
+    <div class="alert alert-dark" role="alert">
+        基础信息
+    </div>
+    <!--此部分信息不可修改，根据查询的id自动显示-->
+    <div class="form-group form-inline">
+        <label class="col-sm-2 control-label">编号：</label>
+        <input type="text" class="col-sm-7 form-control" id="id">
+    </div>
+
+    <div class="form-group form-inline">
+        <label class="col-sm-2 control-label">名称：</label>
+        <input type="text" class="col-sm-7 form-control" id="name">
+    </div>
+
+
+    <div class="mb-3 form-group form-inline" >
+        <label class="col-sm-2 control-label"> 摘要：</label>
+        <textarea class="col-sm-7 form-control" rows="3" id="info" ></textarea>
+    </div>
+
+    <div class="mb-3 form-group form-inline">
+        <label class="col-sm-2 control-label"> 主图：</label>
+        <textarea class="col-sm-7 form-control" rows="4" id="pic" ></textarea>
+    </div>
+
+    <p class="form-control-static"  style="text-align:center">最佳尺寸：750*380px或750*750px</p>
+
+    <div class="form-group form-inline">
+        <label class="col-sm-2 control-label">课程创建时间:</label>
+        <input type="text" class="col-sm-7 form-control" id="createTime">
+    </div>
+    <div class="alert alert-dark" role="alert">
+        章节信息有待完善
+    </div>
+    <!--此部分信息不可修改，根据查询的id自动显示-->
+    <div class="form-group form-inline">
+        <label class="col-sm-2 control-label">课程资源：</label>
+        <input type="file" class="col-sm-7 form-control-file" >
+    </div>
+
+
+
+    <div class="form-group form-inline">
+        <label class="col-sm-2 control-label">课程分类：</label>
+        <select class="col-sm-7 form-control">
+            <option>经济管理</option>
+            <option>计算机</option>
+            <option>心理学</option>
+            <option>艺术设计</option>
+            <option>法学</option>
+        </select>
+    </div>
+
+    <div class="form-group form-inline">
+        <label class="col-sm-2 control-label">课程修改时间:</label>
+        <input type="text" class="col-sm-7 form-control" id="editTime">
+    </div>
+    <div class="radio form-group form-inline">
+        <label class="col-sm-2 control-label">是否可编辑:</label>
+        <input type="radio" class="col-sm-1 form-control" name="optionsRadios" id="edit" value="option1" checked>
+        是
+
+        <input type="radio" class="col-sm-1 form-control" name="optionsRadios" id="uedit" value="option2">
+        否
+    </div>
+
+    <div class="alert alert-primary" role="alert">
+        发布信息
+    </div>
+    <div class="form-group form-inline" style="text-align:center">
+        <label class="col-sm-2 control-label">发布对象：</label>
+        <select class="col-sm-7 form-control" placeholder="请选择发布对象">
+            <option>工程部</option>
+            <option>财务部</option>
+            <option>人力资源部</option>
+            <option>策划部</option>
+            <option>公关部</option>
+        </select>
+    </div>
+
+
+    <div class="form-group form-inline" style="text-align:center">
+
+        <label class="col-sm-2 control-label">开课时间：</label>
+        <input type="text" class="col-sm-2 form-control" id="start_time">
+        <label class="col-sm-2 control-label">结课时间：</label>
+        <input type="text" class="col-sm-2 form-control" id="end_time">
+
+    </div>
+    <div class="radio  form-group form-inline">
+        <label class="col-sm-2 control-label">是否公开:</label>
+        <input type="radio" class="col-sm-1 form-control" name="optionsRadios" id="public" value="option1" checked>
+        是
+
+        <input type="radio" class="col-sm-1 form-control" name="optionsRadios" id="private" value="option2">
+        否
+    </div>
+
+    <div class="button-group" style="text-align:center">
+        <button type="submit" class="btn btn-primary" id="add_btn">保存</button>
+        <button type="reset" class="btn btn-light">取消</button>
+    </div>
+
+</form>
+<script>
+
+
+    $("#mytab a").click(function(e){
+        e.preventDefault();
+        $(this).tab("show");
+    })
+
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        var now=new Date();
+        //日期范围
+        var startTime=laydate.render({
+
+            elem: '#start_time',
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm:ss',
+            theme: '#007BFF',
+            min:now.toLocaleString(),
+            max:"2099-12-31",//设置一个默认最大值
+            ready: function(date){
+                //可以自定义时分秒
+                this.dateTime.hours=now.getHours();
+                this.dateTime.minutes=now.getMinutes();
+                this.dateTime.seconds=now.getSeconds();
+            },
+            done: function(value, date){
+                //开始时间框里设置结束时间的最小时间
+                endTime.config.min ={
+                    year:date.year,
+                    month:date.month-1, //关键
+                    date: date.date,
+                    hours: this.dateTime.hours,
+                    minutes: this.dateTime.minutes,
+                    seconds : this.dateTime.seconds
+                };
+            }
+        });
+        var endTime= laydate.render({
+
+            elem: '#end_time',//选择器结束时间
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm:ss',
+            theme: '#007BFF',
+            min:"1970-1-1 00:00:00",//设置min默认最小值
+            done: function(value,date){
+                //在结束时间框里设置开始时间的最大时间
+                startTime.config.max={
+                    year:date.year,
+                    month:date.month-1,//关键
+                    date: date.date,
+                    hours: 0,
+                    minutes: 0,
+                    seconds : 0
+                }
+            }
+        });
+    });
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            c: {
+                // inject common object
+                common: common,
+                // inject net object
+                net: net,
+                title: '更新发布',
+                menu: common.menu_index
+            },
+            model:{
+                id:id,
+                name:name,
+                info:this.info,
+                pic:this.pic
+            },
+            state: common.defaultUserState()
+        },
+        methods: {
+            stateChanged(state) {
+                this.state = state
+            },
+            async init() {
+                document.title = app.c.title;
+                net.addWatcher(app.stateChanged)
+                net.loaded()
+                // to add the initialization code
+            }
+        }
+    })
+
+    window.onload = () => {
+        app.init();
+    }
+</script>
+
+</body>
+
+</html>

@@ -7,13 +7,14 @@ import org.learning.server.model.ActionResult;
 import org.learning.server.model.common.Response;
 import org.learning.server.model.common.Responses;
 import org.learning.server.repository.UserRepository;
+import org.learning.server.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserService implements org.learning.server.service.UserService {
+public class UserService implements IUserService {
 
     private UserRepository userRepository;
 
