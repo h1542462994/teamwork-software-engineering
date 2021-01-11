@@ -32,17 +32,24 @@
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
         <div class="row d-flex no-margin no-padding container-fluid" style="background-color: lightyellow;">
             <div class="flex-wrap" style="background-color: antiquewhite">
-                <div class="card card-course card-block">
+                <div v-if="model.current" class="card card-course card-block">
                     <div class="card-body">
-                        <h5 class="card-title">{{ organization.name }}</h5>
-                        <p class="card-text">{{ organization.description }}</p>
-                        <div class="list-group">
-                            <div v-for="entry, index in model.headers" href="#"
-                                 class="user-select-none list-group-item list-group-item-action"
-                                 :class="index === model.selectIndex ? 'active' : ''"
-                                 v-on:click="model.selectIndex = index">
-                                <p class="no-margin-bottom">{{ entry.value.name }}</p>
-                                <small>{{ entry.value.description }}</small>
+                        <h5 class="card-title">
+                            <button v-if="model.history.length > 0" class="btn btn-primary btn-small margin-sm">&lt;</button>
+                            {{ model.current.name }}
+                            <small>{{ model.current.description }}</small>
+                        </h5>
+                        <div v-for="dep in model.current.children">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    {{ dep.name }}
+                                </div>
+                                <button v-if="model.isOwn" class="col-2 btn btn-danger btn-sm margin-sm">
+                                    删除
+                                </button>
+                                <button class="col-2 btn btn-primary btn-sm margin-sm">
+                                    查看
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -51,49 +58,13 @@
             <div class="flex-wrap" style="background-color: antiquewhite">
                 <div class="card card-course card-block">
                     <div class="card-body">
-                        <div v-if="model.headers[model.selectIndex]" class="list-group">
-                            <div v-for="user in model.headers[model.selectIndex].value.users"
-                                 class="user-select-none list-group-item"
-                                 :class="user.uid === state.user.uid ? 'bg-blue': '' ">
-                                {{ user.name }}(#{{ user.uid }})
-                                <div>
-                                    <span class="badge badge-rounded bg-violet badge-me"
-                                          v-for="org in user.organizations"
-                                          v-if="org.id === organization.id && org.level > 0">
-                                        {{ org.level === 1 ? '管理员' : '主管理员' }}
-                                    </span>
-                                    <span class="badge badge-rounded bg-blue badge-me"
-                                          v-for="department in user.departments"
-                                          v-if="department.organization.id === organization.id">{{ department.name }}
-                                        <span v-if="department.level > 0">-{{ department.level === 1 ? '管理员' : '主管理员'
-                                            }}</span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
             <div class="col flex-wrap card-margin container-fluid">
                 <div class="title font-weight-bold">申请列表</div>
-                <div v-if="organization.level > 0" v-for="user in invites" class="card card-block">
-                    <div class="card-body row d-flex">
-                        <div class="col">
-                            {{ user.name }}
-                        </div>
-                        <div v-if="user.state === 0" class="col-2">
-                            <button class="btn btn-primary btn-block">
-                                同意
-                            </button>
-                        </div>
-                        <div v-if="user.state === 0" class="col-2">
-                            <button class="btn btn-danger btn-block">
-                                拒绝
-                            </button>
-                        </div>
 
-                    </div>
-                </div>
             </div>
         </div>
     </app-compact>
@@ -114,29 +85,24 @@
                 title: '模板界面',
                 menu: common.menu_org
             },
+            /**
+             * @type User
+             */
             state: common.defaultUserState(),
             /**
              * @type Organization
              */
             organization: {
                 id: -1,
-                name: '某组织',
-                description: '某组织的描述',
-                departments: []
+                name: '某组织'
             },
-            /**
-             * @type Array<User>
-             */
-            invites: [],
             model: {
+                history: [],
                 /**
-                 * @type Array<EntryDepartment | EntryOrganization>
+                 * @type Organization
                  */
-                headers: [],
-                /**
-                 * @type number
-                 */
-                selectIndex: 0
+                current: null,
+                isOwn: false
             }
         },
         methods: {
@@ -154,15 +120,11 @@
                     console.log(uri_component)
                     // 获取/org/:{id}
                     let organization_id = uri_component.paths[2]
-                    let resOrg = await net.orgGet(parseInt(organization_id))
+                    let resOrg = await net.orgGet(organization_id)
                     if (common.resOk(resOrg)) {
                         app.organization = resOrg.data
-                        conversion.extendOrganizationOfUser(app.state.user, app.organization)
-                        app.model.headers = conversion.organizationToDepartmentHeader(app.organization)
-                    }
-                    let resInvites = await net.orgInvitesGet(parseInt(organization_id))
-                    if (common.resOk(resInvites)) {
-                        app.invites = resInvites.data
+                        app.model.current = app.organization
+                        app.model.isOwn = app.model.current.owner.uid == app.state.user.uid
                     }
                 }
             }

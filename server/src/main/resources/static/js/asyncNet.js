@@ -121,15 +121,6 @@ class AsyncNet {
     }
 
     /**
-     * 通过api/org/get 获取id的organization的信息
-     * @returns {Promise<ResponseOrganization>}
-     * @param id {number}
-     */
-    async orgGet(id) {
-        return this.post(this.uri_org_get, `id=${id}`)
-    }
-
-    /**
      * @deprecated
      * 通过api/org/grouped 获取分组过的organization的信息
      * @return {Promise<ResponseOrganizationGrouped>}
@@ -162,6 +153,15 @@ class AsyncNet {
      */
     async orgList() {
         return this.post(this.uri_org_list)
+    }
+
+    /**
+     * 通过api/org/get获取部门的细节信息
+     * @param orgId
+     * @return {Promise<void>}
+     */
+    async orgGet(orgId) {
+        return this.post(this.uri_org_get, `orgId=${orgId}`)
     }
     //endregion
 }
