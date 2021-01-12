@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.css">
@@ -18,6 +19,11 @@
 <div id="app">
     <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <div>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" style="margin-right: 40px;" data-toggle="modal" data-target="#modalCreate">创建课程</button>
+            </div>
+        </div>
         <div v-for="course in courses"></div>
         <section class="section-course d-flex flex-wrap justify-content-start">
             <div class="card card-course" style="max-width: 18rem; " v-for="course in courses">
@@ -33,6 +39,41 @@
                 </div>
             </div>
         </section>
+        <!-- Modal -->
+        <div class="modal fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">创建课程</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form">
+                            <div class="form-group">
+                                <label for="form-create-name" class="form-control-label">课程名</label>
+                                <input id="form-create-name" type="text" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="form-create-description" class="form-control-label">课程描述</label>
+                                <input id="form-create-description" type="text" class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-create-pic" class="form-control-label">图片</label>
+                                <input id="form-create-pic" v-on:change="uploadImage" type="file"/>
+                            </div>
+                            <div class="form-inline">
+                                <label for="create-form-public" class="form-check-label">是否公开</label>
+                                <input id="create-form-public" class="form-check" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </app-compact>
 </div>
 
@@ -53,11 +94,25 @@
             /**
              * @type Array<course>
              */
-            courses: []
+            courses: [],
+            createModel: {
+
+            }
         },
         methods: {
             stateChanged(state) {
                 this.state = state
+            },
+            async uploadImage() {
+                let file = $('#form-create-pic')[0].files[0]
+                console.log(file)
+                let formData = new FormData()
+                formData.append('file', file)
+                console.log(formData.get('file'))
+                let res = await net.fileUpload(formData, net.file_img)
+                if (common.resOk(res)){
+                    console.log(res.data)
+                }
             },
             async init() {
                 document.title = app.c.title

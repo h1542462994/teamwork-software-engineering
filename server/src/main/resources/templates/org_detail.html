@@ -302,6 +302,9 @@
                     (value) => value.uid !== user.uid
                 )
             },
+            async processInvite(inviteId) {
+
+            },
             async submitInvite() {
                 app.inviteModel.processing = true
                 app.inviteModel.selectUsers.forEach(

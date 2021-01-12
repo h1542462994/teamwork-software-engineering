@@ -24,7 +24,33 @@
                 <li class="breadcrumb-item active">组织</li>
             </ul>
         </div>
+        <div>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" style="margin-right: 40px;" data-toggle="modal" data-target="#modalCreate">创建组织</button>
+            </div>
+        </div>
         <section class="organizations">
+            <div class="container-fluid">
+                <div class="title font-weight-bold">申请通知</div>
+                <div class="card">
+                    <div class="card-body">
+                        <div v-for="invite in inviteList" class="row margin-sm hover-select">
+                            <div  class="col">
+                                -> <span class="badge badge-me bg-blue">{{ invite.root.name }}#{{ invite.root.id }}
+                                &nbsp;<span v-if="invite.root.id !== invite.orgNode.id">{{ invite.orgNode.name }}#{{ invite.orgNode.id }}</span>
+                            </span>
+
+                            </div>
+                            <button class="col-2 btn btn-outline-primary btn-sm btn-block" :disabled="inviteModel.processing" v-on:click="processInvite(invite, false)">
+                                拒绝
+                            </button>
+                            <button class="col-2 btn btn-primary btn-sm btn-block" :disabled="inviteModel.processing" v-on:click="processInvite(invite, true)">
+                                同意
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="container-fluid organization">
                 <div class="title font-weight-bold">我加入的部门</div>
                 <div v-for="organization in organizationsOfIn" class="project">
@@ -35,6 +61,12 @@
                                     <h4><a :href="'/org/' + organization.id ">{{ organization.name }}(#{{ organization.id }})</a></h4>
                                     <div>
                                         <span class="badge badge-primary badge-rounded bg-primary badge-me">描述:{{ organization.description }}</span>
+                                        <span v-if="organization.public" class="badge  bg-blue badge-me">
+                                            公开
+                                        </span>
+                                        <span v-else class="badge bg-orange badge-me">
+                                            私有
+                                        </span>
                                         <span v-if="organization.owner" class="badge badge-rounded bg-orange badge-me">主管理员:{{ organization.owner.name }}</span>
                                         <span class="badge badge-rounded bg-blue badge-me" v-for="department in organization.children">{{ department.name }}</span>
                                     </div>
@@ -69,6 +101,37 @@
 <!--                </div>-->
             </div>
         </section>
+        <!-- Modal -->
+        <div class="modal fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">创建组织</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form">
+                            <div class="form-group">
+                                <label for="create-form-name" class="form-control-label">名称</label>
+                                <input id="create-form-name" class="form-control" type="text" v-model="createModel.name">
+                            </div>
+                            <div class="form-group">
+                                <label for="create-form-description" class="form-control-label">描述</label>
+                                <input id="create-form-description" class="form-control" type="text" v-model="createModel.description">
+                            </div>
+                            <div class="form-inline">
+                                <label for="create-form-public" class="form-check-label">是否公开</label>
+                                <input id="create-form-public" class="form-check" type="checkbox" v-model="createModel.isPublic">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" :disabled="createModel.processing" v-on:click="createOrg">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </app-compact>
 </div>
@@ -90,16 +153,40 @@
             model: {
                 inviting: false
             },
-            /**
-             * @type Array<Organization>
-             */
+            createModel: {
+                processing: false,
+                name: '',
+                description: '',
+                isPublic: false
+            },
             organizationsOfIn: [
+
+            ],
+            inviteModel: {
+                processing: false
+            },
+            /**
+             * @type Array<UserOrgNodeInvitation>
+             */
+            inviteList: [
+
+            ],
+            /**
+             * @type Array<UserOrgNodeInvitation>
+             */
+            inviteListInverse: [
 
             ]
         },
         methods: {
             stateChanged(state) {
-                this.state = state
+                app.state = state
+            },
+            async getOrgList() {
+                let resOrgIn = await net.orgList()
+                if (common.resOk(resOrgIn)) {
+                    app.organizationsOfIn = resOrgIn.data
+                }
             },
             async init() {
                 document.title = app.c.title;
@@ -107,15 +194,42 @@
                 app.state = await net.userState()
                 // to add the initialization code
                 if (common.isLogin(app.state)) {
-                    let resOrgIn = await net.orgList()
-                    if (common.resOk(resOrgIn)) {
-                        app.organizationsOfIn = resOrgIn.data
-                    }
+                    await app.getOrgList()
+                    await app.getInviteListPerson()
+                }
+            },
+            async getInviteListPerson() {
+                let resInviteList = await net.orgInviteListPerson()
+                if (common.resOk(resInviteList)) {
+                    app.inviteList = resInviteList.data.filter(
+                        (value) => value.inverse === false
+                    )
+                    app.inviteListInverse = resInviteList.data.filter(
+                        (value) => value.inverse === true
+                    )
+                }
+            },
+            async createOrg() {
+                let resOrg = await net.orgCreate(app.createModel.name, app.createModel.description, app.createModel.isPublic)
+                if (common.resOk(resOrg)) {
+                    window.location.assign(`/org/${resOrg.data.id}`)
                 }
             },
             /**
+             * @param invite {UserOrgNodeInvitation}
+             * @param accept {boolean}
+             */
+            async processInvite(invite, accept) {
+                app.inviteModel.processing = true
+                let res = await net.orgProcessInvite(invite.id, accept)
+                if (common.resOk(res)) {
+                    await app.getOrgList()
+                    await app.getInviteListPerson()
+                }
+                app.inviteModel.processing = false
+            },
+            /**
              *
-             * @param organization {Organization}
              * @return {Promise<void>}
              */
             async userInvite(organization) {

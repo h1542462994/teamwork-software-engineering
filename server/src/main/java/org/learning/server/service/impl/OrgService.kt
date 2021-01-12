@@ -463,36 +463,44 @@ class OrgService : IOrgService {
 
     override fun processInvite(inviteId: Int, user: User, accept: Boolean): Response<Any> {
         val invite = getInviteEntity(inviteId)
-        if (invite.inverse) {
-            // 用户申请加入组织
-            this.guardMainAdmin(invite.orgNode, user)
-            if (accept) {
-                this.processInviteInner(invite)
-            } else {
-                userOrgNodeInvitationRepository.delete(invite)
+        this.getFlatOrgNodesOfOrgNode(this.getOrganizationOfNode(invite.orgNode)).forEach {
+            val invitationOptional = userOrgNodeInvitationRepository.findByUserAndOrgNodeAndInverse(user, it, false)
+            if (invitationOptional.isPresent) {
+                val invitation = invitationOptional.get()
+                if (invitation.inverse) {
+                    // 用户申请加入组织
+                    this.guardMainAdmin(invite.orgNode, user)
+                    if (accept) {
+                        this.processInviteInner(invite)
+                    }
+                    userOrgNodeInvitationRepository.delete(invite)
+                } else {
+                    // 组织申请用户加入组织
+                    if (user.uid != invite.user.uid) {
+                        return Responses.fail("权限不足")
+                    }
+                    if (accept) {
+                        this.processInviteInner(invite)
+                    }
+                    userOrgNodeInvitationRepository.delete(invite)
+                }
             }
-        } else {
-            // 组织申请用户加入组织
-            if (user.uid != invite.user.uid) {
-                return Responses.fail("权限不足")
-            }
-            if (accept) {
-                this.processInviteInner(invite)
-            } else {
-                userOrgNodeInvitationRepository.delete(invite)
-            }
+
         }
+
         return Responses.ok()
     }
 
     private fun processInviteInner(invite: UserOrgNodeInvitation) {
-        if (this.userOrgNodeRepository.findByUserAndOrgNode(invite.user, invite.orgNode).isEmpty) {
+        val user = invite.user
+        if (this.userOrgNodeRepository.findByUserAndOrgNode(user, invite.orgNode).isEmpty) {
             this.userOrgNodeRepository.save(UserOrgNode().apply {
                 this.user = invite.user
                 this.orgNode = invite.orgNode
                 this.level = 0
             })
         }
+
     }
 
     override fun changeLevel(orgId: Int, personUid: String, level: Int, user: User): Response<Any> {

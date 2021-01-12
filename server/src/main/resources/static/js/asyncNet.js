@@ -15,18 +15,23 @@ class AsyncNet {
     net_fail = "net_fail"
     uri_user_login = "/api/user/login"
     uri_user_state = "/api/user/state"
+    uri_user_logout = "/api/user/logout"
     uri_org_all = "/api/org/all"
     uri_org_get = "/api/org/get"
     uri_org_list = "/api/org/list"
     uri_org_grouped = "/api/org/grouped"
     uri_org_user_invite = "/api/org/user_invite"
-    uri_org_invite_get = "/api/org/invite/get"
     uri_org_get_person = "/api/org/person/get"
     uri_org_search_person = "/api/org/person/search"
-    uri_org_invite_list = "/api/org/invite/get"
+    uri_org_invite_get = "/api/org/invite/get"
+    uri_org_invite_get_person = "/api/org/invite/get/person"
     uri_org_invite_org2person = "/api/org/invite/org2person"
+    uri_org_invite_process = "/api/org/invite/process"
     uri_course_all = "/api/course/all"
+    uri_org_create = "/api/org/create"
+    uri_file_upload = "/api/file/upload"
     uri_course_selectid="/api/course/selectid"
+    file_img = "img"
     //endregion
     //region public domain
     // add restAPI support
@@ -100,6 +105,14 @@ class AsyncNet {
     }
 
     /**
+     * 用户退出登录
+     * @return {Promise<Response<any>>}
+     */
+    async userLogout() {
+        return this.post(this.uri_user_logout)
+    }
+
+    /**
      * 通过api/course/selectid 进行课程查询
      * @param id
      * @returns {Promise<string|response<*>>}
@@ -143,15 +156,7 @@ class AsyncNet {
         return this.post(this.uri_org_user_invite, `orgId=${orgId}`)
     }
 
-    /**
-     * @deprecated
-     * 通过api/org/invites/get
-     * @param orgId
-     * @return {Promise<ResponseUsers>}
-     */
-    async orgInvitesGet(orgId) {
-        return this.post(this.uri_org_invites_get, `orgId=${orgId}`)
-    }
+
 
     /**
      * 通过api/org/list获取部门信息
@@ -199,6 +204,14 @@ class AsyncNet {
     }
 
     /**
+     * 通过api/org/invite/get/person 搜索申请列表
+     * @return {Promise<ResponseUserOrgNodeInvitations>}
+     */
+    async orgInviteListPerson() {
+        return this.post(this.uri_org_invite_get_person)
+    }
+
+    /**
      * 通过api/org/invite/org2person 进行邀请
      * @param orgId
      * @param personUid
@@ -206,6 +219,47 @@ class AsyncNet {
      */
     async orgInvitePerson(orgId, personUid) {
         return this.post(this.uri_org_invite_org2person, `orgId=${orgId}&personUid=${personUid}`)
+    }
+
+    /**
+     * 通过api/org/create 创建组织
+     * @param name {string}
+     * @param description {string}
+     * @param isPublic {boolean}
+     * @return {Promise<ResponseOrganization>}
+     */
+    async orgCreate(name, description, isPublic) {
+        return this.post(this.uri_org_create, `name=${name}&description=${description}&public=${isPublic}`)
+    }
+
+    /**
+     *
+     * @param inviteId {number}
+     * @param accept {boolean}
+     * @return {Promise<Response<any>>}
+     */
+    async orgProcessInvite(inviteId, accept) {
+        return this.post(this.uri_org_invite_process, `inviteId=${inviteId}&accept=${accept}`)
+    }
+
+    /**
+     * 上传文件
+     * @param formData {FormData}
+     * @param type {string}
+     * @return {Promise<string | Response>}
+     */
+    async fileUpload(formData, type) {
+        let formRequest = new Request(`${this.uri_file_upload}/${type}`, {
+            method: 'post',
+            credentials: 'include',
+            body: formData
+        })
+        let res = await fetch(formRequest)
+        if (res.status === 200){
+            return res
+        } else {
+            return this.net_fail
+        }
     }
     //endregion
 }

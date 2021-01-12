@@ -162,7 +162,7 @@ class OrgController {
     /**
      * 查找一个用户的申请列表
      */
-    @PostMapping("/invite/get/user")
+    @PostMapping("/invite/get/person")
     fun inviteListOfUser(request: HttpServletRequest): Response<Iterable<Invitation>> {
         val user = SessionHelper.of(request).user()!!
         return orgService.inviteListOfUser(user);
@@ -175,5 +175,14 @@ class OrgController {
     fun orgInvitePerson(orgId: Int, personUid: String, request: HttpServletRequest): Response<Any> {
         val user = SessionHelper.of(request).user()!!
         return orgService.orgInvitePerson(orgId, personUid, user)
+    }
+
+    /**
+     * 处理申请
+     */
+    @PostMapping("/invite/process")
+    fun processInvite(inviteId: Int, accept: Boolean, request: HttpServletRequest): Response<Any> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.processInvite(inviteId, user, accept)
     }
 }
