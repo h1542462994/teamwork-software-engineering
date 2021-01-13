@@ -299,6 +299,7 @@
                 name: '',
                 type: 0,
                 textData: '',
+                data: ''
             }
         },
         methods: {
@@ -365,6 +366,17 @@
                     }
 
                     app.resourceModel.processing = false
+                } else {
+                    let file = $('#form-resource-file')[0].files[0]
+                    let type = app.resourceModel.type === 1 ? "ppt": "video"
+                    let formData = new FormData()
+                    formData.append('file', file)
+                    console.log(formData.get('file'))
+                    let res = await net.fileUpload(formData, net.file_img)
+                    console.log(res)
+                    // 设置刚上传的文件路径
+                    app.resourceModel.data = res.data
+                    
                 }
             },
             async openChapterModal(chapter, index, type) {

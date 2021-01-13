@@ -121,7 +121,6 @@
             },
             async uploadImage() {
                 let file = $('#form-create-pic')[0].files[0]
-                console.log(file)
                 let formData = new FormData()
                 formData.append('file', file)
                 console.log(formData.get('file'))
