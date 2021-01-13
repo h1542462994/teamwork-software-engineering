@@ -38,6 +38,8 @@ class AsyncNet {
     uri_course_chapter_update = "/api/course/chapter/update"
     uri_course_chapter_move = "/api/course/chapter/move"
     uri_course_chapter_delete = "/api/course/chapter/delete"
+    uri_course_resource_get = "/api/course/resource/get"
+    uri_course_resource_create = "/api/course/resource/create"
     uri_course_selectid="/api/course/selectid"
     file_img = "img"
     //endregion
@@ -349,6 +351,27 @@ class AsyncNet {
      */
     async courseDeleteChapter(courseId, chapterId) {
         return this.post(this.uri_course_chapter_delete, `courseId=${courseId}&chapterId=${chapterId}`)
+    }
+
+    /**
+     * 通过接口/api/course/resource/get获取资源列表
+     * @param courseId
+     * @return {Promise<ResponseResources>}
+     */
+    async courseGetResources(courseId) {
+        return this.post(this.uri_course_resource_get, `courseId=${courseId}`)
+    }
+
+    /**
+     * 通过接口/api/course/resource/create创建资源
+     * @param courseId
+     * @param name
+     * @param type
+     * @param data
+     * @return {Promise<ResponseResource>}
+     */
+    async courseCreateResource(courseId, name, type, data) {
+        return this.post(this.uri_course_resource_create, `courseId=${courseId}&name=${name}&type=${type}&data=${data}`)
     }
     //endregion
 }

@@ -25,12 +25,15 @@
             </div>
             <div style="width: 300px">
                 <div class="container bg-blue">
-                    <div v-if="model.adminMode === true" class="d-flex justify-content-end">
+                    <div v-if="model.adminMode === true" class="d-flex flex-wrap justify-content-end">
                         <button class="btn btn-primary btn-sm margin-sm">
                             修改课程信息
                         </button>
                         <button class="btn btn-primary btn-sm margin-sm">
                             修改课程管理信息
+                        </button>
+                        <button class="btn btn-primary btn-sm margin-sm" data-toggle="modal" data-target="#modalResource" v-on:click="openModalResource">
+                            课程资源库
                         </button>
                     </div>
                     <div>{{ model.course.name }}#{{ model.course.id }}</div>
@@ -128,6 +131,74 @@
                 </div>
             </div>
         </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalResource" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            课程资源库
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <button class="nav-link" :class="resourceModel.tabIndex === 0?'active':''" v-on:click="resourceChangeTab(0)">文本资源</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" :class="resourceModel.tabIndex === 1?'active':''" v-on:click="resourceChangeTab(1)">ppt资源</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" :class="resourceModel.tabIndex === 2?'active':''" v-on:click="resourceChangeTab(2)">视频资源</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" :class="resourceModel.tabIndex === 3?'active':''" v-on:click="resourceChangeTab(3)">上传资源</button>
+                            </li>
+                        </ul>
+                        <div v-if="resourceModel.tabIndex === 0">
+                            <div v-for="resource in model.plainResources" class="hover-select">
+                                <div>
+                                    <h5>{{ resource.name }}#{{ resource.id }}</h5>
+                                    <div>
+                                        {{ resource.data }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="resourceModel.tabIndex === 3" class="form">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    资源名
+                                    <input class="form-control" type="text" v-model="resourceModel.name">
+                                </label>
+                                <label class="form-control-label">
+                                    资源类型
+                                    <select class="form-control" v-model="resourceModel.type">
+                                        <option :value="0">文本资源</option>
+                                        <option :value="1">ppt资源</option>
+                                        <option :value="2">视频资源</option>
+                                    </select>
+                                </label>
+                                <label v-if="resourceModel.type === 0" class="form-control-label">
+                                    文本内容
+                                    <input class="form-control" type="text" v-model="resourceModel.textData">
+                                </label>
+                                <label v-else class="form-control-label">
+                                    文件
+                                    <input id="form-resource-file" class="form-control-file" type="file" multiple/>
+                                </label>
+                                <button class="btn btn-primary btn-sm" :disabled="resourceModel.processing" v-on:click="createResource">添加资源</button>
+                                <div>{{ state.tip }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </app-compact>
 </div>
 
@@ -162,6 +233,25 @@
                  */
                 chapters: [
 
+                ],
+                currentChapter: null,
+                /**
+                 * @type Array<Resource>
+                 */
+                plainResources: [
+
+                ],
+                /**
+                 * @type Array<Resource>
+                 */
+                pptResources: [
+
+                ],
+                /**
+                 * @type Array<Resource>
+                 */
+                videoResources: [
+
                 ]
             },
             chapterModel: {
@@ -172,10 +262,20 @@
                 index: 0,
                 name: '',
             },
+            resourceModel: {
+                processing: false,
+                tabIndex: 0,
+                name: '',
+                type: 0,
+                textData: '',
+            }
         },
         methods: {
             stateChanged(state) {
                 this.state = state
+            },
+            resourceChangeTab(tabIndex) {
+                app.resourceModel.tabIndex = tabIndex
             },
             async getCourse() {
                 let resCourse = await net.courseGet(app.model.course.id)
@@ -187,6 +287,43 @@
                 let res = await net.courseGetChapters(app.model.course.id)
                 if (common.resOk(res)) {
                     app.model.chapters = res.data
+                }
+            },
+            async getResources() {
+                let res = await net.courseGetResources(app.model.course.id)
+                if (common.resOk(res)) {
+                    app.model.plainResources = res.data.filter(
+                        (value) => value.type === 0
+                    )
+                    app.model.pptResources = res.data.filter(
+                        (value) => value.type === 1
+                    )
+                    app.model.videoResources = res.data.filter(
+                        (value) => value.type === 2
+                    )
+                }
+            },
+            openModalResource() {
+                app.state.tip = ''
+            },
+            async createResource() {
+                if (app.resourceModel.type === 0) {
+                    app.state.tip = '正在上传中...'
+                    app.resourceModel.processing = true
+                    let res = await net.courseCreateResource(
+                        app.model.course.id,
+                        app.resourceModel.name,
+                        app.resourceModel.type,
+                        app.resourceModel.textData
+                    )
+                    if (common.resOk(res)) {
+                        await app.getResources()
+                        app.resourceModel.name = ''
+                        app.resourceModel.textData = ''
+                        app.state.tip = '上传完成'
+                    }
+
+                    app.resourceModel.processing = false
                 }
             },
             async openChapterModal(chapter, index, type) {
@@ -233,6 +370,7 @@
                 app.model.course.id = uri_component.paths[2]
                 await app.getCourse()
                 await app.getChapters()
+                await app.getResources()
             }
         }
     })
