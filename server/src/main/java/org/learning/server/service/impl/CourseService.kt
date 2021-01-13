@@ -133,6 +133,12 @@ class CourseService : ICourseService {
         return courseRepository.findAll();
     }
 
+    override fun get(courseId: Int, user: User): Response<Course> {
+        val course = getCourseEntity(courseId)
+        this.guardVisit(course, user)
+        return Responses.ok(course)
+    }
+
     override fun adminList(user: User): Iterable<Course> {
         val courses: LinkedList<Course> = LinkedList()
         courses.addAll(courseRepository.findAllByOwner(user))

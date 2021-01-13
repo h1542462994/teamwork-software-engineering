@@ -19,6 +19,115 @@
 <div id="app">
     <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <div class="row">
+            <div class="col">
+                章节
+            </div>
+            <div style="width: 300px">
+                <div class="container bg-blue">
+                    <div v-if="model.adminMode === true" class="d-flex justify-content-end">
+                        <button class="btn btn-primary btn-sm margin-sm">
+                            修改课程信息
+                        </button>
+                        <button class="btn btn-primary btn-sm margin-sm">
+                            修改课程管理信息
+                        </button>
+                    </div>
+                    <div>{{ model.course.name }}#{{ model.course.id }}</div>
+                    <div>{{ model.course.info }}</div>
+                    <div>
+                        公开状态:
+                        <span v-if="model.course.public === true">公开</span>
+                        <span v-else>不公开</span>
+                    </div>
+                    <div>
+                        编辑状态:
+                        <span v-if="model.course.inEdit === true">正在编辑</span>
+                        <span v-else>已发布</span>
+                    </div>
+                </div>
+                <section class="container-fluid">
+`                  <div v-if="model.adminMode === true" class="d-flex justify-content-end">
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="chapterModel.type = 0">
+                            添加章节
+                        </button>
+                    </div>
+
+                    <div v-for="chapter, index in model.chapters" class="d-flex justify-content-between hover-select margin-sm">
+                        <div>
+                            {{ chapter.name }}#{{ chapter.id }}
+                        </div>
+                        <div>
+                            <button class="hover-button btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="openChapterModal(chapter, index, 1)">
+                                编辑
+                            </button>
+                            <button class="hover-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modalChapterDelete" v-on:click="openChapterModal(chapter, index, 2)">
+                                &times;
+                            </button>
+                        </div>
+                    </div>`
+                </section>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalChapterCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <span v-if="chapterModel.type === 0">
+                                添加章节
+                            </span>
+                            <span v-else>
+                                修改章节
+                            </span>
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="create-form-name" class="form-control-label">名称</label>
+                            <input id="create-form-name" class="form-control" type="text" v-model="chapterModel.name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                插入位置
+                                <select class="form-control" v-model="chapterModel.index">
+                                    <option v-for="chapter, index in model.chapters" :value="index">
+                                        {{ chapter.name }}#{{ chapter.id }}
+                                    </option>
+                                    <option v-if="chapterModel.type === 0" :value="model.chapters.length">[插入到最后]</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" :disabled="chapterModel.processing" v-on:click="doChapterChange">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalChapterDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            删除章节
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text warning">你确认删除{{ chapterModel.name }}#{{ chapterModel.id }}吗?</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" :disabled="chapterModel.processing" v-on:click="doChapterChange">确认删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </app-compact>
 </div>
 
@@ -35,17 +144,95 @@
                 title: '模板界面',
                 menu: common.menu_index
             },
-            state: common.defaultUserState()
+            state: common.defaultUserState(),
+            model: {
+                adminMode: true,
+                /**
+                 * @type course
+                 */
+                course: {
+                    id: -1,
+                    name: '某课程',
+                    info: '某课程描述',
+                    public: false,
+                    inEdit: true
+                },
+                /**
+                 * @type Array<Chapter>
+                 */
+                chapters: [
+
+                ]
+            },
+            chapterModel: {
+                id: -1,
+                // 更新为1，创建为0，删除为2
+                type: 0,
+                processing: false,
+                index: 0,
+                name: '',
+            },
         },
         methods: {
             stateChanged(state) {
                 this.state = state
+            },
+            async getCourse() {
+                let resCourse = await net.courseGet(app.model.course.id)
+                if (common.resOk(resCourse)) {
+                    app.model.course = resCourse.data
+                }
+            },
+            async getChapters() {
+                let res = await net.courseGetChapters(app.model.course.id)
+                if (common.resOk(res)) {
+                    app.model.chapters = res.data
+                }
+            },
+            async openChapterModal(chapter, index, type) {
+                app.chapterModel.type = type
+                app.chapterModel.id = chapter.id
+                app.chapterModel.name = chapter.name
+                app.chapterModel.index = index
+            },
+            async doChapterChange() {
+                if (app.chapterModel.type === 0) {
+                    // 创建chapter
+                    app.chapterModel.processing = true
+                    let res = await net.courseCreateChapter(app.model.course.id, app.chapterModel.name, app.chapterModel.index)
+                    if (common.resOk(res)) {
+                        await app.getChapters()
+                        $('#modalChapterCreate').modal('hide')
+                    }
+                    app.chapterModel.processing = false
+                } else if (app.chapterModel.type === 1) {
+                    app.chapterModel.processing = true
+                    let res1 = await net.courseUpdateChapter(app.model.course.id, app.chapterModel.id, app.chapterModel.name)
+                    let res2 = await net.courseMoveChapter(app.model.course.id, app.chapterModel.id, app.chapterModel.index)
+                    if (common.resOk(res2)) {
+                        await app.getChapters()
+                        $('#modalChapterCreate').modal('hide')
+                    }
+                    app.chapterModel.processing = false
+                } else {
+                    app.chapterModel.processing = true
+                    let res = await net.courseDeleteChapter(app.model.course.id, app.chapterModel.id)
+                    if (common.resOk(res)) {
+                        await app.getChapters()
+                        $('#modalChapterDelete').modal('hide')
+                    }
+                    app.chapterModel.processing = false
+                }
             },
             async init() {
                 document.title = app.c.title;
                 net.addWatcher(app.stateChanged)
                 app.state = await net.userState()
                 // to add the initialization code
+                let uri_component = common.uri(window.location)
+                app.model.course.id = uri_component.paths[2]
+                await app.getCourse()
+                await app.getChapters()
             }
         }
     })

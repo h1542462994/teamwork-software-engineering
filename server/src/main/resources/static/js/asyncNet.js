@@ -30,8 +30,14 @@ class AsyncNet {
     uri_course_all = "/api/course/all"
     uri_org_create = "/api/org/create"
     uri_file_upload = "/api/file/upload"
+    uri_course_get = "/api/course/get"
     uri_course_create = "/api/course/create"
     uri_course_list_admin = "/api/course/list/admin"
+    uri_course_chapter_get = "/api/course/chapter/get"
+    uri_course_chapter_create = "/api/course/chapter/create"
+    uri_course_chapter_update = "/api/course/chapter/update"
+    uri_course_chapter_move = "/api/course/chapter/move"
+    uri_course_chapter_delete = "/api/course/chapter/delete"
     uri_course_selectid="/api/course/selectid"
     file_img = "img"
     //endregion
@@ -273,6 +279,15 @@ class AsyncNet {
     }
 
     /**
+     * 通过接口/api/course/get获取课程的基础信息
+     * @param courseId
+     * @return {Promise<ResponseCourse>}
+     */
+    async courseGet(courseId) {
+        return this.post(this.uri_course_get, `courseId=${courseId}`)
+    }
+
+    /**
      * 通过接口/api/course/create创建课程
      * @param name {string}
      * @param info {string}
@@ -282,6 +297,58 @@ class AsyncNet {
      */
     async courseCreate(name, info, pic, isPublic) {
         return this.post(this.uri_course_create, `name=${name}&info=${info}&pic=${pic}&public=${isPublic}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/get获取章节
+     * @param courseId
+     * @return {Promise<ResponseChapters>}
+     */
+    async courseGetChapters(courseId) {
+        return this.post(this.uri_course_chapter_get, `courseId=${courseId}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/create创建章节
+     * @param courseId
+     * @param name
+     * @param index
+     * @return {Promise<ResponseChapter>}
+     */
+    async courseCreateChapter(courseId, name, index) {
+        return this.post(this.uri_course_chapter_create, `courseId=${courseId}&name=${name}&index=${index}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/update更新章节
+     * @param courseId
+     * @param chapterId
+     * @param name
+     * @return {Promise<ResponseChapter>}
+     */
+    async courseUpdateChapter(courseId, chapterId, name) {
+        return this.post(this.uri_course_chapter_update, `courseId=${courseId}&chapterId=${chapterId}&name=${name}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/move移动章节
+     * @param courseId
+     * @param chapterId
+     * @param index
+     * @return {Promise<ResponseChapter>}
+     */
+    async courseMoveChapter(courseId, chapterId, index) {
+        return this.post(this.uri_course_chapter_move, `courseId=${courseId}&chapterId=${chapterId}&index=${index}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/delete删除章节
+     * @param courseId
+     * @param chapterId
+     * @return {Promise<ResponseChapter>}
+     */
+    async courseDeleteChapter(courseId, chapterId) {
+        return this.post(this.uri_course_chapter_delete, `courseId=${courseId}&chapterId=${chapterId}`)
     }
     //endregion
 }

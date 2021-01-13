@@ -50,6 +50,15 @@ class CourseController {
     }
 
     /**
+     * 获取当前课程的基础信息
+     */
+    @PostMapping("/get")
+    fun get(courseId: Int, request: HttpServletRequest): Response<Course> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.get(courseId, user)
+    }
+
+    /**
      * 添加新课程
      * */
     @PostMapping("/create")

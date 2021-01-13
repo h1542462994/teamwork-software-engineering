@@ -42,3 +42,11 @@ img.card-img {
 .hover-select:hover {
     background-color: #fff3cd;
 }
+
+.hover-select .hover-button {
+    visibility: collapse;
+}
+
+.hover-select:hover .hover-button {
+    visibility: visible;
+}

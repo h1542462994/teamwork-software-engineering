@@ -15,6 +15,7 @@ interface ICourseService {
      */
     fun adminList(user: User): Iterable<Course>
     fun list(user: User): Iterable<CourseOpenInfo>
+    fun get(courseId: Int, user: User): Response<Course>
     fun create(courseForm: CourseForm, user: User): Response<Course>
     fun delete(courseId: Int, user: User): Boolean
     fun update(courseForm: CourseForm, user: User): Response<Course>
@@ -38,4 +39,5 @@ interface ICourseService {
     fun addAdmin(courseId: Int, adminUid: String, user: User): Response<Course>
     fun deleteAdmin(courseId: Int, adminUid: String, user: User): Response<Course>
     fun exitAdmin(courseId: Int, user: User): Response<Any>
+
 }
