@@ -19,16 +19,26 @@
 <div id="app">
     <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
-        <div class="breadcrumb-holder container-fluid">
-            <ul class="breadcrumb">
-                <li class="breadcrumb-item active">组织</li>
-            </ul>
-        </div>
-        <div>
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-primary" style="margin-right: 40px;" data-toggle="modal" data-target="#modalCreate">创建组织</button>
+<!--        <div class="breadcrumb-holder container-fluid">-->
+<!--            <ul class="breadcrumb">-->
+<!--                <li class="breadcrumb-item active">组织</li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <div class="d-flex justify-content-end">-->
+<!--                <button class="btn btn-primary" style="margin-right: 40px;" data-toggle="modal" data-target="#modalCreate">创建组织</button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="container-fluid margin-sm">
+            <div class="breadcrumb-holder form-inline">
+                <div class="col-lg-10 h1">组织</div>
+                <div class="col-lg-2">
+                    <button class="btn btn-primary col" data-toggle="modal" data-target="#modalCreate">创建组织</button>
+                </div>
             </div>
         </div>
+
         <section class="organizations">
             <div class="container-fluid">
                 <div class="title font-weight-bold">申请通知</div>
