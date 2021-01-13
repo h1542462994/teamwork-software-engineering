@@ -59,13 +59,15 @@ class FileController {
         if (image.exists() && image.isFile) {
             response.outputStream.use { it.write(image.readBytes()) }
         } else {
-            response.outputStream.use { it.write(ClassPathResource("static/img/mockup5.jpg").inputStream.readAllBytes()) }
+            response.outputStream.use {
+                it.write(ClassPathResource("static/img/mockup5.jpg").inputStream.use { res -> res.readAllBytes() })
+            }
         }
     }
 
     @GetMapping("/img/course/{name}", produces = [IMAGE_JPEG_VALUE])
     @NoLogin
     fun getCourseImage(@PathVariable name: String, response: HttpServletResponse) {
-        response.outputStream.use { it.write(ClassPathResource("static/img/course/$name").inputStream.readAllBytes()) }
+        response.outputStream.use { it.write(ClassPathResource("static/img/course/$name").inputStream.use { res -> res.readAllBytes() }) }
     }
 }
