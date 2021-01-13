@@ -18,7 +18,6 @@ class Media {
      */
     var indexAt: Int = 0
     @ManyToOne
-    @JsonIgnore
     var resource: Resource = Resource()
 
     @ManyToOne

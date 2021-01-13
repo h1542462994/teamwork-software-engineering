@@ -50,3 +50,7 @@ img.card-img {
 .hover-select:hover .hover-button {
     visibility: visible;
 }
+
+.hover-select.active {
+    background-color: dodgerblue;
+}

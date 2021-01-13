@@ -56,7 +56,10 @@
                         </button>
                     </div>
 
-                    <div v-for="chapter, index in model.chapters" class="d-flex justify-content-between hover-select margin-sm">
+                    <div v-for="chapter, index in model.chapters"
+                         class="d-flex justify-content-between hover-select margin-sm"
+                         :class="chapter.id === model.chapterId ? 'active' : ''"
+                        v-on:click="switchChapter(chapter)">
                         <div>
                             {{ chapter.name }}#{{ chapter.id }}
                         </div>
@@ -65,6 +68,26 @@
                                 编辑
                             </button>
                             <button class="hover-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modalChapterDelete" v-on:click="openChapterModal(chapter, index, 2)">
+                                &times;
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <section class="container-fluid">
+                    <div v-if="model.adminMode === true" class="d-flex justify-content-end">
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalMedia" v-on:click="mediaModel.type = 0">
+                            添加内容
+                        </button>
+                    </div>
+                    <div v-for="media, index in model.medias" class="d-flex justify-content-between hover-select margin-sm">
+                        <div>
+                            {{ media.name }}#{{ media.id }}
+                        </div>
+                        <div>
+                            <button class="hover-button btn btn-primary btn-sm">
+                                编辑
+                            </button>
+                            <button class="hover-button btn btn-danger btn-sm">
                                 &times;
                             </button>
                         </div>
@@ -132,6 +155,45 @@
             </div>
         </div>
         <!-- Modal -->
+        <div class="modal fade" id="modalMediaCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <span v-if="chapterModel.type === 0">
+                                添加章节
+                            </span>
+                            <span v-else>
+                                修改章节
+                            </span>
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="create-form-name" class="form-control-label">名称</label>
+                            <input id="create-form-media-name" class="form-control" type="text" v-model="chapterModel.name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                插入位置
+                                <select class="form-control" v-model="chapterModel.index">
+                                    <option v-for="chapter, index in model.chapters" :value="index">
+                                        {{ chapter.name }}#{{ chapter.id }}
+                                    </option>
+                                    <option v-if="chapterModel.type === 0" :value="model.chapters.length">[插入到最后]</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" :disabled="chapterModel.processing" v-on:click="doChapterChange">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
         <div class="modal fade" id="modalResource" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -166,6 +228,36 @@
                                 </div>
                             </div>
                         </div>
+                        <div v-if="resourceModel.tabIndex === 1">
+                            <div v-for="resource in model.pptResources" class="hover-select">
+                                <div class="d-flex justify-content-start">
+                                    <div style="width: 48px; height: 48px">
+                                        <img width="32px" height="32px" style="margin: 8px;" src="/api/file/img/course/ppt.png" alt="ppt"/>
+                                    </div>
+                                    <div>
+                                        <h5>{{ resource.name }}</h5>
+                                        <div>
+                                            {{ resource.data }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="resourceModel.tabIndex === 2">
+                            <div v-for="resource in model.videoResources" class="hover-select">
+                                <div class="d-flex justify-content-start">
+                                    <div style="width: 48px; height: 48px">
+                                        <img width="32px" height="32px" style="margin: 8px;" src="/api/file/img/course/video.png" alt="video"/>
+                                    </div>
+                                    <div>
+                                        <h5>{{ resource.name }}</h5>
+                                        <div>
+                                            {{ resource.data }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div v-if="resourceModel.tabIndex === 3" class="form">
                             <div class="form-group">
                                 <label class="form-control-label">
@@ -184,7 +276,7 @@
                                     文本内容
                                     <input class="form-control" type="text" v-model="resourceModel.textData">
                                 </label>
-                                <label v-else class="form-control-label">
+                                <label v-else class="form-control-label" v-on:change="selectFile">
                                     文件
                                     <input id="form-resource-file" class="form-control-file" type="file" multiple/>
                                 </label>
@@ -265,6 +357,13 @@
                 chapters: [
 
                 ],
+                medias: [
+
+                ],
+                chapterId: -1,
+                media: {
+                    id: -1
+                },
                 currentChapter: null,
                 /**
                  * @type Array<Resource>
@@ -293,6 +392,14 @@
                 index: 0,
                 name: '',
             },
+            mediaModel: {
+                id: -1,
+                // 更新为1，创建为0，删除为2
+                type: 0,
+                name: '',
+                index: 0,
+                resourceId: 0
+            },
             resourceModel: {
                 processing: false,
                 tabIndex: 0,
@@ -308,6 +415,9 @@
             },
             resourceChangeTab(tabIndex) {
                 app.resourceModel.tabIndex = tabIndex
+            },
+            selectFile() {
+                app.resourceModel.name = $('#form-resource-file').val()
             },
             async submitUpdate() {
                 let res = await net.courseUpdate(
@@ -325,10 +435,24 @@
                     app.model.course = resCourse.data
                 }
             },
+            async switchChapter(chapter) {
+                app.model.chapterId = chapter.id
+                await app.getMedias()
+            },
             async getChapters() {
                 let res = await net.courseGetChapters(app.model.course.id)
                 if (common.resOk(res)) {
                     app.model.chapters = res.data
+                }
+                if (app.model.chapters.find(
+                    (value) => app.model.chapterId === value.id
+                ) === undefined) {
+                    if (app.model.chapters.length === 0) {
+                        app.model.chapterId = -1
+                    } else {
+                        app.model.chapterId = app.model.chapters[0].id
+                        await app.getMedias()
+                    }
                 }
             },
             async getResources() {
@@ -343,6 +467,23 @@
                     app.model.videoResources = res.data.filter(
                         (value) => value.type === 2
                     )
+                }
+            },
+            async getMedias() {
+                let res = await net.courseGetMedias(
+                    app.model.chapterId
+                )
+                if (common.resOk(res)) {
+                    app.model.medias = res.data
+                }
+                if (app.model.medias.find(
+                    (value) => app.model.media.id === value.id
+                ) === undefined) {
+                    if (app.model.medias.length === 0) {
+                        app.model.media.id = -1
+                    } else {
+                        app.model.media = value
+                    }
                 }
             },
             openModalResource() {
@@ -367,16 +508,32 @@
 
                     app.resourceModel.processing = false
                 } else {
+                    app.state.tip = '正在上传中...'
+                    app.resourceModel.processing = true
                     let file = $('#form-resource-file')[0].files[0]
                     let type = app.resourceModel.type === 1 ? "ppt": "video"
                     let formData = new FormData()
                     formData.append('file', file)
                     console.log(formData.get('file'))
-                    let res = await net.fileUpload(formData, net.file_img)
+                    let res = await net.fileUpload(formData, type)
                     console.log(res)
                     // 设置刚上传的文件路径
                     app.resourceModel.data = res.data
-                    
+                    let res2 = await net.courseCreateResource(
+                        app.model.course.id,
+                        app.resourceModel.name,
+                        app.resourceModel.type,
+                        app.resourceModel.data
+                    )
+                    if (common.resOk(res)) {
+                        await app.getResources()
+                        app.resourceModel.name = ''
+                        app.resourceModel.data = ''
+                        $('#form-resource-file').val('')
+                        app.state.tip = '上传完成'
+                    }
+
+                    app.resourceModel.processing = false
                 }
             },
             async openChapterModal(chapter, index, type) {
