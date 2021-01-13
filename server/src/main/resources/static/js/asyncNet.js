@@ -30,6 +30,7 @@ class AsyncNet {
     uri_course_all = "/api/course/all"
     uri_org_create = "/api/org/create"
     uri_file_upload = "/api/file/upload"
+    uri_course_create = "/api/course/create"
     uri_course_selectid="/api/course/selectid"
     file_img = "img"
     //endregion
@@ -256,10 +257,22 @@ class AsyncNet {
         })
         let res = await fetch(formRequest)
         if (res.status === 200){
-            return res
+            return await res.json()
         } else {
             return this.net_fail
         }
+    }
+
+    /**
+     * 通过接口/api/course/create创建课程
+     * @param name {string}
+     * @param info {string}
+     * @param pic {string}
+     * @param isPublic {boolean}
+     * @return {Promise<ResponseCourse>}
+     */
+    async courseCreate(name, info, pic, isPublic) {
+        return this.post(this.uri_course_create, `name=${name}&info=${info}&pic=${pic}&public=${isPublic}`)
     }
     //endregion
 }

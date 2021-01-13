@@ -25,6 +25,6 @@ class FileController {
         if (file.isEmpty) {
             return Responses.fail("文件不能为空")
         }
-        return Responses.ok(fileService.executeUpload(file,"img", uploadDir))
+        return Responses.ok(data = fileService.executeUpload(file,"img", uploadDir))
     }
 }
