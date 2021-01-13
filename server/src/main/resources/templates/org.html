@@ -41,10 +41,11 @@
                             </span>
 
                             </div>
-                            <button class="col-2 btn btn-outline-primary btn-sm btn-block" :disabled="inviteModel.processing" v-on:click="processInvite(invite, false)">
+                            <button class="col-2 btn btn-outline-primary btn-sm" :disabled="inviteModel.processing" v-on:click="processInvite(invite, false)">
                                 拒绝
                             </button>
-                            <button class="col-2 btn btn-primary btn-sm btn-block" :disabled="inviteModel.processing" v-on:click="processInvite(invite, true)">
+                            &nbsp;
+                            <button class="col-2 btn btn-primary btn-sm" :disabled="inviteModel.processing" v-on:click="processInvite(invite, true)">
                                 同意
                             </button>
                         </div>
