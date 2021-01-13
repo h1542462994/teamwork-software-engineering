@@ -19,28 +19,39 @@
 <div id="app">
     <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
-        <div>
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-primary" style="margin-right: 40px;" data-toggle="modal" data-target="#modalCreate">创建课程</button>
-            </div>
-        </div>
-        <div v-for="course in courses"></div>
-        <h3>我管理的课程</h3>
-        <section class="section-course d-flex flex-wrap justify-content-start">
+<!--        <div>-->
+<!--            <div class="d-flex justify-content-end">-->
+<!--                <button class="btn btn-primary" data-toggle="modal" data-target="#modalCreate">创建课程</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--&lt;!&ndash;        <div v-for="course in courses"></div>&ndash;&gt;-->
+<!--        <h3>我管理的课程</h3>-->
 
-            <div class="card card-course" style="max-width: 18rem; " v-for="course in adminCourses">
-                <a :href="'/course/' + course.id">
-                    <img :src="'/api/file/'+course.pic" class="card-img-top card-img" alt="img">
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title">{{ course.name }}</h5>
-                    <p class="card-text"><small>{{ course.info }}</small></p>
-                    <div>
-                        <span class="badge badge-rounded bg-blue badge-me" v-for="tag in course.courseTags">{{ tag.name }}</span>
-                    </div>
+        <div class="container-fluid margin-sm">
+            <div class="breadcrumb-holder form-inline">
+                <div class="col-lg-10 h1">我管理的课程</div>
+                <div class="col-lg-2">
+                    <button class="btn btn-primary col" data-toggle="modal" data-target="#modalCreate">创建课程</button>
                 </div>
             </div>
-        </section>
+            <section class="section-course d-flex flex-wrap">
+
+                <div class="card card-course" style="max-width: 18rem; " v-for="course in adminCourses">
+                    <a :href="'/course/' + course.id">
+                        <img :src="'/api/file/'+course.pic" class="card-img-top card-img" alt="img">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.name }}</h5>
+                        <p class="card-text"><small>{{ course.info }}</small></p>
+                        <div>
+                            <span class="badge badge-rounded bg-blue badge-me" v-for="tag in course.courseTags">{{ tag.name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+
         <!-- Modal -->
         <div class="modal fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
