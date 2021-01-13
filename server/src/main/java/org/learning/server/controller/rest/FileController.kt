@@ -32,6 +32,24 @@ class FileController {
         return Responses.ok(data = fileService.executeUpload(file, "img", uploadDir))
     }
 
+    @PostMapping("/upload/video")
+    @ResponseBody
+    fun updateVideo(@RequestParam("file") file: MultipartFile): Response<String> {
+        if (file.isEmpty) {
+            return Responses.fail("文件不能为空")
+        }
+        return Responses.ok(data = fileService.executeUpload(file, "video", uploadDir))
+    }
+
+    @PostMapping("/upload/ppt")
+    @ResponseBody
+    fun uploadPPT(@RequestParam("file") file: MultipartFile): Response<String> {
+        if (file.isEmpty) {
+            return Responses.fail("文件不能为空")
+        }
+        return Responses.ok(data = fileService.executeUpload(file, "ppt", uploadDir))
+    }
+
     @GetMapping("/img/{name}", produces = [IMAGE_JPEG_VALUE])
     @NoLogin
     fun getImage(@PathVariable name: String, response: HttpServletResponse) {
