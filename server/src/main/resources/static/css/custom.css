@@ -34,3 +34,19 @@ a.card-link:hover {
 img.card-img {
     height: 14rem;
 }
+
+.margin-sm {
+    margin: 4px;
+}
+
+.hover-select:hover {
+    background-color: #fff3cd;
+}
+
+.hover-select .hover-button {
+    visibility: collapse;
+}
+
+.hover-select:hover .hover-button {
+    visibility: visible;
+}

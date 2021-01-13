@@ -32,17 +32,33 @@
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
         <div class="row d-flex no-margin no-padding container-fluid" style="background-color: lightyellow;">
             <div class="flex-wrap" style="background-color: antiquewhite">
-                <div class="card card-course card-block">
+                <div v-if="model.current" class="card card-course card-block">
                     <div class="card-body">
-                        <h5 class="card-title">{{ organization.name }}</h5>
-                        <p class="card-text">{{ organization.description }}</p>
-                        <div class="list-group">
-                            <div v-for="entry, index in model.headers" href="#"
-                                 class="user-select-none list-group-item list-group-item-action"
-                                 :class="index === model.selectIndex ? 'active' : ''"
-                                 v-on:click="model.selectIndex = index">
-                                <p class="no-margin-bottom">{{ entry.value.name }}</p>
-                                <small>{{ entry.value.description }}</small>
+                        <h5 class="card-title">
+                            <button v-if="model.history.length > 0" v-on:click="navigateToParent"
+                                    class="btn btn-primary btn-small margin-sm">&lt;
+                            </button>
+                            {{ model.current.name }}#{{ model.current.id }}
+                            <small>{{ model.current.description }}</small>
+                        </h5>
+                        <!-- 邀请用户加入组织 -->
+                        <div class="d-flex justify-content-end" v-if="model.isOwn">
+                            <button class="btn btn-primary btn-sm margin-sm" data-toggle="modal"
+                                    data-target="#modalInvite">邀请用户加入
+                            </button>
+                        </div>
+                        <div v-for="dep in model.current.children" class="hover-select">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    {{ dep.name }}#{{ dep.id }}
+                                </div>
+                                <button v-if="model.isOwn" class="col-2 btn btn-danger btn-sm margin-sm">
+                                    删除
+                                </button>
+                                <button class="col-2 btn btn-primary btn-sm margin-sm"
+                                        v-on:click="navigateToChild(dep.id)">
+                                    查看
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -51,47 +67,113 @@
             <div class="flex-wrap" style="background-color: antiquewhite">
                 <div class="card card-course card-block">
                     <div class="card-body">
-                        <div v-if="model.headers[model.selectIndex]" class="list-group">
-                            <div v-for="user in model.headers[model.selectIndex].value.users"
-                                 class="user-select-none list-group-item"
-                                 :class="user.uid === state.user.uid ? 'bg-blue': '' ">
-                                {{ user.name }}(#{{ user.uid }})
-                                <div>
-                                    <span class="badge badge-rounded bg-violet badge-me"
-                                          v-for="org in user.organizations"
-                                          v-if="org.id === organization.id && org.level > 0">
-                                        {{ org.level === 1 ? '管理员' : '主管理员' }}
+                        <div v-for="user in model.users" class="hover-select">
+                            <div>
+                                {{ user.name }}#{{ user.uid }}
+                            </div>
+                            <div>
+                                <span v-for="tag in user.tags" class="badge margin-sm"
+                                      :class="tag.depth === 0 ? 'bg-blue': 'bg-gray'">
+                                    {{ tag.name }}#{{ tag.nodeId }}
+                                    <span v-if="tag.level === 1">
+                                        |管理员
                                     </span>
-                                    <span class="badge badge-rounded bg-blue badge-me"
-                                          v-for="department in user.departments"
-                                          v-if="department.organization.id === organization.id">{{ department.name }}
-                                        <span v-if="department.level > 0">-{{ department.level === 1 ? '管理员' : '主管理员'
-                                            }}</span>
+                                    <span v-if="tag.level === 2">
+                                        |超级管理员
                                     </span>
-                                </div>
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col flex-wrap card-margin container-fluid">
-                <div class="title font-weight-bold">申请列表</div>
-                <div v-if="organization.level > 0" v-for="user in invites" class="card card-block">
-                    <div class="card-body row d-flex">
-                        <div class="col">
-                            {{ user.name }}
+                <div class="card card-block">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ organization.name }}#{{ organization.id }}
+                        </h5>
+                        <div>
+                            描述： {{ organization.description }}
                         </div>
-                        <div v-if="user.state === 0" class="col-2">
-                            <button class="btn btn-primary btn-block">
-                                同意
-                            </button>
+                        <div>
+                            是否公开的组织：
+                            <input type="checkbox" v-model="organization.public">
+                            {{ organization.public === true? '公开' : '不公开' }}
                         </div>
-                        <div v-if="user.state === 0" class="col-2">
-                            <button class="btn btn-danger btn-block">
-                                拒绝
-                            </button>
-                        </div>
+                    </div>
+                </div>
+                <div class="card card-block">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            申请用户加入组织
+                        </h5>
+                        <div v-for="invite in inviteModel.inviteList" class="hover-select">
+                            {{ invite.user.name }}#{{ invite.user.uid }} -&gt;
+                            <span class="badge badge-me bg-blue">
+                                <span v-if="invite.orgNode.id !== invite.root.id">{{ invite.root.name }}#{{ invite.root.id }}</span>&nbsp;
+                                {{ invite.orgNode.name }}#{{ invite.orgNode.id }}
+                            </span>
 
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-block">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            用户申请加入组织
+                        </h5>
+                        <div v-for="invite in inviteModel.inviteListInverse" class="hover-select">
+                            用户 {{ invite.user.name }}#{{ invite.user.uid }} 申请加入 {{ invite.orgNode.name
+                            }}#{{ invite.orgNode.id }}
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalInvite" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">邀请用户加入</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form form-inline">
+                                    <label>
+                                        <input class="col" placeholder="请搜索用户" v-model="inviteModel.query">
+                                    </label>
+                                    <button class="btn btn-primary btn-sm" v-on:click="searchPerson">搜索</button>
+                                </div>
+                                <div>
+                                    <div v-for="user in inviteModel.users" class="hover-select user-select-none"
+                                         v-on:click="clickUserAdd(user)">
+                                        {{ user.name }}#{{ user.uid }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div>邀请列表</div>
+                                <div>
+                                    <div v-for="user in inviteModel.selectUsers" class="hover-select user-select-none"
+                                         v-on:click="clickUserRemove(user)">
+                                        {{ user.name }}#{{ user.uid }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" :disabled="inviteModel.processing"
+                                v-on:click="submitInvite">提交
+                        </button>
                     </div>
                 </div>
             </div>
@@ -111,37 +193,128 @@
                 net: net,
                 // inject the conversion object
                 conversion: conversion,
-                title: '模板界面',
+                title: '部门详细信息',
                 menu: common.menu_org
             },
+            /**
+             * @type User
+             */
             state: common.defaultUserState(),
             /**
              * @type Organization
              */
             organization: {
                 id: -1,
-                name: '某组织',
-                description: '某组织的描述',
-                departments: []
+                name: '某组织'
             },
-            /**
-             * @type Array<User>
-             */
-            invites: [],
             model: {
+                history: [],
                 /**
-                 * @type Array<EntryDepartment | EntryOrganization>
+                 * @type Organization
                  */
-                headers: [],
+                current: null,
+                isOwn: false,
                 /**
-                 * @type number
+                 * @type Array<User>
                  */
-                selectIndex: 0
+                users: []
+            },
+            inviteModel: {
+                processing: false,
+                query: '',
+                /**
+                 * @type Array<User>
+                 */
+                users: [],
+                /**
+                 * @type Array<User>
+                 */
+                selectUsers: [],
+                /**
+                 * @type Array<UserOrgNodeInvitation>
+                 */
+                inviteList: [],
+                /**
+                 * @type Array<UserOrgNodeInvitation>
+                 */
+                inviteListInverse: []
             }
         },
         methods: {
             stateChanged(state) {
                 app.state = state
+            },
+            async updatePerson(orgId) {
+                let resUsers = await net.orgGetPerson(orgId);
+                if (common.resOk(resUsers)) {
+                    app.model.users = resUsers.data
+                }
+            },
+            async navigateToChild(orgId) {
+                app.model.history.push(app.model.current)
+                app.model.current = app.model.current.children.find((dep) => {
+                    return dep.id === orgId
+                })
+                await app.updatePerson(orgId)
+            },
+            async navigateToParent() {
+                app.model.current = app.model.history[app.model.history.length - 1]
+                app.model.history.pop()
+                await app.updatePerson(app.model.current.id)
+            },
+            async searchPerson() {
+                let org_id = app.organization.id
+                let query = app.inviteModel.query
+                let resUsersSearch = await net.orgSearchPerson(org_id, query)
+                if (common.resOk(resUsersSearch)) {
+                    app.inviteModel.users = resUsersSearch.data
+                }
+            },
+            async getInviteList() {
+                let org_id = app.organization.id
+                let resInviteList = await net.orgInviteList(org_id)
+                if (common.resOk(resInviteList)) {
+                    app.inviteModel.inviteList = resInviteList.data.filter(
+                        (value) => value.inverse === false
+                    )
+                    app.inviteModel.inviteListInverse = resInviteList.data.filter(
+                        (value) => value.inverse === true
+                    )
+                }
+            },
+            /**
+             * 将一个用户加入selectUsers
+             * @param user {User}
+             */
+            clickUserAdd(user) {
+                if (app.inviteModel.selectUsers.find(
+                    (value) => value.uid === user.uid
+                ) === undefined) {
+                    app.inviteModel.selectUsers.push(user)
+                }
+            },
+            /**
+             * 将一个用户从一个selectUsers删除
+             * @param user {User}
+             */
+            clickUserRemove(user) {
+                app.inviteModel.selectUsers = app.inviteModel.selectUsers.filter(
+                    (value) => value.uid !== user.uid
+                )
+            },
+            async processInvite(inviteId) {
+
+            },
+            async submitInvite() {
+                app.inviteModel.processing = true
+                app.inviteModel.selectUsers.forEach(
+                    (value) => {
+                        net.orgInvitePerson(app.model.current.id, value.uid)
+                    }
+                )
+                app.inviteModel.selectUsers = []
+                app.inviteModel.processing = false
+                await app.getInviteList()
             },
             async init() {
                 document.title = app.c.title;
@@ -154,18 +327,17 @@
                     console.log(uri_component)
                     // 获取/org/:{id}
                     let organization_id = uri_component.paths[2]
-                    let resOrg = await net.orgGet(parseInt(organization_id))
+                    let resOrg = await net.orgGet(organization_id)
                     if (common.resOk(resOrg)) {
                         app.organization = resOrg.data
-                        conversion.extendOrganizationOfUser(app.state.user, app.organization)
-                        app.model.headers = conversion.organizationToDepartmentHeader(app.organization)
-                    }
-                    let resInvites = await net.orgInvitesGet(parseInt(organization_id))
-                    if (common.resOk(resInvites)) {
-                        app.invites = resInvites.data
+                        app.model.current = app.organization
+                        app.model.isOwn = app.model.current.owner.uid === app.state.user.uid
+                        await app.updatePerson(organization_id)
+                        await app.getInviteList()
                     }
                 }
             }
+
         }
     })
 

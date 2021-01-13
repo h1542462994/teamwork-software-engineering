@@ -33,7 +33,8 @@ class UserOrgNode {
                 this.uid = this@UserOrgNode.user.uid
                 this.depth = depth
                 this.level = this@UserOrgNode.level
-                this.nodeId = this@UserOrgNode.id!!
+                this.nodeId = this@UserOrgNode.orgNode.id
+                this.name = this@UserOrgNode.orgNode.name
             }))
         }
     }

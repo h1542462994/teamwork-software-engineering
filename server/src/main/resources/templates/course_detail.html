@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/style.default.css">
+    <link rel="stylesheet" href="/css/custom.css">
+    <meta charset="UTF-8">
+    <title>#title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/asyncNet.js"></script>
+    <script src="/js/component.js"></script>
+</head>
+<body>
+<div id="app">
+    <app-compact :c="c" :state="state">
+        <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
+        <div class="row">
+            <div class="col">
+                章节
+            </div>
+            <div style="width: 300px">
+                <div class="container bg-blue">
+                    <div v-if="model.adminMode === true" class="d-flex flex-wrap justify-content-end">
+                        <button class="btn btn-primary btn-sm margin-sm" data-toggle="modal" data-target="#modalUpdate">
+                            修改课程信息
+                        </button>
+                        <button class="btn btn-primary btn-sm margin-sm">
+                            修改课程管理信息
+                        </button>
+                        <button class="btn btn-primary btn-sm margin-sm" data-toggle="modal" data-target="#modalResource" v-on:click="openModalResource">
+                            课程资源库
+                        </button>
+                    </div>
+                    <div>{{ model.course.name }}#{{ model.course.id }}</div>
+                    <div>{{ model.course.info }}</div>
+                    <div>
+                        公开状态:
+                        <span v-if="model.course.public === true">公开</span>
+                        <span v-else>不公开</span>
+                    </div>
+                    <div>
+                        编辑状态:
+                        <span v-if="model.course.inEdit === true">正在编辑</span>
+                        <span v-else>已发布</span>
+                    </div>
+                </div>
+                <section class="container-fluid">
+                    <div v-if="model.adminMode === true" class="d-flex justify-content-end">
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="chapterModel.type = 0">
+                            添加章节
+                        </button>
+                    </div>
+
+                    <div v-for="chapter, index in model.chapters" class="d-flex justify-content-between hover-select margin-sm">
+                        <div>
+                            {{ chapter.name }}#{{ chapter.id }}
+                        </div>
+                        <div>
+                            <button class="hover-button btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="openChapterModal(chapter, index, 1)">
+                                编辑
+                            </button>
+                            <button class="hover-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modalChapterDelete" v-on:click="openChapterModal(chapter, index, 2)">
+                                &times;
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalChapterCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <span v-if="chapterModel.type === 0">
+                                添加章节
+                            </span>
+                            <span v-else>
+                                修改章节
+                            </span>
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="create-form-name" class="form-control-label">名称</label>
+                            <input id="create-form-name" class="form-control" type="text" v-model="chapterModel.name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                插入位置
+                                <select class="form-control" v-model="chapterModel.index">
+                                    <option v-for="chapter, index in model.chapters" :value="index">
+                                        {{ chapter.name }}#{{ chapter.id }}
+                                    </option>
+                                    <option v-if="chapterModel.type === 0" :value="model.chapters.length">[插入到最后]</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" :disabled="chapterModel.processing" v-on:click="doChapterChange">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalChapterDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            删除章节
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text warning">你确认删除{{ chapterModel.name }}#{{ chapterModel.id }}吗?</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" :disabled="chapterModel.processing" v-on:click="doChapterChange">确认删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalResource" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            课程资源库
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <button class="nav-link" :class="resourceModel.tabIndex === 0?'active':''" v-on:click="resourceChangeTab(0)">文本资源</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" :class="resourceModel.tabIndex === 1?'active':''" v-on:click="resourceChangeTab(1)">ppt资源</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" :class="resourceModel.tabIndex === 2?'active':''" v-on:click="resourceChangeTab(2)">视频资源</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" :class="resourceModel.tabIndex === 3?'active':''" v-on:click="resourceChangeTab(3)">上传资源</button>
+                            </li>
+                        </ul>
+                        <div v-if="resourceModel.tabIndex === 0">
+                            <div v-for="resource in model.plainResources" class="hover-select">
+                                <div>
+                                    <h5>{{ resource.name }}#{{ resource.id }}</h5>
+                                    <div>
+                                        {{ resource.data }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="resourceModel.tabIndex === 3" class="form">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    资源名
+                                    <input class="form-control" type="text" v-model="resourceModel.name">
+                                </label>
+                                <label class="form-control-label">
+                                    资源类型
+                                    <select class="form-control" v-model="resourceModel.type">
+                                        <option :value="0">文本资源</option>
+                                        <option :value="1">ppt资源</option>
+                                        <option :value="2">视频资源</option>
+                                    </select>
+                                </label>
+                                <label v-if="resourceModel.type === 0" class="form-control-label">
+                                    文本内容
+                                    <input class="form-control" type="text" v-model="resourceModel.textData">
+                                </label>
+                                <label v-else class="form-control-label">
+                                    文件
+                                    <input id="form-resource-file" class="form-control-file" type="file" multiple/>
+                                </label>
+                                <button class="btn btn-primary btn-sm" :disabled="resourceModel.processing" v-on:click="createResource">添加资源</button>
+                                <div>{{ state.tip }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalUpdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">修改课程基础信息</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form">
+                            <div class="form-group">
+                                <label for="form-create-name" class="form-control-label">课程名</label>
+                                <input id="form-create-name" type="text" class="form-control" v-model="model.course.name" />
+                            </div>
+                            <div class="form-group">
+                                <label for="form-create-description" class="form-control-label">课程描述</label>
+                                <input id="form-create-description" type="text" class="form-control" v-model="model.course.info"/>
+                            </div>
+                            <div class="form-inline">
+                                <label for="create-form-public" class="form-check-label">是否公开</label>
+                                <input id="create-form-public" class="form-check" type="checkbox" v-model="model.course.isPublic">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" v-on:click="submitUpdate">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app-compact>
+</div>
+
+<script>
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            c: {
+                // inject common object
+                common: common,
+                // inject net object
+                net: net,
+                title: '模板界面',
+                menu: common.menu_index
+            },
+            state: common.defaultUserState(),
+            model: {
+                adminMode: true,
+                /**
+                 * @type course
+                 */
+                course: {
+                    id: -1,
+                    name: '某课程',
+                    info: '某课程描述',
+                    public: false,
+                    inEdit: true
+                },
+                /**
+                 * @type Array<Chapter>
+                 */
+                chapters: [
+
+                ],
+                currentChapter: null,
+                /**
+                 * @type Array<Resource>
+                 */
+                plainResources: [
+
+                ],
+                /**
+                 * @type Array<Resource>
+                 */
+                pptResources: [
+
+                ],
+                /**
+                 * @type Array<Resource>
+                 */
+                videoResources: [
+
+                ]
+            },
+            chapterModel: {
+                id: -1,
+                // 更新为1，创建为0，删除为2
+                type: 0,
+                processing: false,
+                index: 0,
+                name: '',
+            },
+            resourceModel: {
+                processing: false,
+                tabIndex: 0,
+                name: '',
+                type: 0,
+                textData: '',
+                data: ''
+            }
+        },
+        methods: {
+            stateChanged(state) {
+                this.state = state
+            },
+            resourceChangeTab(tabIndex) {
+                app.resourceModel.tabIndex = tabIndex
+            },
+            async submitUpdate() {
+                let res = await net.courseUpdate(
+                    app.model.course.id,
+                    app.model.course.name,
+                    app.model.course.info,
+                    app.model.course.pic,
+                    app.model.course.public
+                )
+                $('#modalUpdate').modal('hide')
+            },
+            async getCourse() {
+                let resCourse = await net.courseGet(app.model.course.id)
+                if (common.resOk(resCourse)) {
+                    app.model.course = resCourse.data
+                }
+            },
+            async getChapters() {
+                let res = await net.courseGetChapters(app.model.course.id)
+                if (common.resOk(res)) {
+                    app.model.chapters = res.data
+                }
+            },
+            async getResources() {
+                let res = await net.courseGetResources(app.model.course.id)
+                if (common.resOk(res)) {
+                    app.model.plainResources = res.data.filter(
+                        (value) => value.type === 0
+                    )
+                    app.model.pptResources = res.data.filter(
+                        (value) => value.type === 1
+                    )
+                    app.model.videoResources = res.data.filter(
+                        (value) => value.type === 2
+                    )
+                }
+            },
+            openModalResource() {
+                app.state.tip = ''
+            },
+            async createResource() {
+                if (app.resourceModel.type === 0) {
+                    app.state.tip = '正在上传中...'
+                    app.resourceModel.processing = true
+                    let res = await net.courseCreateResource(
+                        app.model.course.id,
+                        app.resourceModel.name,
+                        app.resourceModel.type,
+                        app.resourceModel.textData
+                    )
+                    if (common.resOk(res)) {
+                        await app.getResources()
+                        app.resourceModel.name = ''
+                        app.resourceModel.textData = ''
+                        app.state.tip = '上传完成'
+                    }
+
+                    app.resourceModel.processing = false
+                } else {
+                    let file = $('#form-resource-file')[0].files[0]
+                    let type = app.resourceModel.type === 1 ? "ppt": "video"
+                    let formData = new FormData()
+                    formData.append('file', file)
+                    console.log(formData.get('file'))
+                    let res = await net.fileUpload(formData, net.file_img)
+                    console.log(res)
+                    // 设置刚上传的文件路径
+                    app.resourceModel.data = res.data
+                    
+                }
+            },
+            async openChapterModal(chapter, index, type) {
+                app.chapterModel.type = type
+                app.chapterModel.id = chapter.id
+                app.chapterModel.name = chapter.name
+                app.chapterModel.index = index
+            },
+            async doChapterChange() {
+                if (app.chapterModel.type === 0) {
+                    // 创建chapter
+                    app.chapterModel.processing = true
+                    let res = await net.courseCreateChapter(app.model.course.id, app.chapterModel.name, app.chapterModel.index)
+                    if (common.resOk(res)) {
+                        await app.getChapters()
+                        $('#modalChapterCreate').modal('hide')
+                    }
+                    app.chapterModel.processing = false
+                } else if (app.chapterModel.type === 1) {
+                    app.chapterModel.processing = true
+                    let res1 = await net.courseUpdateChapter(app.model.course.id, app.chapterModel.id, app.chapterModel.name)
+                    let res2 = await net.courseMoveChapter(app.model.course.id, app.chapterModel.id, app.chapterModel.index)
+                    if (common.resOk(res2)) {
+                        await app.getChapters()
+                        $('#modalChapterCreate').modal('hide')
+                    }
+                    app.chapterModel.processing = false
+                } else {
+                    app.chapterModel.processing = true
+                    let res = await net.courseDeleteChapter(app.model.course.id, app.chapterModel.id)
+                    if (common.resOk(res)) {
+                        await app.getChapters()
+                        $('#modalChapterDelete').modal('hide')
+                    }
+                    app.chapterModel.processing = false
+                }
+            },
+            async init() {
+                document.title = app.c.title;
+                net.addWatcher(app.stateChanged)
+                app.state = await net.userState()
+                // to add the initialization code
+                let uri_component = common.uri(window.location)
+                app.model.course.id = uri_component.paths[2]
+                await app.getCourse()
+                await app.getChapters()
+                await app.getResources()
+            }
+        }
+    })
+
+    window.onload = () => {
+        app.init();
+    }
+</script>
+
+</body>
+</html>

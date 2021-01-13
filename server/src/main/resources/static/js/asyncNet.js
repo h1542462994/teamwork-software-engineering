@@ -15,14 +15,34 @@ class AsyncNet {
     net_fail = "net_fail"
     uri_user_login = "/api/user/login"
     uri_user_state = "/api/user/state"
+    uri_user_logout = "/api/user/logout"
     uri_org_all = "/api/org/all"
     uri_org_get = "/api/org/get"
     uri_org_list = "/api/org/list"
     uri_org_grouped = "/api/org/grouped"
     uri_org_user_invite = "/api/org/user_invite"
-    uri_org_invites_get = "/api/org/invites/get"
+    uri_org_get_person = "/api/org/person/get"
+    uri_org_search_person = "/api/org/person/search"
+    uri_org_invite_get = "/api/org/invite/get"
+    uri_org_invite_get_person = "/api/org/invite/get/person"
+    uri_org_invite_org2person = "/api/org/invite/org2person"
+    uri_org_invite_process = "/api/org/invite/process"
     uri_course_all = "/api/course/all"
+    uri_org_create = "/api/org/create"
+    uri_file_upload = "/api/file/upload"
+    uri_course_get = "/api/course/get"
+    uri_course_create = "/api/course/create"
+    uri_course_update = "/api/course/update"
+    uri_course_list_admin = "/api/course/list/admin"
+    uri_course_chapter_get = "/api/course/chapter/get"
+    uri_course_chapter_create = "/api/course/chapter/create"
+    uri_course_chapter_update = "/api/course/chapter/update"
+    uri_course_chapter_move = "/api/course/chapter/move"
+    uri_course_chapter_delete = "/api/course/chapter/delete"
+    uri_course_resource_get = "/api/course/resource/get"
+    uri_course_resource_create = "/api/course/resource/create"
     uri_course_selectid="/api/course/selectid"
+    file_img = "img"
     //endregion
     //region public domain
     // add restAPI support
@@ -96,6 +116,14 @@ class AsyncNet {
     }
 
     /**
+     * 用户退出登录
+     * @return {Promise<Response<any>>}
+     */
+    async userLogout() {
+        return this.post(this.uri_user_logout)
+    }
+
+    /**
      * 通过api/course/selectid 进行课程查询
      * @param id
      * @returns {Promise<string|response<*>>}
@@ -121,12 +149,11 @@ class AsyncNet {
     }
 
     /**
-     * 通过api/org/get 获取id的organization的信息
-     * @returns {Promise<ResponseOrganization>}
-     * @param id {number}
+     * 通过api/course/list/admin 获取所有我管理的课程
+     * @return {Promise<ResponseCourses>}
      */
-    async orgGet(id) {
-        return this.post(this.uri_org_get, `id=${id}`)
+    async courseListAdmin() {
+        return this.post(this.uri_course_list_admin)
     }
 
     /**
@@ -139,6 +166,7 @@ class AsyncNet {
     }
 
     /**
+     * @deprecated
      * 通过api/org/user_invite进行加入部门的申请
      * @param orgId
      * @return {Promise<ResponseOrganization>}
@@ -147,14 +175,7 @@ class AsyncNet {
         return this.post(this.uri_org_user_invite, `orgId=${orgId}`)
     }
 
-    /**
-     * 通过api/org/invites/get
-     * @param orgId
-     * @return {Promise<ResponseUsers>}
-     */
-    async orgInvitesGet(orgId) {
-        return this.post(this.uri_org_invites_get, `orgId=${orgId}`)
-    }
+
 
     /**
      * 通过api/org/list获取部门信息
@@ -162,6 +183,213 @@ class AsyncNet {
      */
     async orgList() {
         return this.post(this.uri_org_list)
+    }
+
+    /**
+     * 通过api/org/get获取部门的细节信息
+     * @param orgId
+     * @return {Promise<ResponseOrganization>}
+     */
+    async orgGet(orgId) {
+        return this.post(this.uri_org_get, `orgId=${orgId}`)
+    }
+
+    /**
+     * 通过api/org/person/get 获取人员列表
+     * @param orgId
+     * @return {Promise<ResponseUsers>}
+     */
+    async orgGetPerson(orgId) {
+        return this.post(this.uri_org_get_person, `orgId=${orgId}`)
+    }
+
+    /**
+     * 通过api/org/person/search 搜索用户
+     * @param orgId
+     * @param query
+     * @return {Promise<ResponseUsers>}
+     */
+    async orgSearchPerson(orgId, query) {
+        return this.post(this.uri_org_search_person, `orgId=${orgId}&query=${query}`)
+    }
+
+    /**
+     * 通过api/org/invite/get 搜索申请列表
+     * @param orgId
+     * @return {Promise<ResponseUserOrgNodeInvitations>}
+     */
+    async orgInviteList(orgId) {
+        return this.post(this.uri_org_invite_get, `orgId=${orgId}`)
+    }
+
+    /**
+     * 通过api/org/invite/get/person 搜索申请列表
+     * @return {Promise<ResponseUserOrgNodeInvitations>}
+     */
+    async orgInviteListPerson() {
+        return this.post(this.uri_org_invite_get_person)
+    }
+
+    /**
+     * 通过api/org/invite/org2person 进行邀请
+     * @param orgId
+     * @param personUid
+     * @return {Promise<Response<any>>}
+     */
+    async orgInvitePerson(orgId, personUid) {
+        return this.post(this.uri_org_invite_org2person, `orgId=${orgId}&personUid=${personUid}`)
+    }
+
+    /**
+     * 通过api/org/create 创建组织
+     * @param name {string}
+     * @param description {string}
+     * @param isPublic {boolean}
+     * @return {Promise<ResponseOrganization>}
+     */
+    async orgCreate(name, description, isPublic) {
+        return this.post(this.uri_org_create, `name=${name}&description=${description}&public=${isPublic}`)
+    }
+
+
+
+    /**
+     *
+     * @param inviteId {number}
+     * @param accept {boolean}
+     * @return {Promise<Response<any>>}
+     */
+    async orgProcessInvite(inviteId, accept) {
+        return this.post(this.uri_org_invite_process, `inviteId=${inviteId}&accept=${accept}`)
+    }
+
+    /**
+     * 上传文件
+     * @param formData {FormData}
+     * @param type {string}
+     * @return {Promise<string | Response>}
+     */
+    async fileUpload(formData, type) {
+        let formRequest = new Request(`${this.uri_file_upload}/${type}`, {
+            method: 'post',
+            credentials: 'include',
+            body: formData
+        })
+        let res = await fetch(formRequest)
+        if (res.status === 200){
+            return await res.json()
+        } else {
+            return this.net_fail
+        }
+    }
+
+    /**
+     * 通过接口/api/course/get获取课程的基础信息
+     * @param courseId
+     * @return {Promise<ResponseCourse>}
+     */
+    async courseGet(courseId) {
+        return this.post(this.uri_course_get, `courseId=${courseId}`)
+    }
+
+
+
+    /**
+     * 通过接口/api/course/create创建课程
+     * @param name {string}
+     * @param info {string}
+     * @param pic {string}
+     * @param isPublic {boolean}
+     * @return {Promise<ResponseCourse>}
+     */
+    async courseCreate(name, info, pic, isPublic) {
+        return this.post(this.uri_course_create, `name=${name}&info=${info}&pic=${pic}&public=${isPublic}`)
+    }
+
+    /**
+     * 通过api/course/update更新信息
+     * @param courseId
+     * @param name
+     * @param info
+     * @param pic
+     * @param isPublic
+     * @return {Promise<ResponseCourse>}
+     */
+    async courseUpdate(courseId, name, info, pic, isPublic) {
+        return this.post(this.uri_course_update, `id=${courseId}&name=${name}&info=${info}&pic=${pic}&public=${isPublic}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/get获取章节
+     * @param courseId
+     * @return {Promise<ResponseChapters>}
+     */
+    async courseGetChapters(courseId) {
+        return this.post(this.uri_course_chapter_get, `courseId=${courseId}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/create创建章节
+     * @param courseId
+     * @param name
+     * @param index
+     * @return {Promise<ResponseChapter>}
+     */
+    async courseCreateChapter(courseId, name, index) {
+        return this.post(this.uri_course_chapter_create, `courseId=${courseId}&name=${name}&index=${index}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/update更新章节
+     * @param courseId
+     * @param chapterId
+     * @param name
+     * @return {Promise<ResponseChapter>}
+     */
+    async courseUpdateChapter(courseId, chapterId, name) {
+        return this.post(this.uri_course_chapter_update, `courseId=${courseId}&chapterId=${chapterId}&name=${name}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/move移动章节
+     * @param courseId
+     * @param chapterId
+     * @param index
+     * @return {Promise<ResponseChapter>}
+     */
+    async courseMoveChapter(courseId, chapterId, index) {
+        return this.post(this.uri_course_chapter_move, `courseId=${courseId}&chapterId=${chapterId}&index=${index}`)
+    }
+
+    /**
+     * 通过接口/api/course/chapter/delete删除章节
+     * @param courseId
+     * @param chapterId
+     * @return {Promise<ResponseChapter>}
+     */
+    async courseDeleteChapter(courseId, chapterId) {
+        return this.post(this.uri_course_chapter_delete, `courseId=${courseId}&chapterId=${chapterId}`)
+    }
+
+    /**
+     * 通过接口/api/course/resource/get获取资源列表
+     * @param courseId
+     * @return {Promise<ResponseResources>}
+     */
+    async courseGetResources(courseId) {
+        return this.post(this.uri_course_resource_get, `courseId=${courseId}`)
+    }
+
+    /**
+     * 通过接口/api/course/resource/create创建资源
+     * @param courseId
+     * @param name
+     * @param type
+     * @param data
+     * @return {Promise<ResponseResource>}
+     */
+    async courseCreateResource(courseId, name, type, data) {
+        return this.post(this.uri_course_resource_create, `courseId=${courseId}&name=${name}&type=${type}&data=${data}`)
     }
     //endregion
 }

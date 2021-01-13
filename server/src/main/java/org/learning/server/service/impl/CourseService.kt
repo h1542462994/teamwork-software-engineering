@@ -7,6 +7,7 @@ import org.learning.server.form.CourseForm
 import org.learning.server.form.ResourceForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
+import org.learning.server.model.complex.CourseOpenInfo
 import org.learning.server.repository.*
 import org.learning.server.service.ICourseService
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,6 +31,14 @@ class CourseService : ICourseService {
     lateinit var userRepository: UserRepository
     @Autowired
     lateinit var messageService: MessageService
+    @Autowired
+    lateinit var orgNodeRepository: OrgNodeRepository
+    @Autowired
+    lateinit var userOrgNodeRepository: UserOrgNodeRepository
+    @Autowired
+    lateinit var courseOpenRepository: CourseOpenRepository
+    @Autowired
+    lateinit var orgService: OrgService
     //endregion
 
     //region tool functions
@@ -124,12 +133,25 @@ class CourseService : ICourseService {
         return courseRepository.findAll();
     }
 
-    override fun adminList(user: User): Iterable<Course> {
-        TODO("Not yet implemented")
+    override fun get(courseId: Int, user: User): Response<Course> {
+        val course = getCourseEntity(courseId)
+        this.guardVisit(course, user)
+        return Responses.ok(course)
     }
 
-    override fun list(user: User): Iterable<Course> {
-        TODO("Not yet implemented")
+    override fun adminList(user: User): Iterable<Course> {
+        val courses: LinkedList<Course> = LinkedList()
+        courses.addAll(courseRepository.findAllByOwner(user))
+        courses.addAll(courseRepository.findAllByAdminUsersContains(user))
+        return courses
+    }
+
+    override fun list(user: User): Iterable<CourseOpenInfo> {
+        // 首先，获得所有与之相关的节点信息
+        val orgNodes = orgService.getOrgNodesOfUser(user)
+        // 其次获取开课信息
+        val courseOpens = orgNodes.flatMap { courseOpenRepository.findAllByOrgNode(it) }.distinctBy { it.id }
+        return courseOpens.map { it.toCourseOpenInfo(orgService.getOrganizationOfNode(it.orgNode!!)) }
     }
 
     override fun create(courseForm: CourseForm, user: User): Response<Course> {

@@ -7,6 +7,7 @@ import org.learning.server.form.CourseForm
 import org.learning.server.form.ResourceForm
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
+import org.learning.server.model.complex.CourseOpenInfo
 import org.learning.server.service.ICourseService
 import org.learning.server.service.impl.CourseService
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,6 +29,33 @@ class CourseController {
     @PostMapping("/all")
     fun all(): Response<Iterable<Course>> {
         return Responses.ok(courseService.all())
+    }
+
+    /**
+     * 获取管理的课程
+     */
+    @PostMapping("/list/admin")
+    fun adminList(request: HttpServletRequest): Response<Iterable<Course>> {
+        val user = SessionHelper.of(request).user()!!
+        return Responses.ok(courseService.adminList(user))
+    }
+
+    /**
+     * 获取我要上的课程
+     */
+    @PostMapping("/list")
+    fun list(request: HttpServletRequest): Response<Iterable<CourseOpenInfo>> {
+        val user = SessionHelper.of(request).user()!!
+        return Responses.ok(courseService.list(user))
+    }
+
+    /**
+     * 获取当前课程的基础信息
+     */
+    @PostMapping("/get")
+    fun get(courseId: Int, request: HttpServletRequest): Response<Course> {
+        val user = SessionHelper.of(request).user()!!
+        return courseService.get(courseId, user)
     }
 
     /**

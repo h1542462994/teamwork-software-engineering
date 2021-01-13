@@ -3,14 +3,18 @@ package org.learning.server.controller.rest
 import org.learning.server.common.SessionHelper
 import org.learning.server.entity.OrgNode
 import org.learning.server.entity.Organization
+import org.learning.server.entity.User
+import org.learning.server.entity.UserOrgNodeInvitation
 import org.learning.server.entity.base.OrganizationBase
 import org.learning.server.entity.base.UserBase
 import org.learning.server.form.OrgNodeForm
 import org.learning.server.model.annotation.NoUsed
 import org.learning.server.model.common.Response
 import org.learning.server.model.common.Responses
+import org.learning.server.model.complex.Invitation
 import org.learning.server.model.complex.OrgSummary
 import org.learning.server.model.complex.OrganizationGrouped
+import org.learning.server.model.complex.UserInfo
 import org.learning.server.service.IOrgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
@@ -128,4 +132,57 @@ class OrgController {
         return orgService.get(orgId, user)
     }
 
+    /**
+     * 获取一个组织节点下的用户列表
+     */
+    @PostMapping("/person/get")
+    fun getPerson(orgId: Int, request: HttpServletRequest): Response<Iterable<UserInfo>> {
+        val user = SessionHelper.of(request).user()!!
+        return Responses.ok(orgService.getPersons(orgId, user))
+    }
+
+    /**
+     * 在组织外查找用户
+     */
+    @PostMapping("/person/search")
+    fun searchPerson(orgId: Int, query: String, request: HttpServletRequest): Response<Iterable<User>> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.searchPerson(orgId, query, user)
+    }
+
+    /**
+     * 查找一个组织的申请列表
+     */
+    @PostMapping("/invite/get")
+    fun inviteList(orgId: Int, request: HttpServletRequest): Response<Iterable<Invitation>> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.inviteList(orgId, user)
+    }
+
+    /**
+     * 查找一个用户的申请列表
+     */
+    @PostMapping("/invite/get/person")
+    fun inviteListOfUser(request: HttpServletRequest): Response<Iterable<Invitation>> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.inviteListOfUser(user);
+    }
+
+    /**
+     * 组织邀请用户加入
+     */
+    @PostMapping("/invite/org2person")
+    fun orgInvitePerson(orgId: Int, personUid: String, request: HttpServletRequest): Response<Any> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.orgInvitePerson(orgId, personUid, user)
+    }
+
+    /**
+     * 处理申请
+     */
+    @PostMapping("/invite/process")
+    fun processInvite(inviteId: Int, accept: Boolean, request: HttpServletRequest): Response<Any> {
+        val user = SessionHelper.of(request).user()!!
+        return orgService.processInvite(inviteId, user, accept)
+    }
 }

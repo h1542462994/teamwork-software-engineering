@@ -1,5 +1,6 @@
 package org.learning.server.entity
 
+import org.learning.server.model.complex.CourseOpenInfo
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -18,4 +19,16 @@ class CourseOpen {
     var isEdit: Boolean = false
     var startTime: Timestamp? = null
     var endTime: Timestamp? = null
+
+    fun toCourseOpenInfo(root: OrgNode): CourseOpenInfo {
+        return CourseOpenInfo().apply {
+            this.id = this@CourseOpen.id
+            this.orgNode = this@CourseOpen.orgNode
+            this.course = this@CourseOpen.course
+            this.isEdit = this@CourseOpen.isEdit
+            this.startTime = this@CourseOpen.startTime
+            this.endTime = this@CourseOpen.endTime
+            this.root = root
+        }
+    }
 }

@@ -5,11 +5,17 @@ import org.learning.server.entity.base.ChapterInfo
 import org.learning.server.form.CourseForm
 import org.learning.server.form.ResourceForm
 import org.learning.server.model.common.Response
+import org.learning.server.model.complex.CourseOpenInfo
 
 interface ICourseService {
     fun all(): Iterable<Course>
+
+    /**
+     * 获取自己管理课程的列表
+     */
     fun adminList(user: User): Iterable<Course>
-    fun list(user: User): Iterable<Course>
+    fun list(user: User): Iterable<CourseOpenInfo>
+    fun get(courseId: Int, user: User): Response<Course>
     fun create(courseForm: CourseForm, user: User): Response<Course>
     fun delete(courseId: Int, user: User): Boolean
     fun update(courseForm: CourseForm, user: User): Response<Course>
@@ -33,4 +39,5 @@ interface ICourseService {
     fun addAdmin(courseId: Int, adminUid: String, user: User): Response<Course>
     fun deleteAdmin(courseId: Int, adminUid: String, user: User): Response<Course>
     fun exitAdmin(courseId: Int, user: User): Response<Any>
+
 }

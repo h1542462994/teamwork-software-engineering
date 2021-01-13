@@ -25,19 +25,70 @@
 <div id="app" class="align-content-center">
     <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
-        <h1 class="text-center">用户界面</h1>
-        <div class="form align-self-center col-6">
-            <div class="form-group form-inline">
-                <div v-if="state.user">
-                    <label>用户名:{{ state.user.name }}</label>
-                    <label>用户ID:{{ state.user.uid }}</label>
-                    <label>年龄:{{ state.user.age }}</label>
-                    <label v-if="state.user.sex === false">性别 :男</label>
-                        <label v-else>性别 :女</label>
-                    <label>电子邮箱:{{ state.user.email }}</label>
+<!--        <h1 class="text-center">用户界面</h1>-->
+        <div class="container-fluid margin-sm">
+            <div class="breadcrumb-holder form-inline">
+                <div class="col-lg-10 h1">用户界面</div>
+                <div class="col-lg-2">
+                    <button class="btn btn-warning btn-primary col" v-on:click="logout">退出登录</button>
                 </div>
             </div>
         </div>
+        <section class="dashboard-counts no-padding-bottom" id="section_for_student" v-if="state.user">
+            <div class="container-fluid">
+                <div class="row bg-white has-shadow">
+                    <div class="col-xl-4 col-sm-6">
+                        <div class="item d-flex align-items-center">
+                            <div class="title"><span>用户名</span></div>
+                            <div class="text-small"><strong>{{ state.user.name }}</strong></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-sm-6">
+                        <div class="item d-flex align-items-center">
+                            <div class="title"><strong>用户ID</strong></div>
+                            <div class="text"><strong>{{ state.user.uid }}</strong></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-sm-6">
+                        <div class="item d-flex align-items-center">
+                            <div class="title"><span>年&nbsp;&nbsp;&nbsp;龄</span></div>
+                            <div class="text"><strong>{{ state.user.age }}</strong></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-sm-6">
+                        <div class="item d-flex align-items-center">
+                            <div class="title"><span>性&nbsp;&nbsp;&nbsp;别</span></div>
+                            <div class="text">
+                                <strong v-if="state.user.sex === false">男</strong>
+                                <strong v-else>女</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-sm-6">
+                        <div class="item d-flex align-items-center">
+                            <div class="title"><span>邮&nbsp;&nbsp;&nbsp;箱</span></div>
+                            <div class="text"><strong>{{ state.user.email }}</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+<!--        <div class="form align-self-center col-6">-->
+<!--            <div class="form-group form-inline">-->
+<!--                <div v-if="state.user">-->
+<!--                    <label>用户名:{{ state.user.name }}</label>-->
+<!--                    <label>用户ID:{{ state.user.uid }}</label>-->
+<!--                    <label>年龄:{{ state.user.age }}</label>-->
+<!--                    <label v-if="state.user.sex === false">性别 :男</label>-->
+<!--                    <label v-else>性别 :女</label>-->
+<!--                    <label>电子邮箱:{{ state.user.email }}</label>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
     </app-compact>
 
 </div>
@@ -60,6 +111,10 @@
         methods: {
             stateChanged(state) {
                 this.state = state
+            },
+            async logout() {
+                await net.userLogout()
+                window.location.assign('/login')
             },
             async init() {
                 document.title = app.c.title;

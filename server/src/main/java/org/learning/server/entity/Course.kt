@@ -3,6 +3,7 @@ package org.learning.server.entity
 import com.fasterxml.jackson.annotation.JsonFormat
 import org.learning.server.common.TimeStampHelper
 import org.learning.server.form.CourseForm
+import org.learning.server.model.complex.CourseInfo
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -37,5 +38,22 @@ class Course {
         pic = courseForm.pic
         isPublic = courseForm.public
         editTime = TimeStampHelper.now()
+    }
+
+    @Deprecated("")
+    fun toCourseInfo(): CourseInfo {
+        return CourseInfo().apply {
+            this.id = this@Course.id
+            this.pic = this@Course.pic
+            this.name = this@Course.name
+            this.info = this@Course.info
+            this.inEdit = this@Course.inEdit
+            this.isPublic = this@Course.isPublic
+            this.createTime = this@Course.createTime
+            this.editTime = this@Course.editTime
+            this.courseTags = this@Course.courseTags
+            this.owner = this@Course.owner
+            this.adminUsers = this@Course.adminUsers
+        }
     }
 }
