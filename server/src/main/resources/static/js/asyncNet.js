@@ -32,6 +32,7 @@ class AsyncNet {
     uri_file_upload = "/api/file/upload"
     uri_course_get = "/api/course/get"
     uri_course_create = "/api/course/create"
+    uri_course_update = "/api/course/update"
     uri_course_list_admin = "/api/course/list/admin"
     uri_course_chapter_get = "/api/course/chapter/get"
     uri_course_chapter_create = "/api/course/chapter/create"
@@ -250,6 +251,8 @@ class AsyncNet {
         return this.post(this.uri_org_create, `name=${name}&description=${description}&public=${isPublic}`)
     }
 
+
+
     /**
      *
      * @param inviteId {number}
@@ -289,6 +292,8 @@ class AsyncNet {
         return this.post(this.uri_course_get, `courseId=${courseId}`)
     }
 
+
+
     /**
      * 通过接口/api/course/create创建课程
      * @param name {string}
@@ -299,6 +304,19 @@ class AsyncNet {
      */
     async courseCreate(name, info, pic, isPublic) {
         return this.post(this.uri_course_create, `name=${name}&info=${info}&pic=${pic}&public=${isPublic}`)
+    }
+
+    /**
+     * 通过api/course/update更新信息
+     * @param courseId
+     * @param name
+     * @param info
+     * @param pic
+     * @param isPublic
+     * @return {Promise<ResponseCourse>}
+     */
+    async courseUpdate(courseId, name, info, pic, isPublic) {
+        return this.post(this.uri_course_update, `id=${courseId}&name=${name}&info=${info}&pic=${pic}&public=${isPublic}`)
     }
 
     /**
