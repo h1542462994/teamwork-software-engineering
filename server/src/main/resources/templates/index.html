@@ -25,9 +25,11 @@
             </div>
         </div>
         <div v-for="course in courses"></div>
+        <h3>我管理的课程</h3>
         <section class="section-course d-flex flex-wrap justify-content-start">
-            <div class="card card-course" style="max-width: 18rem; " v-for="course in courses">
-                <a href="/course/6">
+
+            <div class="card card-course" style="max-width: 18rem; " v-for="course in adminCourses">
+                <a :href="'/course/' + course.id">
                     <img src="/img/mockup5.jpg" class="card-img-top card-img" alt="img">
                 </a>
                 <div class="card-body">
@@ -94,7 +96,7 @@
             /**
              * @type Array<course>
              */
-            courses: [],
+            adminCourses: [],
             createModel: {
                 name: '',
                 description: '',
@@ -138,9 +140,9 @@
                 app.state = await net.userState()
                 // to add the initialization code
                 if (common.isLogin(app.state)) {
-                    let resCourses = await net.courseAll()
+                    let resCourses = await net.courseListAdmin()
                     if (common.resOk(resCourses)) {
-                        app.courses = resCourses.data
+                        app.adminCourses = resCourses.data
                         console.log(app.courses)
                     }
                 }

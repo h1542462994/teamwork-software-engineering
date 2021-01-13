@@ -31,6 +31,7 @@ class AsyncNet {
     uri_org_create = "/api/org/create"
     uri_file_upload = "/api/file/upload"
     uri_course_create = "/api/course/create"
+    uri_course_list_admin = "/api/course/list/admin"
     uri_course_selectid="/api/course/selectid"
     file_img = "img"
     //endregion
@@ -136,6 +137,14 @@ class AsyncNet {
      */
     async courseAll() {
         return this.post(this.uri_course_all)
+    }
+
+    /**
+     * 通过api/course/list/admin 获取所有我管理的课程
+     * @return {Promise<ResponseCourses>}
+     */
+    async courseListAdmin() {
+        return this.post(this.uri_course_list_admin)
     }
 
     /**

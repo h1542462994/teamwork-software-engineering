@@ -143,7 +143,7 @@ class OrgService : IOrgService {
      * 根据一个节点查找其组织结构的根节点
      * TODO: Extend [getPathOfOrgNode]
      */
-    private fun getOrganizationOfNode(orgNode: OrgNode): OrgNode {
+    public fun getOrganizationOfNode(orgNode: OrgNode): OrgNode {
         var current = orgNode
         while (current.parentId != null) {
             current = orgNodeRepository.findById(current.parentId!!).get()
@@ -259,6 +259,11 @@ class OrgService : IOrgService {
     private fun getFlatCourseOpenOfOrgNode(orgNode: OrgNode): List<CourseOpen> {
         TODO("Not yet implemented")
     }
+
+    public fun getOrgNodesOfUser(user: User): List<OrgNode> {
+        return userOrgNodeRepository.findAllByUser(user).map { it.orgNode }.distinctBy { it.id }
+    }
+
 
     private fun getUserEntity(uid: String): User {
         val userOptional = userRepository.findByUid(uid)
