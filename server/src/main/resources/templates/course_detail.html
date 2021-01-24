@@ -19,81 +19,132 @@
 <div id="app">
     <app-compact :c="c" :state="state">
         <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
-        <div class="row">
-            <div class="col">
-                章节
-            </div>
-            <div style="width: 300px">
-                <div class="container bg-blue">
-                    <div v-if="model.adminMode === true" class="d-flex flex-wrap justify-content-end">
-                        <button class="btn btn-primary btn-sm margin-sm" data-toggle="modal" data-target="#modalUpdate">
-                            修改课程信息
-                        </button>
-                        <button class="btn btn-primary btn-sm margin-sm">
-                            修改课程管理信息
-                        </button>
+<!--        <div class="row">-->
+<!--            <div class="col">-->
+<!--                章节-->
+<!--            </div>-->
+<!--            <div style="width: 300px">-->
+<!--                <div class="container bg-blue">-->
+<!--                    <div v-if="model.adminMode === true" class="d-flex flex-wrap justify-content-end">-->
+<!--                        <button class="btn btn-primary btn-sm margin-sm" data-toggle="modal" data-target="#modalUpdate">-->
+<!--                            修改课程信息-->
+<!--                        </button>-->
+<!--                        <button class="btn btn-primary btn-sm margin-sm">-->
+<!--                            修改课程管理信息-->
+<!--                        </button>-->
+<!--                        <button class="btn btn-primary btn-sm margin-sm" data-toggle="modal" data-target="#modalResource" v-on:click="openModalResource">-->
+<!--                            课程资源库-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <div>{{ model.course.name }}#{{ model.course.id }}</div>-->
+<!--                    <div>{{ model.course.info }}</div>-->
+<!--                    <div>-->
+<!--                        公开状态:-->
+<!--                        <span v-if="model.course.public === true">公开</span>-->
+<!--                        <span v-else>不公开</span>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                        编辑状态:-->
+<!--                        <span v-if="model.course.inEdit === true">正在编辑</span>-->
+<!--                        <span v-else>已发布</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <section class="container-fluid">-->
+<!--                    <div v-if="model.adminMode === true" class="d-flex justify-content-end">-->
+<!--                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="chapterModel.type = 0">-->
+<!--                            添加章节-->
+<!--                        </button>-->
+<!--                    </div>-->
+
+<!--                    <div v-for="chapter, index in model.chapters"-->
+<!--                         class="d-flex justify-content-between hover-select margin-sm"-->
+<!--                         :class="chapter.id === model.chapterId ? 'active' : ''"-->
+<!--                        v-on:click="switchChapter(chapter)">-->
+<!--                        <div>-->
+<!--                            {{ chapter.name }}#{{ chapter.id }}-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                            <button class="hover-button btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="openChapterModal(chapter, index, 1)">-->
+<!--                                编辑-->
+<!--                            </button>-->
+<!--                            <button class="hover-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modalChapterDelete" v-on:click="openChapterModal(chapter, index, 2)">-->
+<!--                                &times;-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </section>-->
+<!--                <section class="container-fluid">-->
+<!--                    <div v-if="model.adminMode === true" class="d-flex justify-content-end">-->
+<!--                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalMedia" v-on:click="mediaModel.type = 0">-->
+<!--                            添加内容-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <div v-for="media, index in model.medias" class="d-flex justify-content-between hover-select margin-sm">-->
+<!--                        <div>-->
+<!--                            {{ media.name }}#{{ media.id }}-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                            <button class="hover-button btn btn-primary btn-sm">-->
+<!--                                编辑-->
+<!--                            </button>-->
+<!--                            <button class="hover-button btn btn-danger btn-sm">-->
+<!--                                &times;-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </section>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="center container-fluid" style="background-color: #fff3cd; width: 960px;">
+            <div class="row">
+                <section v-if="model.currentMedia === null" class="main-area col-8 no-padding">
+                    <div style="position: relative;height: 70%;" class="no-margin">
+                        <img width="100%" height="100%" style="min-height: 100%;" :src="'/api/file/' + model.course.pic" alt="course_img"/>
+                        <div class="row d-flex align-content-center" style="position: relative; bottom: 25%; height: 25%; background-color: rgba(255,255,255,0.6)">
+                            <div class="col-8">
+                                <span style="font-weight: bold; font-size: 1.8em; margin-left: 20px">
+                                    {{ model.course.name }}
+                                </span>
+                            </div>
+                            <div class="col">
+                                <span style="font-size: 0.9em;">
+                                    主讲人：{{ model.course.owner.name }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h3>课程介绍</h3>
+                    <div>
+                        {{ model.course.info }}
+                    </div>
+                    <h3>课程资源</h3>
+                    <div>
                         <button class="btn btn-primary btn-sm margin-sm" data-toggle="modal" data-target="#modalResource" v-on:click="openModalResource">
                             课程资源库
                         </button>
                     </div>
-                    <div>{{ model.course.name }}#{{ model.course.id }}</div>
-                    <div>{{ model.course.info }}</div>
-                    <div>
-                        公开状态:
-                        <span v-if="model.course.public === true">公开</span>
-                        <span v-else>不公开</span>
-                    </div>
-                    <div>
-                        编辑状态:
-                        <span v-if="model.course.inEdit === true">正在编辑</span>
-                        <span v-else>已发布</span>
-                    </div>
-                </div>
-                <section class="container-fluid">
-                    <div v-if="model.adminMode === true" class="d-flex justify-content-end">
-                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="chapterModel.type = 0">
-                            添加章节
-                        </button>
-                    </div>
-
-                    <div v-for="chapter, index in model.chapters"
-                         class="d-flex justify-content-between hover-select margin-sm"
-                         :class="chapter.id === model.chapterId ? 'active' : ''"
-                        v-on:click="switchChapter(chapter)">
-                        <div>
-                            {{ chapter.name }}#{{ chapter.id }}
-                        </div>
-                        <div>
-                            <button class="hover-button btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="openChapterModal(chapter, index, 1)">
-                                编辑
-                            </button>
-                            <button class="hover-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modalChapterDelete" v-on:click="openChapterModal(chapter, index, 2)">
-                                &times;
-                            </button>
-                        </div>
-                    </div>
                 </section>
-                <section class="container-fluid">
-                    <div v-if="model.adminMode === true" class="d-flex justify-content-end">
-                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalMedia" v-on:click="mediaModel.type = 0">
-                            添加内容
-                        </button>
-                    </div>
-                    <div v-for="media, index in model.medias" class="d-flex justify-content-between hover-select margin-sm">
-                        <div>
-                            {{ media.name }}#{{ media.id }}
-                        </div>
-                        <div>
-                            <button class="hover-button btn btn-primary btn-sm">
-                                编辑
-                            </button>
-                            <button class="hover-button btn btn-danger btn-sm">
-                                &times;
-                            </button>
-                        </div>
-                    </div>
+                <section class="sidebar-area col-4">
+                    <h3>课程章节</h3>
+                    <hr>
+                    <ul>
+                        <a href="#" v-on:click="model.currentMedia = null"
+                           :class="model.currentMedia === null ? 'active' : ''">课程首页</a>
+                    </ul>
+                    <ul v-for="chapter,index in model.chapters">
+                        第{{ index }}章：{{ chapter.name }}
+                        <li v-for="media in chapter.medias">
+                            <a href="#" v-on:click="model.currentMedia = media"
+                                :class="model.currentMedia?.id === media.id ? 'active' : ''">
+                                {{ media.name }}
+                            </a>
+
+                        </li>
+                    </ul>
                 </section>
             </div>
+
         </div>
         <!-- Modal -->
         <div class="modal fade" id="modalChapterCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -342,7 +393,7 @@
             model: {
                 adminMode: true,
                 /**
-                 * @type course
+                 * @type Course
                  */
                 course: {
                     id: -1,
@@ -357,17 +408,10 @@
                 chapters: [
 
                 ],
-                medias: [
-
-                ],
-                chapterId: -1,
-                media: {
-                    id: -1
-                },
-                currentChapter: null,
                 /**
-                 * @type Array<Resource>
+                 * @type Media
                  */
+                currentMedia: null,
                 plainResources: [
 
                 ],
@@ -443,15 +487,11 @@
                 let res = await net.courseGetChapters(app.model.course.id)
                 if (common.resOk(res)) {
                     app.model.chapters = res.data
-                }
-                if (app.model.chapters.find(
-                    (value) => app.model.chapterId === value.id
-                ) === undefined) {
-                    if (app.model.chapters.length === 0) {
-                        app.model.chapterId = -1
-                    } else {
-                        app.model.chapterId = app.model.chapters[0].id
-                        await app.getMedias()
+                    for (const chapter of app.model.chapters) {
+                        let resMedia = await net.courseGetMedias(chapter.id)
+                        if (common.resOk(res)) {
+                            chapter.medias = resMedia.data
+                        }
                     }
                 }
             },
@@ -467,23 +507,6 @@
                     app.model.videoResources = res.data.filter(
                         (value) => value.type === 2
                     )
-                }
-            },
-            async getMedias() {
-                let res = await net.courseGetMedias(
-                    app.model.chapterId
-                )
-                if (common.resOk(res)) {
-                    app.model.medias = res.data
-                }
-                if (app.model.medias.find(
-                    (value) => app.model.media.id === value.id
-                ) === undefined) {
-                    if (app.model.medias.length === 0) {
-                        app.model.media.id = -1
-                    } else {
-                        app.model.media = value
-                    }
                 }
             },
             openModalResource() {

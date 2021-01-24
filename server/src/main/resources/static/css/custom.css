@@ -54,3 +54,7 @@ img.card-img {
 .hover-select.active {
     background-color: dodgerblue;
 }
+
+a.active {
+    color: red;
+}

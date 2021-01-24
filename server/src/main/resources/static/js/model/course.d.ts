@@ -1,5 +1,6 @@
 
 import {CourseTag} from "./course_tag";
+import {User} from "./user";
 
 export declare class Course {
     id: number
@@ -7,4 +8,5 @@ export declare class Course {
     name: string
     pic: string
     courseTags: Array<CourseTag>
+    owner: User
 }

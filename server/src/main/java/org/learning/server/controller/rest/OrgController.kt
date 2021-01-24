@@ -84,7 +84,6 @@ class OrgController {
     @Deprecated("")
     fun getInvitesById(orgId: Int, request: HttpServletRequest): Response<List<UserBase>> {
         val user = SessionHelper.of(request).user()!!
-        // TODO: 加入权限验证
         return Responses.ok(orgService.getInvitesById(orgId));
     }
 

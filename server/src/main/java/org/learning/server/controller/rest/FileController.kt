@@ -2,6 +2,7 @@ package org.learning.server.controller.rest
 
 import org.learning.server.model.annotation.NoLogin
 import org.learning.server.model.common.Response
+import org.learning.server.model.common.ResponseTokens
 import org.learning.server.model.common.Responses
 import org.learning.server.service.impl.FileService
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,6 +48,7 @@ class FileController {
         if (file.isEmpty) {
             return Responses.fail("文件不能为空")
         }
+
         return Responses.ok(data = fileService.executeUpload(file, "ppt", uploadDir))
     }
 
@@ -69,5 +71,22 @@ class FileController {
     @NoLogin
     fun getCourseImage(@PathVariable name: String, response: HttpServletResponse) {
         response.outputStream.use { it.write(ClassPathResource("static/img/course/$name").inputStream.use { res -> res.readAllBytes() }) }
+    }
+
+    @GetMapping("/img/ppt/{name}/{index}", produces = [IMAGE_JPEG_VALUE])
+    @NoLogin
+    fun getPptImage(@PathVariable name: String, @PathVariable index: Int, response: HttpServletResponse) {
+        val partFile = "${name}/${index}.png"
+        val pptFile = File("${uploadDir}ppt/$name")
+        val res = fileService.pptToImage(pptFile, uploadDir, index)
+        if (res.code == ResponseTokens.ok.code) {
+            response.outputStream.use {
+                it.write(File("${uploadDir}pptView/${res.data!!}").readBytes())
+            }
+        } else {
+            response.outputStream.use {
+                it.write(ClassPathResource("static/img/mockup5.jpg").inputStream.use { res -> res.readAllBytes() })
+            }
+        }
     }
 }
