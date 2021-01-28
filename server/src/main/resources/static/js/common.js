@@ -41,14 +41,21 @@ class Common {
     uri(location){
         let paths = location.pathname.split('/')
         let queries = []
+        let hash = []
         if (location.search.length > 0){
             location.search.substr(1).split('&')
                 .map((v) => v.split('='))
                 .forEach((v) => queries[v[0]] = v[1])
         }
+        if (location.hash.length > 0) {
+            location.hash.substr(1).split('&')
+                .map((v) => v.split('='))
+                .forEach((v) => hash[v[0]] = v[1])
+        }
         return {
             paths: paths,
-            queries: queries
+            queries: queries,
+            hash: hash,
         }
     }
 }

@@ -7,4 +7,5 @@ import java.io.File
 interface IFileService {
     fun executeUpload(file: MultipartFile, type: String, uploadDir: String): String
     fun pptToImage(pptFile: File, uploadDir: String, index: Int): Response<String>
+    fun pptGetPageSize(pptFile: File): Response<Int>
 }

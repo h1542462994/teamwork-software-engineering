@@ -49,6 +49,26 @@
                     </div>
                 </div>
             </section>
+            <section class="breadcrumb-holder form-inline">
+                <div class="h1">我学习的课程</div>
+            </section>
+            <section class="section-course d-flex flex-wrap">
+                <div class="card card-course" style="max-width: 18rem; " v-for="courseOpen in courseOpens">
+                    <a :href="'/course/' + courseOpen.course.id + '#openId=' + courseOpen.id ">
+                        <img :src="'/api/file/'+ courseOpen.course.pic" class="card-img-top card-img" alt="img">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{  courseOpen.course.name }}</h5>
+                        <p class="card-text"><small>{{  courseOpen.course.info }}</small></p>
+                        <div>
+                            <span class="badge badge-rounded bg-red badge-me">
+                                所在组织：{{ courseOpen.root.name }}&nbsp;{{ courseOpen.orgNode.name }}
+                            </span>
+                            <span class="badge badge-rounded bg-blue badge-me" v-for="tag in  courseOpen.course.courseTags">{{ tag.name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
 
 
@@ -108,6 +128,10 @@
              * @type Array<Course>
              */
             adminCourses: [],
+            /**
+             * @type Array<CourseOpen>
+             */
+            courseOpens: [],
             createModel: {
                 name: '',
                 description: '',
@@ -156,8 +180,11 @@
                         console.log(app.adminCourses)
                     }
                 }
-
-
+                let resCourseOpens = await net.courseOpenList()
+                if (common.resOk(resCourseOpens)) {
+                    app.courseOpens = resCourseOpens.data
+                    console.log(app.courseOpens)
+                }
             }
         }
     })

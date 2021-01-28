@@ -42,6 +42,14 @@ class AsyncNet {
     uri_course_resource_get = "/api/course/resource/get"
     uri_course_resource_create = "/api/course/resource/create"
     uri_course_media_get = "/api/course/media/get"
+    uri_course_media_create = "/api/course/media/create"
+    uri_course_media_update = "/api/course/media/update"
+    uri_course_media_move = "/api/course/media/move"
+    uri_course_media_delete = "/api/course/media/delete"
+    uri_ppt_page_size = "/api/file/ppt/size"
+    uri_course_open_create = "/api/course_open/create"
+    uri_course_open_list = "/api/course_open/list"
+    uri_course_open_list_org = "/api/course_open/list/org"
     uri_course_selectid="/api/course/selectid"
     file_img = "img"
     //endregion
@@ -402,6 +410,86 @@ class AsyncNet {
         return this.post(this.uri_course_media_get, `chapterId=${chapterId}`)
     }
 
+    /**
+     * 通过接口/api/file/ppt/size/:name获取ppt的页数
+     * @param name
+     * @return {Promise<Response<number>>}
+     */
+    async pptGetPageSize(name) {
+        return this.post(`${this.uri_ppt_page_size}/${name}`)
+    }
+
+    /**
+     * 通过接口/api/course/media/create添加media
+     * @param chapterId
+     * @param name
+     * @param index
+     * @param resourceId
+     * @return {Promise<ResponseMedia>}
+     */
+    async courseCreateMedia(chapterId, name, index, resourceId){
+        return this.post(this.uri_course_media_create, `chapterId=${chapterId}&name=${name}&index=${index}&resourceId=${resourceId}`)
+    }
+
+    /**
+     * 通过接口/api/course/media/update更新media
+     * @param chapterId
+     * @param mediaId
+     * @param resourceId
+     * @param name
+     * @return {Promise<ResponseMedia>}
+     */
+    async courseUpdateMedia(chapterId, mediaId, resourceId, name){
+        return this.post(this.uri_course_media_update, `chapterId=${chapterId}&mediaId=${mediaId}&resourceId=${resourceId}&name=${name}`)
+    }
+
+    /**
+     * 通过接口/api/course/media/move移动media
+     * @param chapterId
+     * @param mediaId
+     * @param index
+     * @return {Promise<ResponseMedia>}
+     */
+    async courseMoveMedia(chapterId, mediaId, index) {
+        return this.post(this.uri_course_media_move, `chapterId=${chapterId}&mediaId=${mediaId}&index=${index}`)
+    }
+
+    /**
+     * 通过接口/api/course/media/delete删除media
+     * @param chapterId
+     * @param mediaId
+     * @return {Promise<Response<any>>}
+     */
+    async courseDeleteMedia(chapterId, mediaId) {
+        return this.post(this.uri_course_media_delete, `chapterId=${chapterId}&mediaId=${mediaId}`)
+    }
+
+    /**
+     * 通过接口/api/course_open/create开设一门课程
+     * @param orgId
+     * @param courseId
+     * @return {Promise<string|response<*>>}
+     */
+    async courseOpenCreate(orgId, courseId) {
+        return this.post(this.uri_course_open_create, `orgId=${orgId}&courseId=${courseId}`)
+    }
+
+    /**
+     * 通过接口/api/course_open/list获取所有与该用户有关的开设课程信息
+     * @return {Promise<ResponseCourseOpens>}
+     */
+    async courseOpenList() {
+        return this.post(this.uri_course_open_list)
+    }
+
+    /**
+     * 通过接口/api/course_open/list/org获取所有与组织有关的开设课程信息
+     * @param orgId
+     * @return {Promise<ResponseCourseOpens>}
+     */
+    async courseOpenListOfOrg(orgId) {
+        return this.post(this.uri_course_open_list_org, `orgId=${orgId}`)
+    }
     //endregion
 }
 

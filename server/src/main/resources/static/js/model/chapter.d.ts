@@ -1,4 +1,4 @@
-import {Media} from "./media.t.ds";
+import {Media} from "./media";
 
 export declare class Chapter {
     id: number

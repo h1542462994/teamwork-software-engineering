@@ -14,23 +14,32 @@
     <script src="/js/component.js"></script>
 </head>
 <body>
-<div id="app" class="align-content-center">
-    <div v-if="state.tip" class="alert alert-warning">{{ state.tip }}</div>
-    <h1 class="text-center">欢迎来到登录界面</h1>
-    <div class="form align-self-center col-6">
-        <div class="form-group form-inline">
-            <label for="uid" class="col-4 control-label">用户名</label>
-            <input type="text" class="col form-control" id="uid" placeholder="请输入用户名" v-model="model.uid">
-        </div>
-        <div class="form-group form-inline">
-            <label for="password" class="col-4 control-label">密码</label>
-            <input type="password"  class="col form-control" id="password" placeholder="请输入密码" v-model="model.password">
-        </div>
-        <div class="form-group form-inline justify-content-center">
-            <button type="submit" class="col-5 btn btn-primary btn-block" id="login_btn" v-on:click="login">登录</button>
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark my-padding">
+            <a class="navbar-brand" href="/">企业在线学习平台</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            </div>
+        </nav>
+        <h1 class="text-center">欢迎来到登录界面</h1>
+        <div class="form align-self-center col-6">
+            <div class="form-group form-inline">
+                <label for="uid" class="col-4 control-label">用户名</label>
+                <input type="text" class="col form-control" id="uid" placeholder="请输入用户名" v-model="model.uid">
+            </div>
+            <div class="form-group form-inline">
+                <label for="password" class="col-4 control-label">密码</label>
+                <input type="password"  class="col form-control" id="password" placeholder="请输入密码" v-model="model.password">
+            </div>
+            <div class="form-group form-inline justify-content-center">
+                <button type="submit" class="col-5 btn btn-primary btn-block" id="login_btn" v-on:click="login">登录</button>
+            </div>
         </div>
     </div>
-</div>
+
 
 <script>
 

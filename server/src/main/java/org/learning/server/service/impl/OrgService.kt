@@ -119,10 +119,32 @@ class OrgService : IOrgService {
      */
     override fun guardMainAdmin(orgNode: OrgNode, user: User) {
         // 向上查找组织节点
-        val org = this.getOrganizationBase(this.getOrganizationOfNode(orgNode))
-        if (org != null && org.owner.uid != user.uid) {
-            throw NoAllowedException("你不是组织主管理员，无法进行此操作")
+        if (!isMainAdmin(orgNode, user)){
+            throw NoAllowedException("你不是主管理员")
         }
+    }
+
+    override fun guardAdmin(orgNode: OrgNode, user: User) {
+        if (!isAdmin(orgNode, user)) {
+            throw NoAllowedException("你不是管理员")
+        }
+    }
+
+    override fun isMainAdmin(orgNode: OrgNode, user: User): Boolean{
+        val org = this.getOrganizationBase(this.getOrganizationOfNode(orgNode))
+        return (org == null || org.owner.uid == user.uid)
+    }
+
+    override fun isAdmin(orgNode: OrgNode, user: User): Boolean {
+        // 获取树型结构
+        val orgSummary = getOrgNodeTree(this.getOrganizationOfNode(orgNode), user, null)
+        if (orgNode.parentId == null){
+            return orgSummary.level > 0
+        }
+
+        val flatChildren = orgSummary.children.merge()
+        val orgNodeSummary = flatChildren.find { (it as OrgNodeSummary).id == orgNode.id } ?: return false
+        return (orgNodeSummary as OrgNodeSummary).level > 0;
     }
 
     override fun guardVisit(orgNode: OrgNode, user: User) {
@@ -143,7 +165,7 @@ class OrgService : IOrgService {
      * 根据一个节点查找其组织结构的根节点
      * TODO: Extend [getPathOfOrgNode]
      */
-    public fun getOrganizationOfNode(orgNode: OrgNode): OrgNode {
+    override fun getOrganizationOfNode(orgNode: OrgNode): OrgNode {
         var current = orgNode
         while (current.parentId != null) {
             current = orgNodeRepository.findById(current.parentId!!).get()
@@ -174,18 +196,19 @@ class OrgService : IOrgService {
         var orgNodeSummary: OrgNodeSummary? = null
         var current = orgNode
         while (current.parentId != null) {
-            current = orgNodeRepository.findById(current.parentId!!).get()
+
             val temp = current.toOrgNodeSummaryPart().apply {
                 if (orgNodeSummary != null){
                     children = hashSetOf(orgNodeSummary!!)
                 }
             }
+            current = orgNodeRepository.findById(current.parentId!!).get()
             orgNodeSummary = temp
         }
 
         return current.toOrgSummaryPart().apply {
             if (orgNodeSummary != null){
-                owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(orgNode, Level.MAINADMIN).first().user
+                owner = userOrgNodeRepository.findAllByOrgNodeAndLevel(current, Level.MAINADMIN).first().user
                 children = hashSetOf(orgNodeSummary)
             }
         }
@@ -237,7 +260,7 @@ class OrgService : IOrgService {
      * 获取此节点以及其所有子孙节点
      * @return 所有节点的平铺结果
      */
-    private fun getFlatOrgNodesOfOrgNode(orgNode: OrgNode): List<OrgNode> {
+    override fun getFlatOrgNodesOfOrgNode(orgNode: OrgNode): List<OrgNode> {
         val orgNodeList = LinkedList<OrgNode>()
         val orgNodeResultList = LinkedList<OrgNode>()
         orgNodeList.add(orgNode)
@@ -260,7 +283,7 @@ class OrgService : IOrgService {
         TODO("Not yet implemented")
     }
 
-    public fun getOrgNodesOfUser(user: User): List<OrgNode> {
+    override fun getOrgNodesOfUser(user: User): List<OrgNode> {
         return userOrgNodeRepository.findAllByUser(user).map { it.orgNode }.distinctBy { it.id }
     }
 
@@ -355,7 +378,11 @@ class OrgService : IOrgService {
     override fun getPersons(orgId: Int, user: User): List<UserInfo> {
         val orgNode = getEntity(orgId)
         this.guardVisit(orgNode, user)
-        return getPersonsInner(orgNode, 0)
+        if (isMainAdmin(orgNode, user)) {
+            return getPersonsInner(orgNode)
+        } else {
+            return getPersonsInnerWithGuard(orgNode, 0, user)
+        }
     }
 
     private fun getPersonsInner(orgNode: OrgNode, depth: Int = 0) : List<UserInfo> {
@@ -365,6 +392,22 @@ class OrgService : IOrgService {
         val orgNodesChildren = orgNodeRepository.findAllByParentId(orgNode.id)
         orgNodesChildren.forEach {
             userList.addAll(this.getPersonsInner(it, depth + 1))
+        }
+        return userList.merge().map { it as UserInfo }
+    }
+
+    private fun getPersonsInnerWithGuard(orgNode: OrgNode, depth: Int = 0, user: User): List<UserInfo> {
+        val userList: LinkedList<UserInfo> = LinkedList()
+        val userOrgNodes = userOrgNodeRepository.findAllByOrgNode(orgNode)
+        userList.addAll(userOrgNodes.map { it.toUserInfo(depth) })
+        val orgNodesChildren = orgNodeRepository.findAllByParentId(orgNode.id)
+        orgNodesChildren.forEach {
+            val listInner = this.getPersonsInnerWithGuard(it, depth + 1, user)
+            for (userInfo in listInner) {
+                if (userOrgNodeRepository.findByUserAndOrgNode(user, it).isPresent) {
+                    userList.add(userInfo)
+                }
+            }
         }
         return userList.merge().map { it as UserInfo }
     }
@@ -523,7 +566,7 @@ class OrgService : IOrgService {
         return Responses.ok()
     }
 
-    private fun getEntity(orgId: Int): OrgNode {
+    override fun getEntity(orgId: Int): OrgNode {
         val orgOptional = orgNodeRepository.findById(orgId)
         if (orgOptional.isEmpty) {
             throw NoAllowedException("不存在id为${orgId}的节点")
@@ -645,5 +688,6 @@ class OrgService : IOrgService {
             users
         )
     }
+
     //endregion
 }
