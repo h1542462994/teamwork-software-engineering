@@ -32,7 +32,13 @@ class FileService : IFileService {
         return "${type}/${fileName}"
     }
 
-
+    override fun pptGetPageSize(pptFile: File): Response<Int> {
+        val inputStream = FileInputStream(pptFile)
+        // 读取到pptSlide
+        val xmlSlideShow = XMLSlideShow(inputStream)
+        inputStream.close()
+        return Responses.ok(data = xmlSlideShow.slides.size)
+    }
 
     override fun pptToImage(pptFile: File, uploadDir: String, index: Int): Response<String> {
         val inputSteam = FileInputStream(pptFile)

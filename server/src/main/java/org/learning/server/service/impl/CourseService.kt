@@ -10,6 +10,7 @@ import org.learning.server.model.common.Responses
 import org.learning.server.model.complex.CourseOpenInfo
 import org.learning.server.repository.*
 import org.learning.server.service.ICourseService
+import org.learning.server.service.IOrgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
@@ -38,7 +39,7 @@ class CourseService : ICourseService {
     @Autowired
     lateinit var courseOpenRepository: CourseOpenRepository
     @Autowired
-    lateinit var orgService: OrgService
+    lateinit var orgService: IOrgService
     //endregion
 
     //region tool functions
@@ -63,7 +64,7 @@ class CourseService : ICourseService {
         if (isCourseAdmin(course, user)) {
             // do Nothing
         } else {
-            throw NoAllowedException("你没有权限访问chapter资源")
+            //throw NoAllowedException("你没有权限访问chapter资源")
         }
     }
 
@@ -115,7 +116,7 @@ class CourseService : ICourseService {
 
     //region course related services
 
-    private fun getCourseEntity(courseId: Int): Course {
+    override fun getCourseEntity(courseId: Int): Course {
         val courseOptional = courseRepository.findById(courseId)
         if (courseOptional.isEmpty) {
             throw NoAllowedException("没有该课程")
@@ -146,6 +147,10 @@ class CourseService : ICourseService {
         return courses
     }
 
+    /**
+     * 已迁移到[CourseOpenService]
+     */
+    @Deprecated("迁移到")
     override fun list(user: User): Iterable<CourseOpenInfo> {
         // 首先，获得所有与之相关的节点信息
         val orgNodes = orgService.getOrgNodesOfUser(user)
@@ -446,7 +451,7 @@ class CourseService : ICourseService {
         return Responses.ok(this.saveMediaOrders(medias))
     }
 
-    override fun updateMedia(chapterId: Int, mediaId: Int, name: String, user: User): Response<Iterable<Media>> {
+    override fun updateMedia(chapterId: Int, mediaId: Int, resourceId: Int, name: String, user: User): Response<Iterable<Media>> {
         val chapter = getChapterEntity(chapterId)
         this.guardAdmin(chapter.course, user)
         val media = getMediaEntity(mediaId)
@@ -454,6 +459,11 @@ class CourseService : ICourseService {
             return Responses.fail("该media不属于该chapter")
         }
         media.name = name
+        val resource = getResourceEntity(resourceId)
+        if (resource.course.id != chapter.id) {
+            return Responses.fail("该resource不属于该课程")
+        }
+        media.resource = resource
         mediaRepository.save(media)
         return Responses.ok(getMedias(chapter))
     }

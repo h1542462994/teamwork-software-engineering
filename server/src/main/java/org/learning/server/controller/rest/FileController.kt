@@ -73,6 +73,13 @@ class FileController {
         response.outputStream.use { it.write(ClassPathResource("static/img/course/$name").inputStream.use { res -> res.readAllBytes() }) }
     }
 
+    @RequestMapping("/ppt/size/{name}", method = [RequestMethod.GET, RequestMethod.POST])
+    @ResponseBody
+    fun getPptPageSize(@PathVariable name:String): Response<Int> {
+        val pptFile = File("${uploadDir}ppt/$name")
+        return fileService.pptGetPageSize(pptFile)
+    }
+
     @GetMapping("/img/ppt/{name}/{index}", produces = [IMAGE_JPEG_VALUE])
     @NoLogin
     fun getPptImage(@PathVariable name: String, @PathVariable index: Int, response: HttpServletResponse) {

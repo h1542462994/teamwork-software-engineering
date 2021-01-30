@@ -95,7 +95,7 @@
 <!--                </section>-->
 <!--            </div>-->
 <!--        </div>-->
-        <div class="center container-fluid" style="background-color: #fff3cd; width: 960px;">
+        <div class="center container-fluid" style="background-color: #fff3cd; width: 1080px;">
             <div class="row">
                 <section v-if="model.currentMedia === null" class="main-area col-8 no-padding">
                     <div style="position: relative;height: 70%;" class="no-margin">
@@ -125,23 +125,91 @@
                         </button>
                     </div>
                 </section>
+                <section v-else class="main-area col-8 no-padding">
+
+                    <div v-if="model.currentMedia.resource.type === 1">
+                        <div class="d-flex justify-content-around">
+                            <h3>{{ model.currentMedia.resource.name }}</h3>
+                            <div class="d-flex">
+                                <button class="btn btn-primary btn-sm margin-sm" :disabled="model.pptScope.showIndex <= 0"
+                                        v-on:click="switchPpt(0)">
+                                    前一页
+                                </button>
+                                <label class="form-label">
+                                    <input type="text" class="form-control" style="width: 100px;" v-model="model.pptScope.currentIndex">
+                                </label>
+                                <button class="btn btn-primary btn-sm margin-sm" :disabled="model.pptScope.showIndex >= model.pptScope.pageSize - 1"
+                                        v-on:click="switchPpt(1)">
+                                    后一页
+                                </button>
+                            </div>
+                        </div>
+                        <img width="100%" :src="'/api/file/img/ppt/' + model.pptScope.name + '/' + model.pptScope.showIndex" alt="ppt">
+                    </div>
+                    <div v-else-if="model.currentMedia.resource.type === 2">
+                        <h3>{{ model.currentMedia.resource.name }}</h3>
+                        <video width="100%" controls :src="'/' + model.currentMedia.resource.data"></video>
+                    </div>
+                    <div v-else-if="model.currentMedia.resource.type === 0">
+                        <h3>{{ model.currentMedia.resource.name }}</h3>
+                        <p>{{ model.currentMedia.resource.data }}</p>
+                    </div>
+                </section>
                 <section class="sidebar-area col-4">
                     <h3>课程章节</h3>
+                    <div v-if="model.adminMode === true" class="d-flex justify-content-end">
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="chapterModel.type = 0">
+                            添加章节
+                        </button>
+                    </div>
                     <hr>
                     <ul>
                         <a href="#" v-on:click="model.currentMedia = null"
                            :class="model.currentMedia === null ? 'active' : ''">课程首页</a>
                     </ul>
-                    <ul v-for="chapter,index in model.chapters">
-                        第{{ index }}章：{{ chapter.name }}
-                        <li v-for="media in chapter.medias">
-                            <a href="#" v-on:click="model.currentMedia = media"
-                                :class="model.currentMedia?.id === media.id ? 'active' : ''">
-                                {{ media.name }}
-                            </a>
+                    <div v-for="chapter,index in model.chapters">
+                        <div class="hover-select d-flex justify-content-between">
+                            <div>第{{ index }}章：{{ chapter.name }}
+                                <span class="badge badge-rounded bg-red">0%</span>
+                            </div>
+                            <div v-if="model.adminMode === true">
+                                <button class="hover-button btn btn-primary btn-sm" data-toggle="modal" data-target="#modalMediaCreate" v-on:click="mediaModel.selectChapter = chapter; mediaModel.type = 0">
+                                    添加小节
+                                </button>
+                                <button class="hover-button btn btn-primary btn-sm" data-toggle="modal" data-target="#modalChapterCreate" v-on:click="openChapterModal(chapter, index, 1)">
+                                    编辑
+                                </button>
+                                <button class="hover-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modalChapterDelete" v-on:click="openChapterModal(chapter, index, 2)">
+                                    &times;
+                                </button>
 
-                        </li>
-                    </ul>
+                            </div>
+                        </div>
+
+                        <div style="margin-left: 20px;" v-for="media in chapter.medias">
+                            <div  class="hover-select d-flex justify-content-between">
+                                <div>
+                                    <img width="16px;" v-if="media.resource.type === 2" src="/api/file/img/course/video.png" alt="video">
+                                    <img width="16px;" v-else-if="media.resource.type === 1" src="/api/file/img/course/ppt.png" alt="ppt">
+
+
+                                    <a href="#" v-on:click="selectMedia(media)"
+                                       :class="model.currentMedia?.id === media.id ? 'active' : ''">
+                                        {{ media.name }}
+                                    </a>
+                                    <span class="badge badge-rounded bg-red">0%</span>
+                                </div>
+                                <div v-if="model.adminMode === true">
+                                    <button class="hover-button btn btn-primary btn-sm" data-toggle="modal" data-target="#modalMediaCreate" v-on:click="openMediaModel(chapter, media, index, 1)">
+                                        编辑
+                                    </button>
+                                    <button class="hover-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modalMediaDelete" v-on:click="openMediaModel(chapter, media, index, 2)">
+                                        &times;
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             </div>
 
@@ -212,34 +280,142 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            <span v-if="chapterModel.type === 0">
-                                添加章节
+                            <span v-if="mediaModel.type === 0">
+                                添加小节
                             </span>
                             <span v-else>
-                                修改章节
+                                修改小节
                             </span>
                         </h5>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="create-form-name" class="form-control-label">名称</label>
-                            <input id="create-form-media-name" class="form-control" type="text" v-model="chapterModel.name">
+                            <input id="create-form-media-name" class="form-control" type="text" v-model="mediaModel.name">
                         </div>
                         <div class="form-group">
                             <label class="form-control-label">
                                 插入位置
-                                <select class="form-control" v-model="chapterModel.index">
-                                    <option v-for="chapter, index in model.chapters" :value="index">
-                                        {{ chapter.name }}#{{ chapter.id }}
+                                <select class="form-control" v-model="mediaModel.index" v-if="mediaModel.selectChapter">
+                                    <option v-for="media, index in mediaModel.selectChapter.medias" :value="index">
+                                        {{ media.name }}
                                     </option>
-                                    <option v-if="chapterModel.type === 0" :value="model.chapters.length">[插入到最后]</option>
+                                    <option v-if="mediaModel.type === 0" :value="mediaModel.selectChapter.medias.length">[插入到最后]</option>
                                 </select>
                             </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                选择资源
+                                <input type="text" class="form-control" disabled v-if="mediaModel.selectResource" v-model="mediaModel.selectResource.name">
+                            </label>
+                        </div>
+                        <div>
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <button class="nav-link" :class="resourceModel.tabIndex === 0?'active':''" v-on:click="resourceChangeTab(0)">文本资源</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" :class="resourceModel.tabIndex === 1?'active':''" v-on:click="resourceChangeTab(1)">ppt资源</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" :class="resourceModel.tabIndex === 2?'active':''" v-on:click="resourceChangeTab(2)">视频资源</button>
+                                </li>
+                                <li class="nav-item" v-if="model.adminMode">
+                                    <button class="nav-link" :class="resourceModel.tabIndex === 3?'active':''" v-on:click="resourceChangeTab(3)">上传资源</button>
+                                </li>
+                            </ul>
+                            <div v-if="resourceModel.tabIndex === 0">
+                                <div v-for="resource in model.plainResources" class="hover-select" v-on:click="mediaModel.selectResource = resource">
+                                    <div>
+                                        <h5>{{ resource.name }}#{{ resource.id }}</h5>
+                                        <div>
+                                            {{ resource.data }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="resourceModel.tabIndex === 1">
+                                <div v-for="resource in model.pptResources" class="hover-select" v-on:click="mediaModel.selectResource = resource">
+                                    <div class="d-flex justify-content-start">
+                                        <div style="width: 48px; height: 48px">
+                                            <img width="32px" height="32px" style="margin: 8px;" src="/api/file/img/course/ppt.png" alt="ppt"/>
+                                        </div>
+                                        <div>
+                                            <h5>{{ resource.name }}</h5>
+                                            <div>
+                                                {{ resource.data }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="resourceModel.tabIndex === 2">
+                                <div v-for="resource in model.videoResources" class="hover-select" v-on:click="mediaModel.selectResource = resource">
+                                    <div class="d-flex justify-content-start">
+                                        <div style="width: 48px; height: 48px">
+                                            <img width="32px" height="32px" style="margin: 8px;" src="/api/file/img/course/video.png" alt="video"/>
+                                        </div>
+                                        <div>
+                                            <h5>{{ resource.name }}</h5>
+                                            <div>
+                                                {{ resource.data }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="resourceModel.tabIndex === 3" class="form">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        资源名
+                                        <input class="form-control" type="text" v-model="resourceModel.name">
+                                    </label>
+                                    <label class="form-control-label">
+                                        资源类型
+                                        <select class="form-control" v-model="resourceModel.type">
+                                            <option :value="0">文本资源</option>
+                                            <option :value="1">ppt资源</option>
+                                            <option :value="2">视频资源</option>
+                                        </select>
+                                    </label>
+                                    <label v-if="resourceModel.type === 0" class="form-control-label">
+                                        文本内容
+                                        <input class="form-control" type="text" v-model="resourceModel.textData">
+                                    </label>
+                                    <label v-else class="form-control-label" v-on:change="selectFile(1)">
+                                        文件
+                                        <input id="form-resource-file-1" class="form-resource-file form-control-file" type="file" multiple/>
+                                    </label>
+                                    <button class="btn btn-primary btn-sm" :disabled="resourceModel.processing" v-on:click="createResource">添加资源</button>
+                                    <div>{{ state.tip }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" :disabled="chapterModel.processing" v-on:click="doChapterChange">提交</button>
+                        <button type="button" class="btn btn-primary" :disabled="chapterModel.processing" v-on:click="doMediaChange">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalMediaDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            删除小节
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text warning">你确认删除{{ mediaModel.name }}#{{ mediaModel.id }}吗?</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" :disabled="chapterModel.processing" v-on:click="doMediaChange">确认删除</button>
                     </div>
                 </div>
             </div>
@@ -265,7 +441,7 @@
                             <li class="nav-item">
                                 <button class="nav-link" :class="resourceModel.tabIndex === 2?'active':''" v-on:click="resourceChangeTab(2)">视频资源</button>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" v-if="model.adminMode">
                                 <button class="nav-link" :class="resourceModel.tabIndex === 3?'active':''" v-on:click="resourceChangeTab(3)">上传资源</button>
                             </li>
                         </ul>
@@ -327,9 +503,9 @@
                                     文本内容
                                     <input class="form-control" type="text" v-model="resourceModel.textData">
                                 </label>
-                                <label v-else class="form-control-label" v-on:change="selectFile">
+                                <label v-else class="form-control-label" v-on:change="selectFile(2)">
                                     文件
-                                    <input id="form-resource-file" class="form-control-file" type="file" multiple/>
+                                    <input id="form-resource-file-2" class="form-resource-file form-control-file" type="file" multiple/>
                                 </label>
                                 <button class="btn btn-primary btn-sm" :disabled="resourceModel.processing" v-on:click="createResource">添加资源</button>
                                 <div>{{ state.tip }}</div>
@@ -412,6 +588,12 @@
                  * @type Media
                  */
                 currentMedia: null,
+                pptScope: {
+                    pageSize: 1,
+                    name: '',
+                    currentIndex: 0,
+                    showIndex: 0
+                },
                 plainResources: [
 
                 ],
@@ -426,7 +608,8 @@
                  */
                 videoResources: [
 
-                ]
+                ],
+                openId: -1,
             },
             chapterModel: {
                 id: -1,
@@ -437,14 +620,21 @@
                 name: '',
             },
             mediaModel: {
+                selectChapter: null,
+                /**
+                 * @type Resource
+                 */
+                selectResource: null,
                 id: -1,
                 // 更新为1，创建为0，删除为2
                 type: 0,
+                processing: false,
                 name: '',
                 index: 0,
                 resourceId: 0
             },
             resourceModel: {
+                file: null,
                 processing: false,
                 tabIndex: 0,
                 name: '',
@@ -460,8 +650,10 @@
             resourceChangeTab(tabIndex) {
                 app.resourceModel.tabIndex = tabIndex
             },
-            selectFile() {
-                app.resourceModel.name = $('#form-resource-file').val()
+            selectFile(index) {
+                let control_id = `form-resource-file-${index}`
+                app.resourceModel.file = $(`#${control_id}`)[0].files[0]
+                app.resourceModel.name = app.resourceModel.file.name
             },
             async submitUpdate() {
                 let res = await net.courseUpdate(
@@ -483,17 +675,43 @@
                 app.model.chapterId = chapter.id
                 await app.getMedias()
             },
+            /**
+             * 选择media
+             * @param {Media} media
+             * @return {Promise<void>}
+             */
+            async selectMedia(media){
+                if (media.resource.type === 1) {
+                    app.model.pptScope.name = media.resource.data.substr('ppt/'.length)
+                    let resPageSize = await net.pptGetPageSize(app.model.pptScope.name)
+                    app.model.pptScope.pageSize = resPageSize.data
+                    app.model.pptScope.currentIndex = 0
+                    app.model.pptScope.showIndex = 0
+                }
+                app.model.currentMedia = media
+            },
+            switchPpt(direction) {
+               if (direction === 0) {
+                   app.model.pptScope.showIndex = app.model.pptScope.showIndex - 1
+               } else {
+                   app.model.pptScope.showIndex = app.model.pptScope.showIndex + 1
+               }
+
+                app.model.pptScope.currentIndex = app.model.pptScope.showIndex
+            },
+
             async getChapters() {
                 let res = await net.courseGetChapters(app.model.course.id)
                 if (common.resOk(res)) {
-                    app.model.chapters = res.data
-                    for (const chapter of app.model.chapters) {
+                    for (const chapter of res.data) {
                         let resMedia = await net.courseGetMedias(chapter.id)
                         if (common.resOk(res)) {
                             chapter.medias = resMedia.data
                         }
                     }
+                    app.model.chapters = res.data
                 }
+
             },
             async getResources() {
                 let res = await net.courseGetResources(app.model.course.id)
@@ -516,6 +734,16 @@
                 if (app.resourceModel.type === 0) {
                     app.state.tip = '正在上传中...'
                     app.resourceModel.processing = true
+                    if (app.resourceModel.name === '') {
+                        app.state.tip = '资源名不能为空'
+                        app.resourceModel.processing = false
+                        return
+                    }
+                    if (app.resourceModel.textData === '') {
+                        app.state.tip = '内容不能为空'
+                        app.resourceModel.processing = false
+                        return
+                    }
                     let res = await net.courseCreateResource(
                         app.model.course.id,
                         app.resourceModel.name,
@@ -533,7 +761,17 @@
                 } else {
                     app.state.tip = '正在上传中...'
                     app.resourceModel.processing = true
-                    let file = $('#form-resource-file')[0].files[0]
+                    let file = app.resourceModel.file
+                    if (app.resourceModel.name === '') {
+                        app.state.tip = '资源名不能为空'
+                        app.resourceModel.processing = false
+                        return
+                    }
+                    if (app.resourceModel.file === null) {
+                        app.state.tip = '必须指定文件'
+                        app.resourceModel.processing = false
+                        return
+                    }
                     let type = app.resourceModel.type === 1 ? "ppt": "video"
                     let formData = new FormData()
                     formData.append('file', file)
@@ -559,11 +797,19 @@
                     app.resourceModel.processing = false
                 }
             },
+
             async openChapterModal(chapter, index, type) {
                 app.chapterModel.type = type
                 app.chapterModel.id = chapter.id
                 app.chapterModel.name = chapter.name
                 app.chapterModel.index = index
+            },
+            async openMediaModel(chapter, media, index, type){
+                app.mediaModel.selectChapter = chapter
+                app.mediaModel.selectResource = media.resource
+                app.mediaModel.id = media.id
+                app.mediaModel.name = media.name
+                app.mediaModel.type = type
             },
             async doChapterChange() {
                 if (app.chapterModel.type === 0) {
@@ -594,6 +840,61 @@
                     app.chapterModel.processing = false
                 }
             },
+            async doMediaChange() {
+                if (app.mediaModel.type !== 2) {
+                    if (app.mediaModel.name === ''){
+                        app.state.tip = '名称为空'
+                        return
+                    }
+                    if (app.mediaModel.selectResource === null) {
+                        app.state.tip = '没有选择资源'
+                        return
+                    }
+                }
+                if (app.mediaModel.type === 0) {
+                    // 创建media
+                    app.mediaModel.processing = true
+                    let res = await net.courseCreateMedia(
+                        app.mediaModel.selectChapter.id,
+                        app.mediaModel.name,
+                        app.mediaModel.index,
+                        app.mediaModel.selectResource.id
+                    )
+                    if (common.resOk(res)) {
+                        await app.getChapters()
+                        $('#modalMediaCreate').modal('hide')
+                    }
+                    app.mediaModel.processing = false
+                }
+                else if (app.mediaModel.type === 1) {
+                    // 更新media
+                    app.mediaModel.processing = true
+                    let res1 = await net.courseUpdateMedia(
+                        app.mediaModel.selectChapter.id,
+                        app.mediaModel.id,
+                        app.mediaModel.name
+                    )
+                    let res2 = await net.courseMoveMedia(
+                        app.mediaModel.selectChapter.id,
+                        app.mediaModel.id,
+                        app.mediaModel.index
+                    )
+                    if (common.resOk(res2)) {
+                        await app.getChapters()
+                        $('#modalMediaCreate').modal('hide')
+                    }
+                    app.mediaModel.processing = false
+                }
+                else {
+                    app.mediaModel.processing = true
+                    let res = await net.courseDeleteMedia(app.mediaModel.selectChapter.id, app.mediaModel.id)
+                    if (common.resOk(res)) {
+                        await app.getChapters()
+                        $('#modalMediaDelete').modal('hide')
+                    }
+                    app.mediaModel.processing = false
+                }
+            },
             async init() {
                 document.title = app.c.title;
                 net.addWatcher(app.stateChanged)
@@ -604,6 +905,18 @@
                 await app.getCourse()
                 await app.getChapters()
                 await app.getResources()
+                console.log(uri_component)
+                if (uri_component.hash.openId !== undefined) {
+                    app.model.openId = uri_component.hash.openId
+                    app.model.adminMode = false
+                } else {
+                    app.model.openId = -1
+                    app.model.adminMode = true
+                }
+
+
+                app.c.title = app.model.course.name
+                document.title = app.c.title
             }
         }
     })

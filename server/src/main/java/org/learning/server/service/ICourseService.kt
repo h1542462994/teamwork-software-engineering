@@ -33,11 +33,12 @@ interface ICourseService {
     fun deleteResource(courseId: Int, resourceId: Int, user: User): Response<Iterable<Resource>>
     fun getMedias(chapterId: Int, user: User): Response<Iterable<Media>>
     fun createMedia(chapterId: Int, name: String, index: Int, resourceId: Int, user: User): Response<Iterable<Media>>
-    fun updateMedia(chapterId: Int, mediaId: Int, name: String, user: User): Response<Iterable<Media>>
+    fun updateMedia(chapterId: Int, mediaId: Int, resourceId: Int, name: String, user: User): Response<Iterable<Media>>
     fun moveMedia(chapterId: Int, mediaId: Int, index: Int, user: User): Response<Iterable<Media>>
     fun deleteMedia(chapterId: Int, mediaId: Int, user: User): Response<Iterable<Media>>
     fun addAdmin(courseId: Int, adminUid: String, user: User): Response<Course>
     fun deleteAdmin(courseId: Int, adminUid: String, user: User): Response<Course>
     fun exitAdmin(courseId: Int, user: User): Response<Any>
 
+    fun getCourseEntity(courseId: Int): Course
 }

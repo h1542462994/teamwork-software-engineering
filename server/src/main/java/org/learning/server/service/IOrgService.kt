@@ -27,9 +27,12 @@ interface IOrgService {
     @Deprecated("")
     fun getInvitesById(orgId: Int): List<UserBase>
 
+    fun getEntity(orgId: Int): OrgNode
+
     fun all(): Iterable<OrgSummary>
     fun list(user: User): Iterable<OrgSummary>
     fun guardMainAdmin(orgNode: OrgNode, user: User)
+    fun guardAdmin(orgNode: OrgNode, user: User)
     fun create(orgNodeForm: OrgNodeForm, user: User): Response<OrgNode>
     fun delete(orgId: Int, user: User): Response<Any>
     fun get(orgId: Int, user: User): Response<OrgSummary>
@@ -47,4 +50,9 @@ interface IOrgService {
     fun guardVisit(orgNode: OrgNode, user: User)
     fun searchPerson(orgId: Int, query: String, user: User): Response<Iterable<User>>
 
+    fun getOrgNodesOfUser(user: User): List<OrgNode>
+    fun getOrganizationOfNode(orgNode: OrgNode): OrgNode
+    fun isAdmin(orgNode: OrgNode, user: User): Boolean
+    fun isMainAdmin(orgNode: OrgNode, user: User): Boolean
+    fun getFlatOrgNodesOfOrgNode(orgNode: OrgNode): List<OrgNode>
 }

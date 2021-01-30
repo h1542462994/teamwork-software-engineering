@@ -206,9 +206,9 @@ class CourseController {
      * 更新一个media
      */
     @PostMapping("/media/update")
-    fun updateMedia(chapterId: Int, mediaId: Int, name: String, request: HttpServletRequest): Response<Iterable<Media>> {
+    fun updateMedia(chapterId: Int, mediaId: Int, resourceId: Int, name: String, request: HttpServletRequest): Response<Iterable<Media>> {
         val user = SessionHelper.of(request).user()!!
-        return courseService.updateMedia(chapterId, mediaId, name, user)
+        return courseService.updateMedia(chapterId, mediaId, resourceId, name, user)
     }
 
     /**

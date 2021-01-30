@@ -42,8 +42,11 @@
                             <small>{{ model.current.description }}</small>
                         </h5>
                         <!-- 邀请用户加入组织 -->
-                        <div class="d-flex justify-content-end" v-if="model.isOwn">
-                            <button class="btn btn-primary btn-sm margin-sm" data-toggle="modal"
+                        <div class="d-flex justify-content-end">
+                            <button v-if="model.current.level > 0" class="btn btn-primary btn-sm margin-sm"
+                                data-toggle="modal" data-target="#modalCourseOpen">开设课程
+                            </button>
+                            <button v-if="model.isOwn" class="btn btn-primary btn-sm margin-sm" data-toggle="modal"
                                     data-target="#modalInvite">邀请用户加入
                             </button>
                         </div>
@@ -103,7 +106,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card card-block">
+                <div v-if="model.isOwn" class="card card-block">
                     <div class="card-body">
                         <h5 class="card-title">
                             申请用户加入组织
@@ -118,7 +121,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card card-block">
+                <div v-if="model.isOwn" class="card card-block">
                     <div class="card-body">
                         <h5 class="card-title">
                             用户申请加入组织
@@ -130,6 +133,24 @@
                     </div>
                 </div>
 
+                <h3>开设的课程</h3>
+                <section class="section-course d-flex flex-wrap">
+                    <div class="card card-course" style="max-width: 18rem; " v-for="courseOpen in model.courseOpens">
+                        <a :href="'/course/' + courseOpen.course.id + '#openId=' + courseOpen.id ">
+                            <img :src="'/api/file/'+ courseOpen.course.pic" class="card-img-top card-img" alt="img">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">{{  courseOpen.course.name }}</h5>
+                            <p class="card-text"><small>{{  courseOpen.course.info }}</small></p>
+                            <div>
+                            <span class="badge badge-rounded bg-red badge-me">
+                                所在组织：{{ courseOpen.root.name }}&nbsp;{{ courseOpen.orgNode.name }}
+                            </span>
+                                <span class="badge badge-rounded bg-blue badge-me" v-for="tag in  courseOpen.course.courseTags">{{ tag.name }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
             </div>
         </div>
@@ -178,6 +199,51 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="modalCourseOpen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">开设课程</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form">
+                            <div class="form-group">
+                                <label>
+                                    选择开设的课程
+                                    <select class="form-control" v-model="model.courseIndex" v-on:change="course=model.adminCourses[model.courseIndex]">
+                                        <option v-for="course,index in model.adminCourses" :value="index">
+                                            {{ course.name }}
+                                        </option>
+                                    </select>
+                                </label>
+
+                            </div>
+                            <div>
+                                <p>课程预览</p>
+                                <div v-if="course !== null" class="card card-course" style="max-width: 18rem; ">
+                                    <a :href="'/course/' + course.id">
+                                        <img :src="'/api/file/'+course.pic" class="card-img-top card-img" alt="img">
+                                    </a>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ course.name }}</h5>
+                                        <p class="card-text"><small>{{ course.info }}</small></p>
+                                        <div>
+                                            <span class="badge badge-rounded bg-blue badge-me" v-for="tag in course.courseTags">{{ tag.name }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" v-on:click="courseOpenCreate">开设课程
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </app-compact>
 </div>
 
@@ -207,6 +273,7 @@
                 id: -1,
                 name: '某组织'
             },
+            course: null,
             model: {
                 history: [],
                 /**
@@ -217,7 +284,16 @@
                 /**
                  * @type Array<User>
                  */
-                users: []
+                users: [],
+                /**
+                 * @type Array<Course>
+                 */
+                adminCourses: [],
+                courseIndex: -1,
+                /**
+                 * @type Array<CourseOpen>
+                 */
+                courseOpens: []
             },
             inviteModel: {
                 processing: false,
@@ -305,6 +381,12 @@
             async processInvite(inviteId) {
 
             },
+            async getCourseAdminList(){
+                let res = await net.courseListAdmin()
+                if (common.resOk(res)) {
+                    app.model.adminCourses = res.data
+                }
+            },
             async submitInvite() {
                 app.inviteModel.processing = true
                 app.inviteModel.selectUsers.forEach(
@@ -315,6 +397,16 @@
                 app.inviteModel.selectUsers = []
                 app.inviteModel.processing = false
                 await app.getInviteList()
+            },
+            async courseOpenCreate() {
+                if (app.course === null) {
+                    app.state.tip = '必须选择一门课程'
+                    return
+                }
+                let res = await net.courseOpenCreate(app.organization.id, app.course.id)
+                if (common.resOk(res)) {
+                    $('#modalCourseOpen').modal('hide')
+                }
             },
             async init() {
                 document.title = app.c.title;
@@ -333,7 +425,15 @@
                         app.model.current = app.organization
                         app.model.isOwn = app.model.current.owner.uid === app.state.user.uid
                         await app.updatePerson(organization_id)
-                        await app.getInviteList()
+                        if (app.model.isOwn) {
+                            await app.getInviteList()
+                            await app.getCourseAdminList()
+                        }
+
+                    }
+                    let resCourseOpens = await net.courseOpenListOfOrg(app.organization.id)
+                    if (common.resOk(resCourseOpens)){
+                        app.model.courseOpens = resCourseOpens.data
                     }
                 }
             }
