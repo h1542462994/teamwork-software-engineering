@@ -57,18 +57,16 @@
                 <input class="form-control mr-sm-4" type="search" placeholder="输入课程编号" aria-label="Search"
                        v-model="model.id">
                 <button class="btn  btn-outline-primary my-2 my-sm-0" type="submit" id="selectid_btn"
-                        v-on:click="selectid">搜索
+                        v-on:click="getCourse">搜索2
                 </button>
             </form>
         </div>
     </nav>
     <br><br>
-
         <!--以下为更新发布表单内容-->
         <div class="alert alert-dark" role="alert">
             基础信息【根据搜索框自动获取，不可修改】
         </div>
-
         <!--此部分信息可修改，根据查询的id自动显示-->
         <!--<div v-if="state.course">
             <div class="form-group form-inline">
@@ -89,10 +87,10 @@
 
 
         <div class="mb-3 form-group form-inline">
-            <label class="col-sm-2 control-label">课程内容：</label>
+            <label class="col-sm-2 control-label">课程内容：{{lcourse.info}}</label>
             <!--文本框编辑测试暂时不要加入其他非文本测试，数据库存储形式为String-->
             <textarea name="Contents" id="info" class="col-sm-7 form-control"
-                      style="width:300px;height:150px;"></textarea>
+                      style="width:300px;height:150px;" v-model="model.course.info"></textarea>
         </div>
 
         <div class="mb-3 form-group form-inline">
@@ -127,6 +125,7 @@
                 <option>法学</option>
             </select>
         </div>
+
         <div class="alert alert-primary" role="alert">
             发布信息
         </div>
@@ -232,27 +231,29 @@
         data: {
 
             model: {
-                id: id,
+                    id:'',
             },
-            state: common.CourseState()
+            state: common.CourseState(),
+            lcourse:[],
         },
         methods: {
             stateChanged(state) {
                 this.state = state
             },
-            async selectid() {
+            async getCourse() {
                 let selectid_btn = $('#selectid_btn')
-                let res = await net.courseSelect(app.model.id);
+                let resCourse = await net.courseGet(app.model.id)
+                console.log(resCourse)
                 selectid_btn.disabled = true;
-                if (res !== net.net_fail && res.code === 200) {
-                    window.location.assign('/manage')
+                if (resCourse !== net.net_fail && res.code === 200) {
+                    console.log(resCourse)
+                    app.lcourse = resCourse.data
                 }
-                selectid_btn.disabled = false;
             },
-            async init() {
+            init() {
                 document.title = app.c.title;
                 net.addWatcher(app.stateChanged)
-                app.state = await net.userState()
+
                 // to add the initialization code
                 net.loaded()
             }

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/layui/lay/modules/laydate/default/layui.css" media="all">
     <meta charset="UTF-8">
-    <title>课程管理</title>
+    <title>#title</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
             integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -22,8 +22,8 @@
     <script src="/layui/layui.js"></script>
 </head>
 <body>
-<div id="app">
-   <!-- <app-compact  :state="state">-->
+<!--<div id="app">
+   &lt;!&ndash; <app-compact  :state="state">&ndash;&gt;
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #CCE5FF;">
 
         <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
@@ -53,7 +53,7 @@
                 </div>
 
             </ul>
-            <!--创建课程时搜索框隐藏-->
+            &lt;!&ndash;创建课程时搜索框隐藏&ndash;&gt;
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-4" type="search" placeholder="输入课程编号" aria-label="Search"
                        v-model="model.id">
@@ -63,52 +63,62 @@
             </form>
         </div>
     </nav>
-    <br><br>
+    <br><br>-->
+<div id="app">
+    <app-compact :c="c" :state="state">
+
+    <!--<section class="section-course d-flex flex-wrap justify-content-start">
+
+        <div class="card card-course" style="max-width: 18rem; " v-for="course in adminCourses">
+            &lt;!&ndash;<a :href="'/course/' + course.id">
+                <img src="/img/mockup5.jpg" class="card-img-top card-img" alt="img">
+            </a>&ndash;&gt;
+            <div class="card-body">
+                <h5 class="card-title">{{ course.name }}</h5>
+                <p class="card-text"><small>{{ course.info }}</small></p>
+                &lt;!&ndash;<div>
+                    <span class="badge badge-rounded bg-blue badge-me" v-for="tag in course.courseTags">{{ tag.name }}</span>
+                </div>&ndash;&gt;
+            </div>
+        </div>
+    </section>-->
+
         <table id="demo" lay-filter="test"></table>
         <table class="table table-hover">
 
             <tbody>
             <tr class="row" style="color:#007BFF;">
-                &nbsp;
-                <!--空格-->
                 <th class="col-sm-1" >操作</th>
-                <th class="col-sm-1" >编号</th>
+                <th class="col-sm-2" >编号</th>
                 <th class="col-sm-1" >课程名称</th>
-                <th class="col-sm-3" >课程详情</th>
+                <th class="col-sm-2" >课程详情</th>
+                <th class="col-sm-1" >是否可编辑</th>
                 <th class="col-sm-1" >是否公开</th>
                 <th class="col-sm-2" >创建时间</th>
                 <th class="col-sm-2" >编辑时间</th>
             </tr>
-            <!--不用配置文件怎么调用数据库数据呀？-->
-            <!--<s:iterator value="course" ></s:iterator>-->
-            <tr class="row" style="height:60px; overflow:hidden;">
+
+            <tr class="row" style="height:80px; overflow:hidden;"  v-for="course in adminCourses">
                 <td class="col-sm-1">
                     &nbsp;
                     <a href="//www.runoob.com/"><i class="bi bi-trash-fill"></i></a>
-                    <a href="/manageUpdate"><i class="bi bi-pencil-square"></i></a>
+                    <a href="/courseEdit"><i class="bi bi-pencil-square"></i></a>
                 </td>
 
-               <!-- <td class="col-sm-2">{{state.course.id}} {{state.course.pic}}</td>
-                <td class="col-sm-1">{{state.course.name}}</td>
-                <td class="col-sm-3">{{state.course.info}}</td>
-                <td class="col-sm-1">{{state.course.isEdit}}</td>
-                <td class="col-sm-2">{{state.course.createTime}}</td>
-                <td class="col-sm-2">{{state.course.editTime}}</td>-->
-            </tr>
-            <tr class="row" style="height:80px; overflow:hidden;">
-                <td class="col-sm-1">
-                    &nbsp;
-                    <a href="//www.runoob.com/"><i class="bi bi-trash-fill"></i></a>
-                    <a href="/manageUpdate"><i class="bi bi-pencil-square"></i></a>
+                <td class="col-sm-2 card card-course" style="max-width: 5rem; " >
+                    {{ course.id }}
+                    <a :href="'/course/' + course.id">
+                    <img :src="'/img/course/' + course.id + '.jpg'" class="card-img-top card-img" alt="img">
+                    </a>
                 </td>
-
-                <td class="col-sm-1">57</td>
-                <td class="col-sm-2">市场营销</td>
-                <td class="col-sm-3">市场是商品经济的范畴，是一种以商品交换为内容的经济联系形式。对于企业来说，市场是营销活动的出发点和归宿。</td>
-                <td class="col-sm-1">是</td>
-                <td class="col-sm-2">2020-12-31</td>
-                <td class="col-sm-2">2021-01-09</td>
+                <td class="col-sm-1">{{ course.name }}</td>
+                <td class="col-sm-2">{{ course.info }}</td>
+                <td class="col-sm-1">{{ course.inEdit }}</td>
+                <td class="col-sm-1">{{ course.isPublic }}</td>
+                <td class="col-sm-2">{{ course.createTime }}</td>
+                <td class="col-sm-2">{{ course.editTime }}</td>
             </tr>
+
 
             </tbody>
         </table>
@@ -122,23 +132,46 @@
                 <li class="page-item"><a class="page-link" href="#">下一页</a></li>
             </ul>
         </nav>
-    <!--</app-compact>-->
+    </app-compact>
 </div>
 <script>
     let app = new Vue({
         el: '#app',
         data: {
-            model: {
-                id: '',
+            c: {
+                // inject common object
+                common: common,
+                // inject net object
+                net: net,
+                title: '企业在线学习平台',
+                //menu: common.menu_index
             },
-            state: common.CourseState()
-
+            state: common.defaultUserState(),
+            /**
+             * @type Array<course>
+             */
+            adminCourses: [],
         },
         methods: {
             stateChanged(state) {
                 this.state = state
             },
-            async selectid() {
+            async init() {
+                document.title = app.c.title
+                net.addWatcher(app.stateChanged)
+                app.state = await net.userState()
+                // to add the initialization code
+                if (common.isLogin(app.state)) {
+                    let resCourses = await net.courseListAdmin()
+                    if (common.resOk(resCourses)) {
+                        app.adminCourses = resCourses.data
+                        console.log(app.adminCourses)
+                    }
+                }
+            }
+        }
+    })
+           /* async selectid() {
                 let selectid_btn = $('#selectid_btn')
                 let res = await net.courseSelect(app.model.id);
                 selectid_btn.disabled = true;
@@ -146,16 +179,10 @@
                     window.location.assign('/managelist')
                 }
                 selectid_btn.disabled = false;
-            },
-            async init() {
-                document.title = app.c.title;
-                net.addWatcher(app.stateChanged)
-                app.state = await net.userState()
-                // to add the initialization code
-                net.loaded()
-            }
-        }
-    })
+            },*/
+
+
+
     window.onload = () => {
         app.init();
     }

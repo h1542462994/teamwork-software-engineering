@@ -2,6 +2,7 @@ class Common {
     menu_index = 'menu_index'
     menu_org = 'menu_org'
     menu_me = 'menu_me'
+    menu_course='menu_course'
 
     defaultUserState() {
         return {

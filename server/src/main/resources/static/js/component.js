@@ -20,6 +20,9 @@ Vue.component('app-compact',{
             <li class="nav-item" :class="c.menu === c.common.menu_me ? 'active' : ''">
                 <a class="nav-link" href="/me">个人信息</a>
             </li>
+            <li class="nav-item" :class="c.menu === c.common.menu_course ? 'active' : ''">
+                <a class="nav-link" href="/courseManage">课程管理</a>
+            </li>
         </ul>
         <div class="form-inline my-2 my-lg-0">
             <a class="btn btn-primary btn-block" v-if="state.user === null" href="/login">点击登录</a>

@@ -133,6 +133,8 @@ class AsyncNet {
         return this.post(this.uri_course_selectid,`id=${id}`)
     }
 
+
+
     /**
      * 通过api/org/all 获取所有organization的信息
      * @returns {Promise<ResponseOrganizations>}

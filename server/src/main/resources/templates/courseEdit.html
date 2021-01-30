@@ -80,8 +80,12 @@
             </div>
         </div>-->
         <div class="form-group form-inline">
+            <label class="col-sm-2 control-label">课程编号：</label>
+            <input type="text" class="col-sm-7 form-control"  v-model="createModel.id">
+        </div>
+        <div class="form-group form-inline">
             <label class="col-sm-2 control-label">课程名称：</label>
-            <input type="text" class="col-sm-7 form-control" id="name">
+            <input type="text" class="col-sm-7 form-control" v-model="createModel.name">
         </div>
 
 
@@ -175,7 +179,6 @@
         </div>
         <div class="form-group form-inline">
             <label class="col-sm-2 control-label">邀请编辑成员：</label>
-            <input type="text" class="col-sm-7 form-control" id="epid" placeholder="输入要邀请的成员编号">
         </div>
         <div class="radio form-group form-inline">
             <label class="col-sm-2 control-label">请他/她参加编辑：</label>
@@ -197,7 +200,7 @@
 
 
         <div class="button-group" style="text-align:center">
-            <button type="submit" class="btn btn-primary" id="add_btn">保存</button>
+            <button type="submit" class="btn btn-primary"  v-on:click="submitCreate">保存</button>
             <button type="reset" class="btn btn-light">取消</button>
         </div>
     </form>
@@ -302,6 +305,78 @@
                     net.addWatcher(app.stateChanged)
                     app.state = await net.userState()
                     // to add the initialization code
+                }
+            }
+        })*/
+       /* let app = new Vue({
+            el: '#app',
+            data: {
+                c: {
+                    // inject common object
+                    common: common,
+                    // inject net object
+                    net: net,
+                    title: '课程内容',
+                    menu: common.menu_index
+                },
+                state: common.defaultUserState(),
+                /!**
+                 * @type Array<course>
+                 *!/
+                adminCourses: [],
+                createModel: {
+                    id:'',
+                    name: '',
+                    description: '',
+                    pic: null,
+                    isPublic: false
+                }
+            },
+            methods: {
+                stateChanged(state) {
+                    this.state = state
+                },
+                async submitCreate() {
+                    let res = await net.courseCreate(
+                        app.createModel.id,
+                        app.createModel.name,
+                        app.createModel.description,
+                        app.createModel.pic,
+                        app.createModel.isPublic,
+                    )
+                    if (common.resOk(res)) {
+                        window.location.assign(`/course/${res.data.id}`)
+                    }
+                },
+                async uploadImage() {
+                    let file = $('#form-create-pic')[0].files[0]
+                    console.log(file)
+                    let formData = new FormData()
+                    formData.append('file', file)
+                    console.log(formData.get('file'))
+                    let res = await net.fileUpload(formData, net.file_img)
+                    console.log(res)
+                    if (common.resOk(res)){
+                        console.log(res.data)
+                        app.createModel.pic = res.data
+                    } else {
+                        app.createModel.pic = null
+                    }
+                },
+                async init() {
+                    document.title = app.c.title
+                    net.addWatcher(app.stateChanged)
+                    app.state = await net.userState()
+                    // to add the initialization code
+                    if (common.isLogin(app.state)) {
+                        let resCourses = await net.courseListAdmin()
+                        if (common.resOk(resCourses)) {
+                            app.adminCourses = resCourses.data
+                            console.log(app.courses)
+                        }
+                    }
+
+
                 }
             }
         })*/
