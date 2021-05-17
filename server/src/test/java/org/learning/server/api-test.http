@@ -35,7 +35,7 @@ uid=test&password=123456
 POST http://{{host}}/api/user/register
 Content-Type: application/x-www-form-urlencoded
 
-uid=cht&name=陈昊天&age=20&password=123456&rePassword=123456&sex=false&email=t1542462994@outlook.com
+uid=hello&name=test&age=20&password=123456&rePassword=123456&sex=false&email=t1542462994@outlook.com
 
 ### user.state test
 
@@ -61,6 +61,13 @@ Content-Type: application/x-www-form-urlencoded
 
 name=软件工程01&description=软件工程的班级&parentId=1
 
+### org.delete test
+
+POST http://{{host}}/api/org/delete
+Content-Type: application/x-www-form-urlencoded
+
+orgId=20
+
 ### org.all test
 
 POST http://{{host}}/api/org/all
@@ -77,6 +84,39 @@ POST http://{{host}}/api/org/get
 Content-Type: application/x-www-form-urlencoded
 
 orgId=1
+
+### org.person.get test
+
+POST http://{{host}}/api/org/person/get
+Content-Type: application/x-www-form-urlencoded
+
+orgId=1
+
+### org.person.search test
+
+POST http://{{host}}/api/org/person/search
+Content-Type: application/x-www-form-urlencoded
+
+orgId=1&query=l
+
+### org.inviteList test
+
+POST http://{{host}}/api/org/invite/get
+Content-Type: application/x-www-form-urlencoded
+
+orgId=1
+
+### org.inviteListPerson test
+
+POST http://{{host}}/api/org/invite/get/person
+Content-Type: application/x-www-form-urlencoded
+
+### org.invite.org2person
+
+POST http://{{host}}/api/org/invite/org2person
+Content-Type: application/x-www-form-urlencoded
+
+orgId=1&personUid=test
 
 ### message.post test
 
@@ -100,6 +140,11 @@ messageId=4
 ### course.all test
 
 POST http://{{host}}/api/course/all
+Content-Type: application/x-www-form-urlencoded
+
+### course.adminList test
+
+POST http://{{host}}/api/course/list/admin
 Content-Type: application/x-www-form-urlencoded
 
 ### course.create test
